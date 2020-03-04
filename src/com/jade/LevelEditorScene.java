@@ -1,9 +1,11 @@
 package com.jade;
 
-import com.component.CameraControls;
-import com.component.Grid;
+import com.component.*;
+import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.dataStructure.Vector2;
+import com.ui.Button;
+import com.ui.ButtonContainer;
 import com.util.Constants;
 
 import java.awt.Color;
@@ -27,10 +29,15 @@ public class LevelEditorScene extends Scene {
         initAssetPool();
         grid.start();
         cameraControls.start();
+        mouseCursor.addComponent(new SnapToGrid(32, 32));
+
+        GameObject buttonContainer = new GameObject("Button Container", new Transform(new Vector2(0, 0)), 0);
+        buttonContainer.addComponent(new ButtonContainer());
+        addGameObject(buttonContainer);
     }
 
     public void initAssetPool() {
-
+        AssetPool.addSpritesheet("assets/marioTilesheet.png", 16, 16, 0, 33, 10 * 33);
     }
 
     @Override
@@ -38,6 +45,10 @@ public class LevelEditorScene extends Scene {
         cameraControls.update(dt);
         grid.update(dt);
         mouseCursor.update(dt);
+
+        for (GameObject go : gameObjects) {
+            go.update(dt);
+        }
     }
 
     @Override
@@ -46,5 +57,6 @@ public class LevelEditorScene extends Scene {
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         grid.draw(g2);
         renderer.render(g2);
+        mouseCursor.draw(g2);
     }
 }

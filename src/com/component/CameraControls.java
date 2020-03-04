@@ -21,8 +21,8 @@ public class CameraControls extends Component {
             float dx = (Window.getWindow().mouseListener.x + Window.getWindow().mouseListener.dx - prevMx);
             float dy = (Window.getWindow().mouseListener.y + Window.getWindow().mouseListener.dy - prevMy);
 
-            Window.getWindow().getCurrentScene().camera.position.x -= dx;
-            Window.getWindow().getCurrentScene().camera.position.y -= dy;
+            Window.getScene().camera.position.x -= dx;
+            Window.getScene().camera.position.y -= dy;
         }
 
         prevMx = Window.getWindow().mouseListener.x + Window.getWindow().mouseListener.dx;

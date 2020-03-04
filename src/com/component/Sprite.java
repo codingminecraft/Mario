@@ -58,7 +58,7 @@ public class Sprite extends Component {
     @Override
     public void draw(Graphics2D g2) {
         g2.drawImage(image, (int)gameObject.transform.position.x,
-                (int)gameObject.transform.position.y, width, height, null);
+                (int)gameObject.transform.position.y, (int)(width * gameObject.transform.scale.x), (int)(height * gameObject.transform.scale.y), null);
     }
 
     @Override

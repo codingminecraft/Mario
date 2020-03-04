@@ -12,8 +12,8 @@ public class Grid extends Component {
 
     Camera camera;
     public int gridWidth, gridHeight;
-    private int numYLines = 31;
-    private int numXLines = 20;
+    private int numYLines = 41;
+    private int numXLines = 30;
 
     public Grid() {
 
@@ -21,7 +21,7 @@ public class Grid extends Component {
 
     @Override
     public void start() {
-        this.camera = Window.getWindow().getCurrentScene().camera;
+        this.camera = Window.getScene().camera;
         this.gridHeight = Constants.TILE_HEIGHT;
         this.gridWidth = Constants.TILE_WIDTH;
     }

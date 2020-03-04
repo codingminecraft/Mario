@@ -28,12 +28,22 @@ public abstract class Scene {
 
     }
 
+    public void start() {
+        for (GameObject g : gameObjects) {
+            for (Component c : g.getAllComponents()) {
+                c.start();
+            }
+        }
+    }
+
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.submit(g);
-        for (Component c : g.getAllComponents()) {
-            c.start();
-        }
+    }
+
+    public void addUIGameObject(GameObject g) {
+        gameObjects.add(g);
+        renderer.submitUI(g);
     }
 
     public abstract void update(double dt);

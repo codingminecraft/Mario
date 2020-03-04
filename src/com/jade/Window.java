@@ -39,8 +39,8 @@ public class Window extends JFrame implements Runnable {
         changeScene(0);
     }
 
-    public Scene getCurrentScene() {
-        return currentScene;
+    public static Scene getScene() {
+        return getWindow().currentScene;
     }
 
     public void changeScene(int scene) {
@@ -49,11 +49,13 @@ public class Window extends JFrame implements Runnable {
                 isInEditor = true;
                 currentScene = new LevelEditorScene("Level Editor");
                 currentScene.init();
+                currentScene.start();
                 break;
             case 1:
                 isInEditor = false;
                 currentScene = new LevelScene("Level");
                 currentScene.init();
+                currentScene.start();
                 break;
             default:
                 System.out.println("Do not know what this scene is.");

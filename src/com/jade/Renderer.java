@@ -11,16 +11,22 @@ import java.util.Map;
 
 public class Renderer {
     Map<Integer, List<GameObject>> gameObjects;
+    List<GameObject> uiGameObjects;
     Camera camera;
 
     public Renderer(Camera camera) {
         this.camera = camera;
         this.gameObjects = new HashMap<>();
+        this.uiGameObjects = new ArrayList<>();
     }
 
     public void submit(GameObject gameObject) {
         gameObjects.computeIfAbsent(gameObject.zIndex, k -> new ArrayList<>());
         gameObjects.get(gameObject.zIndex).add(gameObject);
+    }
+
+    public void submitUI(GameObject gameObject) {
+        uiGameObjects.add(gameObject);
     }
 
     public void render(Graphics2D g2) {
@@ -54,6 +60,10 @@ public class Renderer {
             }
 
             currentZIndex++;
+        }
+
+        for (GameObject go : uiGameObjects) {
+            go.draw(g2);
         }
     }
 }
