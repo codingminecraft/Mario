@@ -12,6 +12,7 @@ public class Window extends JFrame implements Runnable {
 
     public ML mouseListener;
     public KL keyListener;
+    public WL windowListener;
     public boolean isInEditor = true;
 
     private static Window window = null;
@@ -23,6 +24,7 @@ public class Window extends JFrame implements Runnable {
     public Window() {
         this.mouseListener = new ML();
         this.keyListener = new KL();
+        this.windowListener = new WL();
 
         this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         this.setTitle(Constants.SCREEN_TITLE);
@@ -32,7 +34,9 @@ public class Window extends JFrame implements Runnable {
         this.addKeyListener(keyListener);
         this.addMouseListener(this.mouseListener);
         this.addMouseMotionListener(this.mouseListener);
+        this.addWindowListener(this.windowListener);
         this.setLocationRelativeTo(null);
+        Constants.FONT_METRICS = this.getFontMetrics(this.getFont());
     }
 
     public void init() {
@@ -82,6 +86,8 @@ public class Window extends JFrame implements Runnable {
 
     public void update(double dt) {
         currentScene.update(dt);
+        mouseListener.endFrame();
+
         draw(getGraphics());
     }
 

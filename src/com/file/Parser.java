@@ -3,6 +3,7 @@ package com.file;
 import com.component.Sprite;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.ui.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +16,38 @@ public class Parser {
     private static int line = 1;
     private static byte[] bytes;
 
-    public static void openFile(String filename) {
+    public static void openLevelFile(String filename) {
         File tmp = new File("levels/" + filename + ".zip");
-        if (!tmp.exists()) return;
+        if (!tmp.exists()) {
+            bytes = new byte[0];
+            return;
+        }
+        offset = 0;
+        line = 1;
 
         try {
             ZipFile zipFile = new ZipFile("levels/" + filename + ".zip");
+            ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
+            InputStream stream = zipFile.getInputStream(jsonFile);
+
+            Parser.bytes = stream.readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    public static void openFile(String filename) {
+        File tmp = new File(filename + ".zip");
+        if (!tmp.exists()) {
+            bytes = new byte[0];
+            return;
+        }
+        offset = 0;
+        line = 1;
+
+        try {
+            ZipFile zipFile = new ZipFile(filename + ".zip");
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
@@ -39,6 +66,16 @@ public class Parser {
         if (atEnd()) return null;
 
         return GameObject.deserialize();
+    }
+
+    public static JWindow parseJWindow() {
+        if (bytes.length == 0 || atEnd()) return null;
+
+        if (peek() == ',') Parser.consume(',');
+        skipWhitespace();
+        if (atEnd()) return null;
+
+        return JWindow.deserialize();
     }
 
     public static void skipWhitespace() {
@@ -68,7 +105,7 @@ public class Parser {
     }
 
     public static boolean atEnd() {
-        return offset == bytes.length;
+        return offset >= bytes.length;
     }
 
     public static int parseInt() {
@@ -161,6 +198,32 @@ public class Parser {
 //                return BoxBounds.deserialize();
 //            case "TriangleBounds":
 //                return TriangleBounds.deserialize();
+            default:
+                System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
+                System.exit(-1);
+        }
+
+        return null;
+    }
+
+    public static JComponent parseJComponent() {
+        String componentTitle = Parser.parseString();
+        skipWhitespace();
+        Parser.consume(':');
+        skipWhitespace();
+        Parser.consume('{');
+
+        switch (componentTitle) {
+            case "Button":
+                return Button.deserialize();
+            case "FileExplorerButton":
+                return FileExplorerButton.deserialize();
+            case "Label":
+                return Label.deserialize();
+            case "LoadLevelButton":
+                return LoadLevelButton.deserialize();
+            case "SaveLevelButton":
+                return SaveLevelButton.deserialize();
             default:
                 System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
                 System.exit(-1);

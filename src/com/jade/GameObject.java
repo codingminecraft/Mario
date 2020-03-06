@@ -1,8 +1,11 @@
 package com.jade;
 
 import com.dataStructure.Transform;
+import com.dataStructure.Tuple;
+import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.file.Serialize;
+import com.util.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -55,6 +58,13 @@ public class GameObject extends Serialize {
     public void addComponent(Component c) {
         components.add(c);
         c.gameObject = this;
+    }
+
+    public Tuple<Integer> getGridCoords() {
+        Integer gridX = (int)(Math.floor(this.transform.position.x / Constants.TILE_WIDTH) * Constants.TILE_WIDTH);
+        Integer gridY = (int)(Math.floor(this.transform.position.y / Constants.TILE_WIDTH) * Constants.TILE_HEIGHT);
+
+        return new Tuple<>(gridX, gridY, this.zIndex);
     }
 
     public GameObject copy() {

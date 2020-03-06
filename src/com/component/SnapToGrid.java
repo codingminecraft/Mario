@@ -1,17 +1,22 @@
 package com.component;
 
+import com.dataStructure.Transform;
+import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.jade.LevelEditorScene;
 import com.jade.Window;
+import com.ui.Button;
 import com.util.Constants;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class SnapToGrid extends Component {
-    private float debounceTime = 0.2f;
+    private float debounceTime = 0.05f;
     private float debounceLeft = 0.0f;
 
     int gridWidth, gridHeight;
@@ -36,9 +41,14 @@ public class SnapToGrid extends Component {
                 Window.mouseListener().x > Constants.TILES_MAX_X &&
                 debounceLeft < 0) {
                 debounceLeft = debounceTime;
-                GameObject object = gameObject.copy();
-                object.transform.position = new Vector2(x * gridWidth, y * gridHeight);
-                Window.getScene().addGameObject(object);
+                Tuple<Integer> gridPos = new Tuple<>((int)(x * gridWidth), (int)(y * gridHeight), 0);
+                // Check if object has already been placed there
+                // If not, we will place a block
+                if (!Window.getScene().getWorldPartition().containsKey(gridPos) && !Window.getScene().inJWindow(Window.mouseListener().position)) {
+                    GameObject object = gameObject.copy();
+                    object.transform.position = new Vector2(x * gridWidth, y * gridHeight);
+                    Window.getScene().addGameObject(object);
+                }
             }
         }
     }
@@ -51,7 +61,7 @@ public class SnapToGrid extends Component {
             AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
             g2.setComposite(ac);
             g2.drawImage(sprite.image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
-                    (int)sprite.width, (int)sprite.height, null);
+                    (int)sprite.width * 2, (int)sprite.height * 2, null);
             alpha = 1.0f;
             ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
             g2.setComposite(ac);

@@ -20,6 +20,11 @@ public class Renderer {
         this.uiGameObjects = new ArrayList<>();
     }
 
+    public void reset() {
+        gameObjects.clear();
+        uiGameObjects.clear();
+    }
+
     public void submit(GameObject gameObject) {
         gameObjects.computeIfAbsent(gameObject.zIndex, k -> new ArrayList<>());
         gameObjects.get(gameObject.zIndex).add(gameObject);

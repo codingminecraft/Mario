@@ -1,13 +1,17 @@
 package com.jade;
 
+import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.file.Parser;
+import com.ui.JWindow;
 
 import java.awt.Graphics2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -15,6 +19,8 @@ public abstract class Scene {
     String name;
     public Camera camera;
     List<GameObject> gameObjects;
+    Map<Tuple<Integer>, GameObject> worldPartition;
+    List<JWindow> jWindows;
     Renderer renderer;
 
     public void Scene(String name) {
@@ -22,6 +28,8 @@ public abstract class Scene {
         this.camera = new Camera(new Vector2());
         this.gameObjects = new ArrayList<>();
         this.renderer = new Renderer(this.camera);
+        this.worldPartition = new HashMap<>();
+        this.jWindows = new ArrayList<>();
     }
 
     public void init() {
@@ -34,11 +42,21 @@ public abstract class Scene {
                 c.start();
             }
         }
+
+        for (JWindow win : jWindows) {
+            win.start();
+        }
     }
 
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.submit(g);
+        Tuple<Integer> gridPos = g.getGridCoords();
+        worldPartition.put(gridPos, g);
+    }
+
+    public void addJWindow(JWindow win) {
+        this.jWindows.add(win);
     }
 
     public void addUIGameObject(GameObject g) {
@@ -46,12 +64,30 @@ public abstract class Scene {
         renderer.submitUI(g);
     }
 
+    public Map<Tuple<Integer>, GameObject> getWorldPartition() {
+        return this.worldPartition;
+    }
+
+    public boolean inJWindow(Vector2 position) {
+        for (JWindow win : jWindows) {
+            if (win.pointInWindow(position)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public abstract void update(double dt);
     public abstract void draw(Graphics2D g2);
 
-    protected void importLevel(String filename) {
-        Parser.openFile(filename);
+    public void importLevel(String filename) {
+        if (gameObjects.size() > 0) {
+            gameObjects.clear();
+            renderer.reset();
+            worldPartition.clear();
+        }
 
+        Parser.openLevelFile(filename);
         GameObject go = Parser.parseGameObject();
         while (go != null) {
             addGameObject(go);
@@ -59,7 +95,7 @@ public abstract class Scene {
         }
     }
 
-    protected void export(String filename) {
+    public void export(String filename) {
         try {
             FileOutputStream fos = new FileOutputStream("levels/" + filename + ".zip");
             ZipOutputStream zos = new ZipOutputStream(fos);

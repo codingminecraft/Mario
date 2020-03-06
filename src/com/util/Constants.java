@@ -1,5 +1,7 @@
 package com.util;
 
+import java.awt.FontMetrics;
+
 public class Constants {
     public static final int SCREEN_WIDTH = 1280;
     public static final int SCREEN_HEIGHT = 720;
@@ -16,4 +18,7 @@ public class Constants {
     public static final int TILES_MAX_X = 200;
     public static final int TILES_HORIZONTAL_PADDING = 2;
     public static final int TILES_VERTICAL_PADDING = 2;
+
+    public static FontMetrics FONT_METRICS;
+    public static String CURRENT_LEVEL = "";
 }
