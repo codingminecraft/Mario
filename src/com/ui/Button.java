@@ -36,7 +36,7 @@ public class Button extends JComponent {
         this.hot = Window.mouseListener().x > this.position.x && Window.mouseListener().x < this.position.x + this.size.x &&
                 Window.mouseListener().y > this.position.y && Window.mouseListener().y < this.position.y + this.size.y;
 
-        if (!active && hot) {
+        if (!active && hot && visible) {
             if (Window.mouseListener().mousePressed && Window.mouseListener().mouseButton == MouseEvent.BUTTON1) {
                 active = true;
                 ACTIVE_ITEM = this.id;
@@ -44,6 +44,7 @@ public class Button extends JComponent {
                 SnapToGrid snapToGrid = scene.mouseCursor.getComponent(SnapToGrid.class);
                 scene.mouseCursor = objToCopy.copy();
                 scene.mouseCursor.addComponent(snapToGrid);
+                snapToGrid.gameObjectAdded();
             }
         } else if (Window.keyListener().isKeyPressed(KeyEvent.VK_ESCAPE)) {
             active = false;

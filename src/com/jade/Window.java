@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 
 public class Window extends JFrame implements Runnable {
 
@@ -34,6 +35,7 @@ public class Window extends JFrame implements Runnable {
         this.addKeyListener(keyListener);
         this.addMouseListener(this.mouseListener);
         this.addMouseMotionListener(this.mouseListener);
+        this.addMouseWheelListener(this.mouseListener);
         this.addWindowListener(this.windowListener);
         this.setLocationRelativeTo(null);
         Constants.FONT_METRICS = this.getFontMetrics(this.getFont());
@@ -95,6 +97,13 @@ public class Window extends JFrame implements Runnable {
         if (doubleBufferImage == null) {
             doubleBufferImage = createImage(getWidth(), getHeight());
             doubleBufferGraphics = doubleBufferImage.getGraphics();
+            Constants.ANTIALIASING_HINT.put(
+                    RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_QUALITY );
+            Constants.NO_ANTIALIASING_HINT.put(
+                    RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_DEFAULT
+            );
         }
 
         renderOffscreen(doubleBufferGraphics);

@@ -1,20 +1,20 @@
 package com.jade;
 
 import com.dataStructure.Vector2;
-import com.ui.JWindow;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
-public class ML extends MouseAdapter {
+public class ML extends MouseAdapter implements MouseWheelListener {
 
     public boolean mousePressed = false;
     public boolean mouseDragged = false;
     public int mouseButton = -1;
     public float x = -1.0f, y = -1.0f;
     public float dx = -1.0f, dy = -1.0f;
+    public Vector2 mouseWheel = new Vector2(0.0f, 0.0f);
     public Vector2 position = new Vector2(-1.0f, -1.0f);
 
     @Override
@@ -50,8 +50,15 @@ public class ML extends MouseAdapter {
         this.position.y = this.y;
     }
 
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e)
+    {
+        mouseWheel.y = e.getWheelRotation();
+    }
+
     public void endFrame() {
         this.dx = 0;
         this.dy = 0;
+        mouseWheel.y = 0;
     }
 }

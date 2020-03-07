@@ -93,6 +93,12 @@ public abstract class Scene {
             addGameObject(go);
             go = Parser.parseGameObject();
         }
+
+        for (GameObject g : gameObjects) {
+            for (Component c : g.getAllComponents()) {
+                c.start();
+            }
+        }
     }
 
     public void export(String filename) {

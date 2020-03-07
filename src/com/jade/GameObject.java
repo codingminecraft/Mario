@@ -95,6 +95,12 @@ public class GameObject extends Serialize {
         }
     }
 
+    public void start() {
+        for (Component c : components) {
+            c.start();
+        }
+    }
+
     @Override
     public String serialize(int tabSize) {
         if (!serializable) return "";

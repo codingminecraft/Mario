@@ -5,6 +5,7 @@ import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.file.Serialize;
 import com.jade.*;
+import com.util.Constants;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -27,9 +28,6 @@ public class JWindow extends Serialize {
     private Vector2 scrollbarPos = new Vector2(0, 0);
     private Vector2 scrollbarSize = new Vector2(10, 0);
     private boolean drawScrollbar = false;
-
-    private final Color BG_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.5f);
-    private final Color TITLE_BG_COLOR = new Color(0.3f, 0.3f, 0.3f, 1.0f);
 
     private Vector2 clickedPosDelta = new Vector2();
     private boolean beingDragged = false;
@@ -87,6 +85,14 @@ public class JWindow extends Serialize {
                 }
                 this.size.x = Window.mouseListener().x - this.position.x;
                 this.size.y = Window.mouseListener().y - this.position.y;
+                scrollbarPos.y = 0;
+            }
+        } else if (pointInWindow(Window.mouseListener().position) && Window.mouseListener().mouseWheel.y != 0.0f && drawScrollbar) {
+            scrollbarPos.y += Window.mouseListener().mouseWheel.y * Math.exp(1 / scrollbarSize.y) * 3;
+            if (scrollbarPos.y < 0.0f) {
+                scrollbarPos.y = 0.0f;
+            } else if (scrollbarPos.y + scrollbarSize.y > size.y - titleBarSize.y) {
+                scrollbarPos.y = size.y - titleBarSize.y - scrollbarSize.y;
             }
         } else {
             beingDragged = false;
@@ -104,44 +110,62 @@ public class JWindow extends Serialize {
     }
 
     public void draw(Graphics2D g2) {
-        g2.setColor(BG_COLOR);
+        g2.setColor(Constants.BG_COLOR);
         g2.fillRect((int)position.x, (int)position.y, (int)size.x, (int)size.y);
-        g2.setColor(TITLE_BG_COLOR);
+        g2.setColor(Constants.TITLE_BG_COLOR);
         g2.fillRect((int)position.x, (int)position.y, (int)size.x, (int)titleBarHeight);
         g2.setColor(Color.WHITE);
         g2.drawString(title, position.x + 5, position.y + 15);
 
-        int currentX = 0;
-        int currentY = (int)titleBarSize.y + 2 + (int)scrollbarPos.y;
+        int currentX = (int)Constants.PADDING.x;
+        int currentY = (int)(titleBarSize.y + Constants.PADDING.y);
         int rowHeight = 0;
+        // First pass, position everything roughly and calculate total height
         for (JComponent comp : elements) {
             comp.position.x = this.position.x + currentX;
             if (comp.size.y > rowHeight) rowHeight = (int)Math.ceil(comp.size.y);
-            if (comp.position.x + comp.size.x > this.position.x + size.x) {
-                comp.position.x = this.position.x + 2;
-                currentY += rowHeight;
-                currentX = 0;
+            if (comp.position.x + comp.size.x > this.position.x + size.x || comp.isLineBreak) {
+                comp.position.x = this.position.x + Constants.PADDING.x;
+                currentY += rowHeight + Constants.PADDING.y;
+                currentX = (int)Constants.PADDING.x;
                 rowHeight = 0;
+                if (comp.isLineBreak) continue;
             }
 
-            comp.position.y = this.position.y + currentY - scrollbarPos.y;
-
-            if (comp.position.y >= this.position.y && comp.position.y + comp.size.y <= this.position.y + size.y)
-                comp.draw(g2);
-
-            if (currentY + rowHeight >= size.y) {
-                drawScrollbar = true;
-            } else {
-                drawScrollbar = false;
+            if (comp.isCentered) {
+                comp.position.x = ((size.x - currentX) / 2.0f) - (comp.size.x / 2.0f) + position.x;
             }
-            currentX += comp.size.x + 2;
+
+            comp.position.y = this.position.y + currentY;
+            currentX += comp.size.x + Constants.PADDING.x;
         }
 
-        currentY += rowHeight;
+        float totalHeight = currentY + rowHeight;
+        if (totalHeight > size.y) {
+            drawScrollbar = true;
+        } else {
+            drawScrollbar = false;
+            scrollbarPos.y = 0;
+        }
+
+        // Second pass adjust according to position of scrollbar
+        for (JComponent comp : elements) {
+            float percentOfHeight = 1 / ((size.y - titleBarSize.y) / totalHeight);
+            comp.position.y -= (scrollbarPos.y * percentOfHeight) + 1;
+
+            if (comp.position.y >= this.position.y + titleBarSize.y && comp.position.y + comp.size.y <= this.position.y + size.y) {
+                comp.visible = true;
+                comp.draw(g2);
+            } else {
+                comp.visible = false;
+            }
+        }
+
         if (drawScrollbar) {
             g2.setColor(Color.BLACK);
-            float percentOfHeight = size.y / currentY;
+            float percentOfHeight = size.y / totalHeight;
             float height = percentOfHeight * (size.y - titleBarSize.y);
+            scrollbarSize.y = height;
             g2.fillRect((int)(position.x + size.x - scrollbarSize.x), (int)(titleBarHeight + scrollbarPos.y + position.y), (int)scrollbarSize.x, (int)height);
         }
     }
