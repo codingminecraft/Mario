@@ -1,7 +1,9 @@
 package com.component;
 
+import com.dataStructure.Transform;
+import com.dataStructure.Vector2;
 import com.file.Parser;
-import com.jade.Component;
+import com.jade.*;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -11,6 +13,9 @@ public class AnimationMachine extends Component {
     List<Animation> animations;
     Animation current;
     String startAnimation;
+
+    private boolean inLevelEditor = false;
+    private GameObject levelEditorGo;
 
     public AnimationMachine() {
         this.animations = new ArrayList<>();
@@ -44,10 +49,23 @@ public class AnimationMachine extends Component {
             System.exit(-1);
         }
         this.current = startAnim;
+
+        Scene scene = Window.getScene();
+        if (scene instanceof LevelEditorScene) {
+            inLevelEditor = true;
+            this.levelEditorGo = new GameObject("LevelEditorCopy", gameObject.transform.copy(), gameObject.zIndex);
+            levelEditorGo.addComponent(getPreviewSprite().copy());
+        }
     }
 
     @Override
     public void update(double dt) {
+        if (inLevelEditor) {
+            Transform.copyValues(gameObject.transform, levelEditorGo.transform);
+            levelEditorGo.transform.position = Vector2.minus(levelEditorGo.transform.position, Window.getScene().camera.position);
+            levelEditorGo.zIndex = gameObject.zIndex;
+        }
+
         current.update(dt);
     }
 
@@ -66,14 +84,17 @@ public class AnimationMachine extends Component {
             machine.addAnimation((Animation)anim.copy());
         }
         machine.setStartAnimation(this.startAnimation);
-        machine.start();
 
         return machine;
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        current.draw(g2);
+        if (!inLevelEditor) {
+            current.draw(g2);
+        } else {
+            levelEditorGo.draw(g2);
+        }
     }
 
     @Override

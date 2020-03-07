@@ -1,11 +1,9 @@
 package com.ui;
 
-import com.component.SnapToGrid;
+import com.component.LevelEditorControls;
 import com.component.Sprite;
-import com.dataStructure.AssetPool;
 import com.dataStructure.Vector2;
 import com.file.Parser;
-import com.jade.Component;
 import com.jade.GameObject;
 import com.jade.LevelEditorScene;
 import com.jade.Window;
@@ -40,10 +38,11 @@ public class Button extends JComponent {
                 active = true;
                 ACTIVE_ITEM = this.id;
                 LevelEditorScene scene = (LevelEditorScene) Window.getScene();
-                SnapToGrid snapToGrid = scene.mouseCursor.getComponent(SnapToGrid.class);
+                LevelEditorControls levelEditorControls = scene.mouseCursor.getComponent(LevelEditorControls.class);
                 scene.mouseCursor = objToCopy.copy();
-                scene.mouseCursor.addComponent(snapToGrid);
-                snapToGrid.gameObjectAdded();
+                scene.mouseCursor.addComponent(levelEditorControls);
+                scene.mouseCursor.start();
+                levelEditorControls.gameObjectAdded();
             }
         } else if (Window.keyListener().isKeyPressed(KeyEvent.VK_ESCAPE)) {
             active = false;

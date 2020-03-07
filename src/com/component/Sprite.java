@@ -3,6 +3,7 @@ package com.component;
 import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
+import com.util.Constants;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,6 +18,8 @@ public class Sprite extends Component {
 
     public boolean isSubsprite = false;
     public int row, column, index;
+
+    public boolean isSelected = false;
 
     public Sprite(String pictureFile) {
         this.pictureFile = pictureFile;
@@ -57,8 +60,24 @@ public class Sprite extends Component {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.drawImage(image, (int)gameObject.transform.position.x,
-                (int)gameObject.transform.position.y, (int)(width * gameObject.transform.scale.x), (int)(height * gameObject.transform.scale.y), null);
+        if (!isSelected && Constants.Z_INDEX == gameObject.zIndex) {
+            g2.drawImage(image, (int) gameObject.transform.position.x,
+                    (int) gameObject.transform.position.y, (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y), null);
+        } else {
+            if (Constants.Z_INDEX == gameObject.zIndex) {
+                g2.setColor(Color.GREEN);
+                g2.fillRect((int) gameObject.transform.position.x, (int) gameObject.transform.position.y,
+                        (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y));
+            }
+            float alpha = 0.5f;
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+            g2.setComposite(ac);
+            g2.drawImage(image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
+                    (int)(width * gameObject.transform.scale.x), (int)(height * gameObject.transform.scale.y), null);
+            alpha = 1.0f;
+            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+            g2.setComposite(ac);
+        }
     }
 
     @Override

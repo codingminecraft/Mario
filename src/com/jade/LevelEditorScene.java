@@ -3,6 +3,7 @@ package com.jade;
 import com.component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.prefabs.Prefabs;
@@ -12,11 +13,8 @@ import com.util.Constants;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,7 +36,7 @@ public class LevelEditorScene extends Scene {
         initAssetPool();
         grid.start();
         cameraControls.start();
-        mouseCursor.addComponent(new SnapToGrid(32, 32));
+        mouseCursor.addComponent(new LevelEditorControls(32, 32));
 
         initLevelEditorComponents();
     }
@@ -112,10 +110,10 @@ public class LevelEditorScene extends Scene {
         }
 
         if (Window.keyListener().isKeyPressed(KeyEvent.VK_ESCAPE)) {
-            SnapToGrid snapToGrid = mouseCursor.getComponent(SnapToGrid.class);
+            LevelEditorControls levelEditorControls = mouseCursor.getComponent(LevelEditorControls.class);
             mouseCursor = new GameObject("Mouse Cursor", mouseCursor.transform.copy(), mouseCursor.zIndex);
-            mouseCursor.addComponent(snapToGrid);
-            snapToGrid.gameObjectRemoved();
+            mouseCursor.addComponent(levelEditorControls);
+            levelEditorControls.gameObjectRemoved();
         }
 
         // Update level editor components
@@ -126,6 +124,13 @@ public class LevelEditorScene extends Scene {
         if (Window.keyListener().isKeyPressed(KeyEvent.VK_CONTROL) && Window.keyListener().isKeyPressed(KeyEvent.VK_S)) {
             export(Constants.CURRENT_LEVEL);
         }
+
+        for (GameObject go : objsToDelete) {
+            gameObjects.remove(go);
+            renderer.gameObjects.get(go.zIndex).remove(go);
+            worldPartition.remove(new Tuple<>((int)go.transform.position.x, (int)go.transform.position.y, go.zIndex));
+        }
+        objsToDelete.clear();
     }
 
     @Override
@@ -135,7 +140,7 @@ public class LevelEditorScene extends Scene {
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         grid.draw(g2);
         renderer.render(g2);
-        mouseCursor.getComponent(SnapToGrid.class).draw(g2);
+        mouseCursor.getComponent(LevelEditorControls.class).draw(g2);
         player.draw(g2);
 
         g2.setRenderingHints(Constants.ANTIALIASING_HINT);

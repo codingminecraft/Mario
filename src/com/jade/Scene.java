@@ -4,6 +4,7 @@ import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.ui.JWindow;
+import com.util.Constants;
 
 import java.awt.Graphics2D;
 import java.io.FileOutputStream;
@@ -20,6 +21,7 @@ public abstract class Scene {
     public Camera camera;
     List<GameObject> gameObjects;
     Map<Tuple<Integer>, GameObject> worldPartition;
+    List<GameObject> objsToDelete;
     List<JWindow> jWindows;
     Renderer renderer;
 
@@ -30,6 +32,7 @@ public abstract class Scene {
         this.renderer = new Renderer(this.camera);
         this.worldPartition = new HashMap<>();
         this.jWindows = new ArrayList<>();
+        this.objsToDelete = new ArrayList<>();
     }
 
     public void init() {
@@ -48,6 +51,19 @@ public abstract class Scene {
         }
     }
 
+    public void moveGameObject(GameObject g, Vector2 direction) {
+        Tuple<Integer> oldCoords = g.getGridCoords();
+        Tuple<Integer> newCoords = new Tuple<>(oldCoords.x + (int)(direction.x * Constants.TILE_WIDTH),
+                oldCoords.y + (int)(direction.y * Constants.TILE_HEIGHT), oldCoords.z);
+
+        if (!worldPartition.containsKey(newCoords)) {
+            worldPartition.remove(oldCoords);
+            g.transform.position.x = newCoords.x;
+            g.transform.position.y = newCoords.y;
+            worldPartition.put(newCoords, g);
+        }
+    }
+
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.submit(g);
@@ -62,6 +78,10 @@ public abstract class Scene {
     public void addUIGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.submitUI(g);
+    }
+
+    public void deleteGameObject(GameObject g) {
+        objsToDelete.add(g);
     }
 
     public Map<Tuple<Integer>, GameObject> getWorldPartition() {

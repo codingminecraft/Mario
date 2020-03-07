@@ -21,6 +21,14 @@ public class Transform extends Serialize {
         return transform;
     }
 
+    public static void copyValues(Transform from, Transform to) {
+        to.position.x = from.position.x;
+        to.position.y = from.position.y;
+        to.scale.x = from.scale.x;
+        to.scale.y = from.scale.y;
+        to.rotation = from.rotation;
+    }
+
     @Override
     public String toString() {
         return "Position (" + position.x + ", " + position.y + ")";
