@@ -47,9 +47,9 @@ public class SnapToGrid extends Component {
 
         if (drawGameObject) {
             float x = (float)Math.floor((Window.getWindow().mouseListener.x + Window.getScene().camera.position.x + Window.getWindow().mouseListener.dx) / gridWidth);
-            float y = (float)Math.floor((Window.getWindow().mouseListener.y + Window.getScene().camera.position.y + Window.getWindow().mouseListener.dy) / gridWidth);
+            float y = (float)Math.floor((Window.getWindow().mouseListener.y + Window.getScene().camera.position.y + Window.getWindow().mouseListener.dy) / gridHeight);
             this.gameObject.transform.position.x = x * gridWidth - Window.getScene().camera.position.x;
-            this.gameObject.transform.position.y = y * gridWidth - Window.getScene().camera.position.y;
+            this.gameObject.transform.position.y = y * gridHeight - Window.getScene().camera.position.y;
 
             if (Window.getWindow().mouseListener.mousePressed &&
                 Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1 &&

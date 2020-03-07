@@ -33,8 +33,7 @@ public class Button extends JComponent {
 
     @Override
     public void update(double dt) {
-        this.hot = Window.mouseListener().x > this.position.x && Window.mouseListener().x < this.position.x + this.size.x &&
-                Window.mouseListener().y > this.position.y && Window.mouseListener().y < this.position.y + this.size.y;
+        this.hot = mouseInButton();
 
         if (!active && hot && visible) {
             if (Window.mouseListener().mousePressed && Window.mouseListener().mouseButton == MouseEvent.BUTTON1) {

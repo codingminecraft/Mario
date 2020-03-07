@@ -10,10 +10,15 @@ import java.util.List;
 public class AnimationMachine extends Component {
     List<Animation> animations;
     Animation current;
+    String startAnimation;
 
     public AnimationMachine() {
         this.animations = new ArrayList<>();
         this.current = null;
+    }
+
+    public void setStartAnimation(String animation) {
+        this.startAnimation = animation;
     }
 
     public void addAnimation(Animation animation) {
@@ -33,7 +38,12 @@ public class AnimationMachine extends Component {
 
     @Override
     public void start() {
-        this.current = this.animations.get(0);
+        Animation startAnim = this.getAnimation(startAnimation);
+        if (startAnim == null) {
+            System.out.println("Error: Start Animation was never set for: " + this.gameObject.getName() + ". Did you forget to setStartAnimation?");
+            System.exit(-1);
+        }
+        this.current = startAnim;
     }
 
     @Override
@@ -55,6 +65,7 @@ public class AnimationMachine extends Component {
         for (Animation anim : animations) {
             machine.addAnimation((Animation)anim.copy());
         }
+        machine.setStartAnimation(this.startAnimation);
         machine.start();
 
         return machine;
@@ -70,6 +81,7 @@ public class AnimationMachine extends Component {
         StringBuilder builder = new StringBuilder();
 
         builder.append(beginObjectProperty("AnimationMachine", tabSize));
+        builder.append(addStringProperty("StartAnimation", startAnimation, tabSize + 1, true, true));
         builder.append(addIntProperty("NumberOfAnimations", animations.size(), tabSize + 1, true, true));
         for (int i=0; i < animations.size(); i++) {
             Animation anim = animations.get(i);
@@ -85,6 +97,9 @@ public class AnimationMachine extends Component {
     public static AnimationMachine deserialize() {
         AnimationMachine machine = new AnimationMachine();
 
+        String startAnimation = Parser.consumeStringProperty("StartAnimation");
+        machine.setStartAnimation(startAnimation);
+        Parser.consume(',');
         int numOfAnimations = Parser.consumeIntProperty("NumberOfAnimations");
         Parser.consume(',');
         for (int i=0; i < numOfAnimations; i++) {

@@ -35,9 +35,13 @@ public class Constants {
     public static final Color BG_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.5f);
     public static final Color TITLE_BG_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
     public static final Color BUTTON_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+    public static final Color ACTIVE_TAB = new Color(0.26f, 0.59f, 0.98f, 1.00f);
+    public static final Color HOT_TAB = new Color(0.26f, 0.59f, 0.98f, 0.80f);
 
     // =========================================================================
     // GUI constraints
     // =========================================================================
     public static final Vector2 PADDING = new Vector2(6, 6);
+    public static final Vector2 TAB_TITLE_PADDING = new Vector2(10, 0);
+    public static final Vector2 MARGIN = new Vector2(4, 0);
 }

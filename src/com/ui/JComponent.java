@@ -12,7 +12,7 @@ public abstract class JComponent extends Serialize {
     public boolean isCentered = false;
     public int id;
     public boolean visible = false;
-    protected JWindow parent;
+    protected Tab parent;
     public Vector2 position, size;
 
     public JComponent() {

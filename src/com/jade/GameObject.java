@@ -27,6 +27,10 @@ public class GameObject extends Serialize {
         this.zIndex = zIndex;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public <T extends Component> T getComponent(Class<T> componentClass) {
         for (Component c : components) {
             if (componentClass.isAssignableFrom(c.getClass())) {

@@ -15,10 +15,11 @@ public class Prefabs {
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
-        Animation idle = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 4));
-        Animation run = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 1));
+        Animation idle = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4));
+        Animation run = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1));
         Animation jump = new Animation("Jump", 0.2f, characterSprites.sprites.subList(4, 6));
         Animation swim = new Animation("Swim", 0.2f, characterSprites.sprites.subList(9, 14));
+        playerMachine.setStartAnimation("Idle");
 
         // IDLE
         idle.addStateTransfer("StartRunning", "Run");
@@ -61,6 +62,7 @@ public class Prefabs {
         AnimationMachine goombaMachine = new AnimationMachine();
         Animation walk = null;
         Animation squash = null;
+        goombaMachine.setStartAnimation("Walk");
 
         switch (type) {
             case 1:

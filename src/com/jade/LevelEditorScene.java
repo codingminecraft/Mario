@@ -66,6 +66,12 @@ public class LevelEditorScene extends Scene {
             current++;
         }
 
+        blockSelector.beginTab("Prefabs");
+        blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2(0, 0), new Vector2(32, 32), Prefabs.MARIO_PREFAB()));
+        for (int i=0; i < 4; i++) {
+            blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2(0, 0), new Vector2(32, 32), Prefabs.GOOMBA_PREFAB(i)));
+        }
+        blockSelector.endTab();
         this.addJWindow(blockSelector);
 
         JWindow fileSaver = new JWindow("Level File", new Vector2(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2(400, 100));
@@ -77,7 +83,7 @@ public class LevelEditorScene extends Scene {
         fileSaver.addUIElement(new SaveLevelButton());
         this.addJWindow(fileSaver);
 
-        JWindow layerIndicator = new JWindow("Layer Indicator", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
+        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
         Label layerLabel = new Label("" + Constants.Z_INDEX);
         layerLabel.isCentered = true;
         layerIndicator.addUIElement(new ZIndexButton(1, layerLabel.id, defaultAssets.sprites.get(0)));
@@ -86,13 +92,6 @@ public class LevelEditorScene extends Scene {
         layerIndicator.addUIElement(new LineBreak());
         layerIndicator.addUIElement(new ZIndexButton(-1, layerLabel.id, defaultAssets.sprites.get(1)));
         this.addJWindow(layerIndicator);
-
-        JWindow prefabs = new JWindow("Prefabs", new Vector2(0, 300), new Vector2(200, 300));
-        prefabs.addUIElement(new Button(icons.sprites.get(0), new Vector2(0, 0), new Vector2(32, 32), Prefabs.MARIO_PREFAB()));
-        for (int i=0; i < 4; i++) {
-            prefabs.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2(0, 0), new Vector2(32, 32), Prefabs.GOOMBA_PREFAB(i)));
-        }
-        this.addJWindow(prefabs);
     }
 
     public void initAssetPool() {
@@ -107,17 +106,6 @@ public class LevelEditorScene extends Scene {
         cameraControls.update(dt);
         grid.update(dt);
         mouseCursor.update(dt);
-
-        player.update(dt);
-        if (Window.keyListener().isKeyPressed(KeyEvent.VK_SPACE)) {
-            player.getComponent(AnimationMachine.class).trigger("StartJumping");
-        } else if (Window.keyListener().isKeyPressed(KeyEvent.VK_RIGHT)) {
-            player.getComponent(AnimationMachine.class).trigger("StartRunning");
-        } else if (Window.keyListener().isKeyPressed(KeyEvent.VK_LEFT)) {
-            player.getComponent(AnimationMachine.class).trigger("StartIdle");
-        } else if (Window.keyListener().isKeyPressed(KeyEvent.VK_UP)) {
-            player.getComponent(AnimationMachine.class).trigger("StartSwim");
-        }
 
         for (GameObject go : gameObjects) {
             go.update(dt);

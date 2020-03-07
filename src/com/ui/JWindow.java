@@ -12,10 +12,11 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JWindow extends Serialize {
-    private List<JComponent> elements;
     private Vector2 position, size;
     private String title;
 
@@ -23,6 +24,10 @@ public class JWindow extends Serialize {
     private Vector2 titleBarSize = new Vector2(0, 20);
     private Vector2 draggableClickSize = new Vector2(20, 20);
     private float titleBarHeight = 20;
+
+    // TABS
+    private List<Tab> tabs;
+    private Tab currentTab;
 
     // SCROLL BAR
     private Vector2 scrollbarPos = new Vector2(0, 0);
@@ -39,29 +44,34 @@ public class JWindow extends Serialize {
         this.title = title;
         this.position = pos;
         this.size = size;
-        this.elements = new ArrayList<>();
         titleBarSize.x = this.size.x;
+
+        this.tabs = new ArrayList<>();
+        beginTab(title);
+    }
+
+    public void beginTab(String tabTitle) {
+        Tab tab = new Tab(tabTitle);
+        this.tabs.add(tab);
+        this.currentTab = tab;
+    }
+
+    public void endTab() {
+        this.currentTab = tabs.get(0);
     }
 
     public void addUIElement(JComponent uiElement) {
-        uiElement.parent = this;
-        this.elements.add(uiElement);
-    }
-
-    public JComponent getJComponent(int id) {
-        for (JComponent comp : elements) {
-            if (comp.id == id) {
-                return comp;
-            }
-        }
-
-        return null;
+        this.currentTab.addUIElement(uiElement);
     }
 
     public void start() {
-        for (JComponent comp : elements) {
-            comp.start();
+        for (Tab tab : tabs) {
+            for (JComponent comp : tab.getUIElements()) {
+                comp.start();
+            }
         }
+
+        tabs.get(0).setActive();
     }
 
     public void update(double dt) {
@@ -102,8 +112,22 @@ public class JWindow extends Serialize {
             beingResized = false;
         }
 
+        for (Tab tab : tabs) {
+            if (Window.mouseListener().mousePressed && Window.mouseListener().mouseButton == MouseEvent.BUTTON1 && tab.mouseInButton()) {
+                for (Tab oTab : tabs) {
+                    oTab.setInactive();
+                }
+                tab.setActive();
+                this.currentTab = tab;
+            } else if (!tab.isActive() && tab.mouseInButton()) {
+                tab.setHot();
+            } else {
+                tab.setNotHot();
+            }
+        }
+
         if (!beingResized && !beingDragged) {
-            for (JComponent comp : elements) {
+            for (JComponent comp : this.currentTab.getUIElements()) {
                 comp.update(dt);
             }
         }
@@ -114,14 +138,23 @@ public class JWindow extends Serialize {
         g2.fillRect((int)position.x, (int)position.y, (int)size.x, (int)size.y);
         g2.setColor(Constants.TITLE_BG_COLOR);
         g2.fillRect((int)position.x, (int)position.y, (int)size.x, (int)titleBarHeight);
-        g2.setColor(Color.WHITE);
-        g2.drawString(title, position.x + 5, position.y + 15);
 
-        int currentX = (int)Constants.PADDING.x;
+        // First draw all tabs
+        int currentX = (int)Constants.MARGIN.x;
+        for (int i=0; i < tabs.size(); i++) {
+            tabs.get(i).position.x = currentX + this.position.x;
+            tabs.get(i).position.y = this.position.y;
+            tabs.get(i).size.y = this.titleBarSize.y;
+            currentX += tabs.get(i).size.x + Constants.MARGIN.x;
+
+            tabs.get(i).draw(g2);
+        }
+
+        currentX = (int)Constants.PADDING.x;
         int currentY = (int)(titleBarSize.y + Constants.PADDING.y);
         int rowHeight = 0;
         // First pass, position everything roughly and calculate total height
-        for (JComponent comp : elements) {
+        for (JComponent comp : this.currentTab.getUIElements()) {
             comp.position.x = this.position.x + currentX;
             if (comp.size.y > rowHeight) rowHeight = (int)Math.ceil(comp.size.y);
             if (comp.position.x + comp.size.x > this.position.x + size.x || comp.isLineBreak) {
@@ -149,7 +182,7 @@ public class JWindow extends Serialize {
         }
 
         // Second pass adjust according to position of scrollbar
-        for (JComponent comp : elements) {
+        for (JComponent comp : this.currentTab.getUIElements()) {
             float percentOfHeight = 1 / ((size.y - titleBarSize.y) / totalHeight);
             comp.position.y -= (scrollbarPos.y * percentOfHeight) + 1;
 
@@ -198,35 +231,23 @@ public class JWindow extends Serialize {
         builder.append(beginObjectProperty("Size", tabSize + 1));
         builder.append(size.serialize(tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
+        builder.append(addEnding(true, true));
 
-        // JComponents
-        if (elements.size() > 0) {
-            builder.append(addEnding(true, true));
-            builder.append(beginObjectProperty("JComponents", tabSize + 1));
-        } else {
-            builder.append(addEnding(true, false));
-        }
+        // Tabs
+        builder.append(beginObjectProperty("Tabs", tabSize + 1));
+        for (int i=0; i < tabs.size(); i++) {
+            builder.append(tabs.get(i).serialize(tabSize + 2));
 
-        int i = 0;
-        for (JComponent c : elements) {
-            String str = c.serialize(tabSize + 2);
-            if (str.compareTo("") != 0) {
-                builder.append(str);
-                if (i != elements.size() - 1) {
-                    builder.append(addEnding(true, true));
-                } else {
-                    builder.append(addEnding(true, false));
-                }
+            if (i < tabs.size() - 1) {
+                builder.append(addEnding(true, true));
+            } else {
+                builder.append(addEnding(true, false));
             }
-            i++;
         }
-
-        // End JComponents if applicable
-        if (elements.size() > 0) {
-            builder.append(closeObjectProperty(tabSize + 1));
-        }
+        builder.append(addEnding(true, false));
 
         // End JWindow object
+        builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, false));
         builder.append(closeObjectProperty(tabSize));
 
@@ -236,9 +257,11 @@ public class JWindow extends Serialize {
     public static JWindow deserialize() {
         Parser.consumeBeginObjectProperty("JWindow");
 
+        // TITLE
         String title = Parser.consumeStringProperty("Title");
         Parser.consume(',');
 
+        // POSITION AND SIZE
         Parser.consumeBeginObjectProperty("Position");
         Vector2 position = Vector2.deserialize();
         Parser.consumeEndObjectProperty();
@@ -250,17 +273,22 @@ public class JWindow extends Serialize {
 
         JWindow window = new JWindow(title, position, size);
 
-        if (Parser.peek() == ',') {
-            Parser.consume(',');
-            Parser.consumeBeginObjectProperty("JComponents");
-            window.addUIElement(Parser.parseJComponent());
+        // TABS
+        Parser.consume(',');
+        Parser.consumeBeginObjectProperty("Tabs");
+        // Remove the default tab created by the window, and then add the appropriate deserialized tab
+        Tab firstTab = Tab.deserialize();
+        window.tabs.remove(0);
+        window.tabs.add(firstTab);
+        window.currentTab = firstTab;
 
-            while (Parser.peek() == ',') {
-                Parser.consume(',');
-                window.addUIElement(Parser.parseJComponent());
-            }
-            Parser.consumeEndObjectProperty();
+        while (Parser.peek() == ',') {
+            Parser.consume(',');
+            Tab tab = Tab.deserialize();
+            window.tabs.add(tab);
         }
+
+        Parser.consumeEndObjectProperty();
         Parser.consumeEndObjectProperty();
 
         return window;
