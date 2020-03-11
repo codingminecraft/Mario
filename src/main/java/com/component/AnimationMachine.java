@@ -62,7 +62,7 @@ public class AnimationMachine extends Component {
     public void update(double dt) {
         if (inLevelEditor) {
             Transform.copyValues(gameObject.transform, levelEditorGo.transform);
-            levelEditorGo.transform.position = Vector2.minus(levelEditorGo.transform.position, Window.getScene().camera.position);
+            levelEditorGo.transform.position = Vector2.minus(levelEditorGo.transform.position, Window.getScene().camera.position());
             levelEditorGo.zIndex = gameObject.zIndex;
         }
 

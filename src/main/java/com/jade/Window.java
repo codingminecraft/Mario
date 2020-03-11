@@ -24,7 +24,10 @@ public class Window {
     public static void framebufferSizeCallback(long window, int width, int height) {
         Window.getWindow().setWidth(width);
         Window.getWindow().setHeight(height);
-        //glViewport(0, 0, width, height);
+        if (Window.getScene() != null) {
+            glViewport(0, 0, width, height);
+            Window.getScene().camera.adjustPerspective();
+        }
     }
 
     public Window() {
@@ -95,6 +98,9 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         changeScene(0);
     }
 
@@ -108,12 +114,12 @@ public class Window {
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
             float time = Time.getTime();
-            lastFrameTime = time;
             float deltaTime = time - lastFrameTime;
+            lastFrameTime = time;
 
             glfwPollEvents();
 
-            // this.update(deltaTime);
+            this.update(deltaTime);
 
             // Set the clear color
             glClearColor(1.0f, 1.0f, 1.0f, 0.0f);

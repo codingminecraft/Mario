@@ -47,10 +47,10 @@ public class LevelEditorControls extends Component {
     }
 
     private void calculateGameObjectPosition() {
-        screenX = (float)Math.floor((MouseListener.getX() + Window.getScene().camera.position.x + MouseListener.getDx()) / gridWidth);
-        screenY= (float)Math.floor((MouseListener.getY() + Window.getScene().camera.position.y + MouseListener.getDy()) / gridHeight);
-        this.gameObject.transform.position.x = screenX * gridWidth - Window.getScene().camera.position.x;
-        this.gameObject.transform.position.y = screenY * gridHeight - Window.getScene().camera.position.y;
+        screenX = (float)Math.floor((MouseListener.getX() + Window.getScene().camera.position().x + MouseListener.getDx()) / gridWidth);
+        screenY= (float)Math.floor((MouseListener.getY() + Window.getScene().camera.position().y + MouseListener.getDy()) / gridHeight);
+        this.gameObject.transform.position.x = screenX * gridWidth - Window.getScene().camera.position().x;
+        this.gameObject.transform.position.y = screenY * gridHeight - Window.getScene().camera.position().y;
     }
 
     private void placeGameObject() {

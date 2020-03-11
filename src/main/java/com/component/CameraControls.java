@@ -1,32 +1,26 @@
 package com.component;
 
+import com.dataStructure.Vector2;
 import com.jade.Component;
 import com.jade.MouseListener;
 import com.jade.Window;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_2;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_3;
 
 public class CameraControls extends Component {
 
-    private float prevMx, prevMy;
+    private float mouseSensitivity = 15.0f;
 
     public CameraControls() {
-        prevMx = 0.0f;
-        prevMy = 0.0f;
+
     }
 
     @Override
     public void update(double dt) {
-        if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_2)) {
-            float dx = (MouseListener.getX() + MouseListener.getDx() - prevMx);
-            float dy = (MouseListener.getY() + MouseListener.getDy() - prevMy);
-
-            Window.getScene().camera.position.x -= dx;
-            Window.getScene().camera.position.y -= dy;
+        if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_3)) {
+            Window.getScene().camera.position().x += MouseListener.getDx() * dt * mouseSensitivity;
+            Window.getScene().camera.position().y -= MouseListener.getDy() * dt * mouseSensitivity;
         }
-
-        prevMx = MouseListener.getX() + MouseListener.getDx();
-        prevMy = MouseListener.getY() + MouseListener.getDy();
     }
 
     @Override

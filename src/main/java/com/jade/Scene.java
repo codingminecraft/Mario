@@ -3,6 +3,8 @@ package com.jade;
 import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.file.Parser;
+import com.renderer.RenderComponent;
+import com.renderer.Renderer;
 import com.ui.JWindow;
 import com.util.Constants;
 
@@ -66,9 +68,13 @@ public abstract class Scene {
 
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
-        renderer.submit(g);
+        //renderer.submit(g);
         Tuple<Integer> gridPos = g.getGridCoords();
         worldPartition.put(gridPos, g);
+    }
+
+    public void addRenderable(RenderComponent comp) {
+        renderer.add(comp);
     }
 
     public void addJWindow(JWindow win) {
@@ -77,7 +83,7 @@ public abstract class Scene {
 
     public void addUIGameObject(GameObject g) {
         gameObjects.add(g);
-        renderer.submitUI(g);
+        //renderer.submitUI(g);
     }
 
     public void deleteGameObject(GameObject g) {
@@ -104,7 +110,7 @@ public abstract class Scene {
     public void importLevel(String filename) {
         if (gameObjects.size() > 0) {
             gameObjects.clear();
-            renderer.reset();
+            //renderer.reset();
             worldPartition.clear();
         }
 

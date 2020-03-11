@@ -45,8 +45,14 @@ public class LevelEditorScene extends Scene {
 
         initLevelEditorComponents();
 
+        GameObject test = new GameObject("Test", new Transform(new Vector2(0.0f, 0.0f)), 0);
+        test.transform.scale.x *= 64.0f;
+        test.transform.scale.y *= 64.0f;
         quad = new Quad(new Vec4f(0.98f, 0.59f, 0.26f, 1.00f));
-        quad.init();
+        quad.gameObject = test;
+        renderer.add(quad);
+
+        renderer.start();
     }
 
     private void initLevelEditorComponents() {
@@ -114,7 +120,7 @@ public class LevelEditorScene extends Scene {
         mouseCursor.update(dt);
 
         for (GameObject go : gameObjects) {
-            go.update(dt);
+           go.update(dt);
         }
 
         if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
@@ -135,7 +141,7 @@ public class LevelEditorScene extends Scene {
 
         for (GameObject go : objsToDelete) {
             gameObjects.remove(go);
-            renderer.gameObjects.get(go.zIndex).remove(go);
+            //renderer.gameObjects.get(go.zIndex).remove(go);
             worldPartition.remove(new Tuple<>((int)go.transform.position.x, (int)go.transform.position.y, go.zIndex));
         }
         objsToDelete.clear();
@@ -147,7 +153,7 @@ public class LevelEditorScene extends Scene {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
         grid.draw(g2);
-        renderer.render(g2);
+        //renderer.render(g2);
         mouseCursor.getComponent(LevelEditorControls.class).draw(g2);
         player.draw(g2);
 
@@ -160,7 +166,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void render() {
-        quad.render();
+        renderer.render();
     }
 
     public void exportLevelEditorData() {

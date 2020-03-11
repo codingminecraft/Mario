@@ -3,13 +3,17 @@ package com.renderer;
 
 import com.dataStructure.Matrix3;
 import com.dataStructure.Matrix4;
+import com.dataStructure.Vector3;
 import com.sun.javafx.geom.Vec2f;
 import com.sun.javafx.geom.Vec3f;
 import com.sun.javafx.geom.Vec4f;
+import org.joml.*;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -119,19 +123,25 @@ public class Shader {
         glDeleteProgram(shaderProgram);
     }
 
-    public void uploadVec4f(String varName, Vec4f vec4) {
+    public void uploadVec4f(String varName, Vector4f vec4) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
         glUniform4f(varLocation, vec4.x, vec4.y, vec4.z, vec4.w);
     }
 
-    public void uploadVec3f(String varName, Vec3f vec3) {
+    public void uploadVec3f(String varName, Vector3f vec3) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
         glUniform3f(varLocation, vec3.x, vec3.y, vec3.z);
     }
 
-    public void uploadVec2f(String varName, Vec2f vec2) {
+    public void uploadVec3f(String varName, Vector3 vec3) {
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        if (!beingUsed) this.use();
+        glUniform3f(varLocation, vec3.x, vec3.y, vec3.z);
+    }
+
+    public void uploadVec2f(String varName, Vector2f vec2) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
         glUniform2f(varLocation, vec2.x, vec2.y);
@@ -149,15 +159,19 @@ public class Shader {
         glUniform1i(varLocation, value);
     }
 
-    public void uploadMat4f(String varName, Matrix4 mat4) {
+    public void uploadMat4f(String varName, Matrix4f mat4) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
-        glUniformMatrix4fv(varLocation, false, mat4.data);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
+        mat4.get(matBuffer);
+        glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 
-    public void uploadMat3f(String varName, Matrix3 mat3) {
+    public void uploadMat3f(String varName, Matrix3f mat3) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
-        glUniformMatrix3fv(varLocation, false, mat3.data);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(0);
+        mat3.get(matBuffer);
+        glUniformMatrix3fv(varLocation, false, matBuffer);
     }
 }

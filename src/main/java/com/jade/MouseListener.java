@@ -23,6 +23,8 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xpos, double ypos) {
+        get().lastX = get().xPos;
+        get().lastY = get().yPos;
         get().xPos = xpos;
         get().yPos = ypos;
         get().position.x = (float)xpos;
@@ -55,8 +57,8 @@ public class MouseListener {
     public static void endFrame() {
         get().scrollX = 0;
         get().scrollY = 0;
-        get().lastX = 0;
-        get().lastY = 0;
+        get().lastX = get().xPos;
+        get().lastY = get().yPos;
     }
 
     public static float getX() {

@@ -37,6 +37,6 @@ public class LevelScene extends Scene {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
-        renderer.render(g2);
+        //renderer.render(g2);
     }
 }
