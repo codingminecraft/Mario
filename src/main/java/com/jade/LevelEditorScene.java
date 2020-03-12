@@ -7,10 +7,13 @@ import com.dataStructure.Tuple;
 import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.prefabs.Prefabs;
-import com.renderer.Quad;
+import com.renderer.quads.Quad;
+import com.renderer.quads.Rectangle;
 import com.sun.javafx.geom.Vec4f;
 import com.ui.*;
 import com.util.Constants;
+import org.joml.Vector4f;
+import org.w3c.dom.css.Rect;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -27,13 +30,13 @@ public class LevelEditorScene extends Scene {
     public GameObject mouseCursor;
     GameObject player = new GameObject("Player", new Transform(new Vector2(800, 500)), 0);
 
-    Quad quad;
-
     public LevelEditorScene(String name) {
         super.Scene(name);
         grid = new Grid();
         cameraControls = new CameraControls();
         mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2(0.0f, 0.0f)), -10);
+        camera.position().x = -32 * 10;
+        camera.position().y = -32 * 10;
     }
 
     @Override
@@ -46,11 +49,11 @@ public class LevelEditorScene extends Scene {
         initLevelEditorComponents();
 
         GameObject test = new GameObject("Test", new Transform(new Vector2(0.0f, 0.0f)), 0);
-        test.transform.scale.x *= 64.0f;
-        test.transform.scale.y *= 64.0f;
-        quad = new Quad(new Vec4f(0.98f, 0.59f, 0.26f, 1.00f));
-        quad.gameObject = test;
-        renderer.add(quad);
+        test.transform.scale.x *= 128.0f;
+        test.transform.scale.y *= 128.0f;
+        Rectangle rect = new Rectangle(new Vector4f(0.8f, 0.1f, 0.8f, 1.0f), new Vector4f(64.0f, 64.0f, 64.0f, 64.0f), new Vector4f(0.0f, 0.7f, 0.0f, 1.0f), 5.0f);
+        rect.gameObject = test;
+        renderer.add(rect);
 
         renderer.start();
     }

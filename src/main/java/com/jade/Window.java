@@ -20,10 +20,12 @@ public class Window {
     private long glfwWindow = 0L;
     private int width, height;
     private String title;
+    private float aspect;
 
     public static void framebufferSizeCallback(long window, int width, int height) {
         Window.getWindow().setWidth(width);
         Window.getWindow().setHeight(height);
+        Window.getWindow().setAspect(width / height);
         if (Window.getScene() != null) {
             glViewport(0, 0, width, height);
             Window.getScene().camera.adjustPerspective();
@@ -34,6 +36,7 @@ public class Window {
         this.width = Constants.SCREEN_WIDTH;
         this.height = Constants.SCREEN_HEIGHT;
         this.title = Constants.SCREEN_TITLE;
+        this.aspect = width / height;
     }
 
     public void run() {
@@ -185,5 +188,11 @@ public class Window {
     }
     public int getHeight() {
         return this.height;
+    }
+    public void setAspect(float val) {
+        this.aspect = val;
+    }
+    public float getAsepct() {
+        return this.aspect;
     }
 }

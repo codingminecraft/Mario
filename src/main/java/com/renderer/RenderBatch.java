@@ -1,11 +1,14 @@
 package com.renderer;
 
 import com.dataStructure.AssetPool;
+import com.jade.Window;
 import com.sun.javafx.geom.Vec2f;
 import com.sun.javafx.geom.Vec4f;
 import com.util.JMath;
 import com.util.enums.DataType;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -25,20 +28,26 @@ public class RenderBatch {
     /*
     /*      Vertex
     /*     ======
-    /*     Pos                      Scale                Color                       TexCoord
-    /*     123.0f, 232.0f, 10.f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 0.0f, 1.0f,     0.0f, 0.0f,
+    /*     Pos                      Color                       TexCoord         BorderRadius              BorderColor                BorderWidth     Dimensions
+    /*     123.0f, 232.0f, 10.f,    0.0f, 1.0f, 0.0f, 1.0f,     0.0f, 0.0f,      0.1f, 0.1f, 0.3f, 0.3f    0.0f, 0.0f, 0.0f, 0.0f     1.0f            64.0f, 64.0f
      */
 
     private final int POS_SIZE = 3;
-    private final int SCALE_SIZE = 3;
     private final int COLOR_SIZE = 4;
     private final int TEX_COORD_SIZE = 2;
+    private final int BORDER_RADIUS_SIZE = 4;
+    private final int BORDER_COLOR_SIZE = 4;
+    private final int BORDER_WIDTH_SIZE = 1;
+    private final int DIMENSIONS_SIZE = 2;
 
     private final int POS_OFFSET = 0 * JMath.sizeof(DataType.FLOAT);
-    private final int SCALE_OFFSET = 3 * JMath.sizeof(DataType.FLOAT);
-    private final int COLOR_OFFSET = 6 * JMath.sizeof(DataType.FLOAT);
-    private final int TEX_COORD_OFFSET = 10 * JMath.sizeof(DataType.FLOAT);
-    private final int VERTEX_SIZE = 12;
+    private final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int TEX_COORD_OFFSET = COLOR_OFFSET + COLOR_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int BORDER_RADIUS_OFFSET = TEX_COORD_OFFSET + TEX_COORD_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int BORDER_COLOR_OFFSET = BORDER_RADIUS_OFFSET + BORDER_RADIUS_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int BORDER_WIDTH_OFFSET = BORDER_COLOR_OFFSET + BORDER_COLOR_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int DIMENSIONS_OFFSET = BORDER_WIDTH_OFFSET + BORDER_WIDTH_SIZE * JMath.sizeof(DataType.FLOAT);
+    private final int VERTEX_SIZE = 20;
     private final int VERTEX_SIZE_BYTES = JMath.sizeof(DataType.FLOAT) * VERTEX_SIZE;
 
     private List<RenderComponent> renderables;
@@ -90,14 +99,23 @@ public class RenderBatch {
         glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, SCALE_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, SCALE_OFFSET);
+        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
+        glVertexAttribPointer(2, TEX_COORD_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, TEX_COORD_OFFSET);
         glEnableVertexAttribArray(2);
 
-        glVertexAttribPointer(3, TEX_COORD_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, TEX_COORD_OFFSET);
+        glVertexAttribPointer(3, BORDER_RADIUS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, BORDER_RADIUS_OFFSET);
         glEnableVertexAttribArray(3);
+
+        glVertexAttribPointer(4, BORDER_COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, BORDER_COLOR_OFFSET);
+        glEnableVertexAttribArray(4);
+
+        glVertexAttribPointer(5, BORDER_WIDTH_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, BORDER_WIDTH_OFFSET);
+        glEnableVertexAttribArray(5);
+
+        glVertexAttribPointer(6, DIMENSIONS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, DIMENSIONS_OFFSET);
+        glEnableVertexAttribArray(6);
     }
 
     public void add(RenderComponent renderable) {
@@ -129,12 +147,16 @@ public class RenderBatch {
         shader.use();
         shader.uploadMat4f("uProjection", renderer.camera().getProjectionMatrix());
         shader.uploadMat4f("uView", renderer.camera().getViewMatrix());
+        shader.uploadFloat("uAspect", Window.getWindow().getAsepct());
         // Bind the vertex array and enable our location
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(4);
+        glEnableVertexAttribArray(5);
+        glEnableVertexAttribArray(6);
 
         // Draw the batch
         glDrawElements(GL_TRIANGLES, renderables.size() * 6, GL_UNSIGNED_INT, 0);
@@ -144,6 +166,9 @@ public class RenderBatch {
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
         glDisableVertexAttribArray(3);
+        glDisableVertexAttribArray(4);
+        glDisableVertexAttribArray(5);
+        glDisableVertexAttribArray(6);
         glBindVertexArray(0);
 
         // Un-bind our program
@@ -155,10 +180,15 @@ public class RenderBatch {
         // Add it's transform and stuff to the vertex array
         int offset = index * VERTEX_SIZE * 4;
 
-        Vec2f[] texCoords = renderable.getTexCoords();
+        Vector4f color = renderable.getColor();
+
+        Vector2f[] texCoords = renderable.getTexCoords();
         assert(texCoords.length == 4);
 
-        Vec4f color = renderable.getColor();
+        Vector4f borderRadius = renderable.getBorderRadius();
+        Vector4f borderColor = renderable.getBorderColor();
+        float borderWidth = renderable.getBorderWidth();
+
 
         // Add 4 vertices with the appropriate properties to vertex array
         float xAdd = 0.5f;
@@ -177,20 +207,34 @@ public class RenderBatch {
             vertices[offset + 1] = renderable.gameObject.transform.position.y + (yAdd * renderable.gameObject.transform.scale.y);
             vertices[offset + 2] = renderable.gameObject.zIndex;
 
-            // Load scale
-            vertices[offset + 3] = renderable.gameObject.transform.scale.x;
-            vertices[offset + 4] = renderable.gameObject.transform.scale.y;
-            vertices[offset + 5] = 1.0f;
-
             // Load color
-            vertices[offset + 6] = color.x;
-            vertices[offset + 7] = color.y;
-            vertices[offset + 8] = color.z;
-            vertices[offset + 9] = color.w;
+            vertices[offset + 3] = color.x;
+            vertices[offset + 4] = color.y;
+            vertices[offset + 5] = color.z;
+            vertices[offset + 6] = color.w;
 
             // Load tex coords
-            vertices[offset + 10] = texCoords[i].x;
-            vertices[offset + 11] = texCoords[i].y;
+            vertices[offset + 7] = texCoords[i].x;
+            vertices[offset + 8] = texCoords[i].y;
+
+            // Load border radius
+            vertices[offset + 9] = borderRadius.x;
+            vertices[offset + 10] = borderRadius.y;
+            vertices[offset + 11] = borderRadius.z;
+            vertices[offset + 12] = borderRadius.w;
+
+            // Load border color
+            vertices[offset + 13] = borderColor.x;
+            vertices[offset + 14] = borderColor.y;
+            vertices[offset + 15] = borderColor.z;
+            vertices[offset + 16] = borderColor.w;
+
+            // Load border width
+            vertices[offset + 17] = borderWidth;
+
+            // Load dimensions
+            vertices[offset + 18] = renderable.gameObject.transform.scale.x;
+            vertices[offset + 19] = renderable.gameObject.transform.scale.y;
 
             offset += VERTEX_SIZE;
         }
