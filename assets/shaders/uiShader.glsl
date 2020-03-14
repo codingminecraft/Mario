@@ -7,7 +7,6 @@ layout (location = 3) in vec4 borderRadius;
 layout (location = 4) in vec4 borderColor;
 layout (location = 5) in float borderWidth;
 layout (location = 6) in vec2 dimensions;
-layout (location = 7) in float isUi;
 
 out vec3 fPos;
 out vec4 fColor;
@@ -30,12 +29,7 @@ void main()
     fBorderWidth = borderWidth;
     fDimensions = dimensions;
 
-    if (isUi < 1) {
-        gl_Position = uProjection * uView * vec4(aPos, 1.0);
-    } else {
-       gl_Position = uProjection * mat4(1, 0, 0, 0,  0, 1, 0, 0,  0, 0, -1, 0,  0, 0, 0, 1) * vec4(aPos, 1.0);
-    }
-
+    gl_Position = uProjection * uView * vec4(aPos, 1.0);
 }
 
 #type fragment

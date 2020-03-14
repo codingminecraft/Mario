@@ -1,20 +1,20 @@
 package com.ui;
 
-import com.dataStructure.Vector2;
 import com.file.Serialize;
 import com.jade.MouseListener;
-import com.jade.Window;
+import com.renderer.UIRenderComponent;
+import org.joml.Vector2f;
 
 import java.awt.Graphics2D;
 
 public abstract class JComponent extends Serialize {
     protected static int MAX_ID = 0;
+    protected Tab parent;
+    protected UIRenderComponent renderComponent;
     public boolean isLineBreak = false;
     public boolean isCentered = false;
     public int id;
     public boolean visible = false;
-    protected Tab parent;
-    public Vector2 position, size;
 
     public JComponent() {
         this.id = MAX_ID;
@@ -37,7 +37,7 @@ public abstract class JComponent extends Serialize {
     }
 
     protected boolean mouseInButton() {
-        return MouseListener.getX() > this.position.x && MouseListener.getX() < this.position.x + this.size.x &&
-                MouseListener.getY() > this.position.y && MouseListener.getY() < this.position.y + this.size.y;
+        return MouseListener.positionScreenCoords().x > renderComponent.getPosX() && MouseListener.positionScreenCoords().x < renderComponent.getPosX() + renderComponent.getWidth() &&
+                MouseListener.positionScreenCoords().y > renderComponent.getPosY() && MouseListener.positionScreenCoords().y < renderComponent.getPosY() + renderComponent.getHeight();
     }
 }

@@ -1,14 +1,15 @@
 package com.util;
 
-import com.dataStructure.Vector2;
+import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.RenderingHints;
 
 public class Constants {
-    public static final int SCREEN_WIDTH = 2560;
-    public static final int SCREEN_HEIGHT = 1440;
+    public static final int SCREEN_WIDTH = 32 * 32;
+    public static final int SCREEN_HEIGHT = 32 * 18;
     public static final String SCREEN_TITLE = "Jade";
     public static final RenderingHints ANTIALIASING_HINT = new RenderingHints(
             RenderingHints.KEY_ANTIALIASING,
@@ -32,16 +33,17 @@ public class Constants {
     // =========================================================================
     // GUI Colors
     // =========================================================================
-    public static final Color BG_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.5f);
-    public static final Color TITLE_BG_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
-    public static final Color BUTTON_COLOR = new Color(0.0f, 0.0f, 0.0f, 1.0f);
-    public static final Color ACTIVE_TAB = new Color(0.26f, 0.59f, 0.98f, 1.00f);
-    public static final Color HOT_TAB = new Color(0.26f, 0.59f, 0.98f, 0.80f);
+    public static final Vector4f BG_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.5f);
+    public static final Vector4f TITLE_BG_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    public static final Vector4f BUTTON_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    public static final Vector4f ACTIVE_TAB = new Vector4f(0.26f, 0.59f, 0.98f, 1.00f);
+    public static final Vector4f HOT_TAB = new Vector4f(0.26f, 0.59f, 0.98f, 0.80f);
+    public static final Vector4f CLEAR_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
 
     // =========================================================================
     // GUI constraints
     // =========================================================================
-    public static final Vector2 PADDING = new Vector2(6, 6);
-    public static final Vector2 TAB_TITLE_PADDING = new Vector2(10, 0);
-    public static final Vector2 MARGIN = new Vector2(4, 0);
+    public static final Vector2f PADDING = new Vector2f(6, 6);
+    public static final Vector2f TAB_TITLE_PADDING = new Vector2f(10, 0);
+    public static final Vector2f MARGIN = new Vector2f(4, 0);
 }

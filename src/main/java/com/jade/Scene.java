@@ -1,12 +1,13 @@
 package com.jade;
 
 import com.dataStructure.Tuple;
-import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.renderer.RenderComponent;
 import com.renderer.Renderer;
+import com.renderer.UIRenderComponent;
 import com.ui.JWindow;
 import com.util.Constants;
+import org.joml.Vector2f;
 
 import java.awt.Graphics2D;
 import java.io.FileOutputStream;
@@ -29,7 +30,7 @@ public abstract class Scene {
 
     public void Scene(String name) {
         this.name = name;
-        this.camera = new Camera(new Vector2());
+        this.camera = new Camera(new Vector2f());
         this.gameObjects = new ArrayList<>();
         this.renderer = new Renderer(this.camera);
         this.worldPartition = new HashMap<>();
@@ -50,10 +51,15 @@ public abstract class Scene {
 
         for (JWindow win : jWindows) {
             win.start();
+            for (UIRenderComponent comp : win.getAllRenderComponents()) {
+                renderer.add(comp);
+            }
         }
+
+        renderer.start();
     }
 
-    public void moveGameObject(GameObject g, Vector2 direction) {
+    public void moveGameObject(GameObject g, Vector2f direction) {
         Tuple<Integer> oldCoords = g.getGridCoords();
         Tuple<Integer> newCoords = new Tuple<>(oldCoords.x + (int)(direction.x * Constants.TILE_WIDTH),
                 oldCoords.y + (int)(direction.y * Constants.TILE_HEIGHT), oldCoords.z);
@@ -68,22 +74,16 @@ public abstract class Scene {
 
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
-        //renderer.submit(g);
+        for (RenderComponent comp : g.getAllRenderComponents()) {
+            renderer.add(comp);
+        }
+
         Tuple<Integer> gridPos = g.getGridCoords();
         worldPartition.put(gridPos, g);
     }
 
-    public void addRenderable(RenderComponent comp) {
-        renderer.add(comp);
-    }
-
     public void addJWindow(JWindow win) {
         this.jWindows.add(win);
-    }
-
-    public void addUIGameObject(GameObject g) {
-        gameObjects.add(g);
-        //renderer.submitUI(g);
     }
 
     public void deleteGameObject(GameObject g) {
@@ -94,7 +94,7 @@ public abstract class Scene {
         return this.worldPartition;
     }
 
-    public boolean inJWindow(Vector2 position) {
+    public boolean inJWindow(Vector2f position) {
         for (JWindow win : jWindows) {
             if (win.pointInWindow(position)) {
                 return true;

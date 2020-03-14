@@ -1,13 +1,12 @@
 package com.ui;
 
-import com.dataStructure.Vector2;
+import com.dataStructure.Transform;
 import com.file.Parser;
+import org.joml.Vector2f;
 
 public class LineBreak extends JComponent {
 
     public LineBreak() {
-        this.position = new Vector2();
-        this.size = new Vector2();
         this.isLineBreak = true;
     }
 

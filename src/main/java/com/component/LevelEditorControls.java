@@ -1,14 +1,12 @@
 package com.component;
 
 import com.dataStructure.Tuple;
-import com.dataStructure.Vector2;
 import com.jade.*;
 import com.util.Constants;
+import org.joml.Vector2f;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +57,7 @@ public class LevelEditorControls extends Component {
         // If not, we will place a block
         if (!Window.getScene().getWorldPartition().containsKey(gridPos) && !Window.getScene().inJWindow(MouseListener.position())) {
             GameObject object = gameObject.copy();
-            object.transform.position = new Vector2(screenX * gridWidth, screenY * gridHeight);
+            object.transform.position = new Vector2f(screenX * gridWidth, screenY * gridHeight);
             object.zIndex = Constants.Z_INDEX;
             object.start();
             Window.getScene().addGameObject(object);
@@ -117,7 +115,7 @@ public class LevelEditorControls extends Component {
     }
 
     private void moveSelectedObjects() {
-        Vector2 direction = new Vector2(0, 0);
+        Vector2f direction = new Vector2f(0, 0);
         if (KeyListener.isKeyPressed(GLFW_KEY_UP)) {
             direction.y = -1;
         } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {

@@ -1,24 +1,18 @@
 package com.ui;
 
-import com.dataStructure.Vector2;
 import com.file.Parser;
-import com.jade.Component;
-import com.jade.Window;
-import com.util.Constants;
+import org.joml.Vector2f;
 
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
 public class Label extends JComponent {
     String text;
     FontMetrics fontMetrics;
-    Vector2 stringPos = new Vector2();
+    Vector2f stringPos = new Vector2f();
 
     public Label(String text) {
         super();
-        this.size = new Vector2();
-        this.position = new Vector2();
 
         this.text = text;
         //this.fontMetrics = Constants.FONT_METRICS;
@@ -30,14 +24,14 @@ public class Label extends JComponent {
 
     public void setText(String text) {
         this.text = text;
-        this.size.x = this.fontMetrics.stringWidth(text) * 1.5f;
-        this.size.y = this.fontMetrics.getHeight();
+//        this.transform.scale.x = this.fontMetrics.stringWidth(text) * 1.5f;
+//        this.transform.scale.y = this.fontMetrics.getHeight();
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.setColor(Color.WHITE);
-        g2.drawString(text, (int)(position.x + stringPos.x), (int)(position.y + stringPos.y));
+//        g2.setColor(Color.WHITE);
+//        g2.drawString(text, (int)(position.x + stringPos.x), (int)(position.y + stringPos.y));
     }
 
     @Override

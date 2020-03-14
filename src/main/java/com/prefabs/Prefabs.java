@@ -5,12 +5,12 @@ import com.component.AnimationMachine;
 import com.component.Spritesheet;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
-import com.dataStructure.Vector2;
 import com.jade.GameObject;
+import org.joml.Vector2f;
 
 public class Prefabs {
     public static GameObject MARIO_PREFAB() {
-        GameObject player = new GameObject("Mario_Prefab", new Transform(new Vector2()), 0);
+        GameObject player = new GameObject("Mario_Prefab", new Transform(new Vector2f()), 0);
 
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 
@@ -55,7 +55,7 @@ public class Prefabs {
     }
 
     public static GameObject GOOMBA_PREFAB(int type) {
-        GameObject goomba = new GameObject("Goomba_Prefab", new Transform(new Vector2()), 0);
+        GameObject goomba = new GameObject("Goomba_Prefab", new Transform(new Vector2f()), 0);
 
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 

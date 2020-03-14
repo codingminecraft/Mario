@@ -1,18 +1,11 @@
 package com.renderer;
 
 
-import com.dataStructure.Matrix3;
-import com.dataStructure.Matrix4;
-import com.dataStructure.Vector3;
-import com.sun.javafx.geom.Vec2f;
-import com.sun.javafx.geom.Vec3f;
-import com.sun.javafx.geom.Vec4f;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -130,12 +123,6 @@ public class Shader {
     }
 
     public void uploadVec3f(String varName, Vector3f vec3) {
-        int varLocation = glGetUniformLocation(shaderProgram, varName);
-        if (!beingUsed) this.use();
-        glUniform3f(varLocation, vec3.x, vec3.y, vec3.z);
-    }
-
-    public void uploadVec3f(String varName, Vector3 vec3) {
         int varLocation = glGetUniformLocation(shaderProgram, varName);
         if (!beingUsed) this.use();
         glUniform3f(varLocation, vec3.x, vec3.y, vec3.z);

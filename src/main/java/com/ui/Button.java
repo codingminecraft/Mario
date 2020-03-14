@@ -2,14 +2,13 @@ package com.ui;
 
 import com.component.LevelEditorControls;
 import com.component.Sprite;
-import com.dataStructure.Vector2;
+import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.*;
+import com.util.JMath;
+import org.joml.Vector2f;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
@@ -22,11 +21,11 @@ public class Button extends JComponent {
     private Sprite sprite;
     private GameObject objToCopy;
 
-    public Button(Sprite sprite, Vector2 position, Vector2 size, GameObject objToCopy) {
+    public Button(Sprite sprite, Vector2f position, Vector2f size, GameObject objToCopy) {
         super();
         this.sprite = sprite;
-        this.position = position;
-        this.size = size;
+        this.renderComponent.setPosition(position);
+        this.renderComponent.setSize(size);
         this.objToCopy = objToCopy;
     }
 
@@ -55,17 +54,17 @@ public class Button extends JComponent {
 
     @Override
     public void draw(Graphics2D g2) {
-        if (active) {
-            float alpha = 0.5f;
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
-            alpha = 1.0f;
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-        } else {
-            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
-        }
+//        if (active) {
+//            float alpha = 0.5f;
+//            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+//            g2.setComposite(ac);
+//            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
+//            alpha = 1.0f;
+//            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+//            g2.setComposite(ac);
+//        } else {
+//            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
+//        }
     }
 
     @Override
@@ -80,13 +79,13 @@ public class Button extends JComponent {
 
         // Position
         builder.append(beginObjectProperty("Position", tabSize + 1));
-        builder.append(position.serialize(tabSize + 2));
+        builder.append(JMath.serialize(renderComponent.getPosition(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
         // Size
         builder.append(beginObjectProperty("Size", tabSize + 1));
-        builder.append(size.serialize(tabSize + 2));
+        builder.append(JMath.serialize(renderComponent.getSize(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
@@ -106,12 +105,12 @@ public class Button extends JComponent {
         Parser.consume(',');
 
         Parser.consumeBeginObjectProperty("Position");
-        Vector2 position = Vector2.deserialize();
+        Vector2f position = JMath.deserializeVector2f();
         Parser.consumeEndObjectProperty();
         Parser.consume(',');
 
         Parser.consumeBeginObjectProperty("Size");
-        Vector2 size = Vector2.deserialize();
+        Vector2f size = JMath.deserializeVector2f();
         Parser.consumeEndObjectProperty();
         Parser.consume(',');
 

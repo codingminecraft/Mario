@@ -4,16 +4,11 @@ import com.component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
-import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.prefabs.Prefabs;
-import com.renderer.quads.Quad;
-import com.renderer.quads.Rectangle;
-import com.sun.javafx.geom.Vec4f;
 import com.ui.*;
 import com.util.Constants;
-import org.joml.Vector4f;
-import org.w3c.dom.css.Rect;
+import org.joml.Vector2f;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -28,13 +23,13 @@ public class LevelEditorScene extends Scene {
     private Grid grid;
     private CameraControls cameraControls;
     public GameObject mouseCursor;
-    GameObject player = new GameObject("Player", new Transform(new Vector2(800, 500)), 0);
+    GameObject player = new GameObject("Player", new Transform(new Vector2f(800, 500)), 0);
 
     public LevelEditorScene(String name) {
         super.Scene(name);
         grid = new Grid();
         cameraControls = new CameraControls();
-        mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2(0.0f, 0.0f)), -10);
+        mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2f(0.0f, 0.0f)), -10);
         camera.position().x = -32 * 10;
         camera.position().y = -32 * 10;
     }
@@ -46,16 +41,14 @@ public class LevelEditorScene extends Scene {
         cameraControls.start();
         mouseCursor.addComponent(new LevelEditorControls(32, 32));
 
+//        GameObject test = new GameObject("Test", new Transform(new Vector2(0.0f, 0.0f)), 0);
+//        test.transform.scale.x *= 128.0f;
+//        test.transform.scale.y *= 128.0f;
+//        Rectangle rect = new Rectangle(new Vector4f(0.2f, 0.1f, 0.8f, 1.0f), new Vector4f(10.0f, 10.0f, 10.0f, 10.0f), new Vector4f(0.1f, 0.1f, 0.1f, 1.0f), 1.0f);
+//        test.addRenderComponent(rect);
+//        addGameObject(test);
+
         initLevelEditorComponents();
-
-        GameObject test = new GameObject("Test", new Transform(new Vector2(0.0f, 0.0f)), 0);
-        test.transform.scale.x *= 128.0f;
-        test.transform.scale.y *= 128.0f;
-        Rectangle rect = new Rectangle(new Vector4f(0.8f, 0.1f, 0.8f, 1.0f), new Vector4f(64.0f, 64.0f, 64.0f, 64.0f), new Vector4f(0.0f, 0.7f, 0.0f, 1.0f), 5.0f);
-        rect.gameObject = test;
-        renderer.add(rect);
-
-        renderer.start();
     }
 
     private void initLevelEditorComponents() {
@@ -65,48 +58,48 @@ public class LevelEditorScene extends Scene {
             return;
         }
 
-        JWindow blockSelector = new JWindow("Blocks", new Vector2(0, 30), new Vector2(33 * 16 + (33 * Constants.PADDING.x), 400));
-        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
-        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
-        Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
-        int totalSprites = 10 * 33;
-        int current = 0;
-        while (current < totalSprites) {
-            GameObject tile = new GameObject("Tile", new Transform(new Vector2(0, 0)), 0);
-            tile.transform.scale.x = 2;
-            tile.transform.scale.y = 2;
-            tile.addComponent(spritesheet.sprites.get(current).copy());
-            Button button = new Button(spritesheet.sprites.get(current), new Vector2(0, 0), new Vector2(16, 16), tile);
-            blockSelector.addUIElement(button);
-            current++;
-        }
-
+        JWindow blockSelector = new JWindow("Blocks", new Vector2f(0, 100), new Vector2f(33 * 16 + (33 * Constants.PADDING.x), 400));
+//        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
+//        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
+//        Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
+//        int totalSprites = 10 * 33;
+//        int current = 0;
+//        while (current < totalSprites) {
+//            GameObject tile = new GameObject("Tile", new Transform(new Vector2(0, 0)), 0);
+//            tile.transform.scale.x = 2;
+//            tile.transform.scale.y = 2;
+//            tile.addComponent(spritesheet.sprites.get(current).copy());
+//            Button button = new Button(spritesheet.sprites.get(current), new Vector2(0, 0), new Vector2(16, 16), tile);
+//            blockSelector.addUIElement(button);
+//            current++;
+//        }
+//
         blockSelector.beginTab("Prefabs");
-        blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2(0, 0), new Vector2(32, 32), Prefabs.MARIO_PREFAB()));
-        for (int i=0; i < 4; i++) {
-            blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2(0, 0), new Vector2(32, 32), Prefabs.GOOMBA_PREFAB(i)));
-        }
+//        blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2(0, 0), new Vector2(32, 32), Prefabs.MARIO_PREFAB()));
+//        for (int i=0; i < 4; i++) {
+//            blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2(0, 0), new Vector2(32, 32), Prefabs.GOOMBA_PREFAB(i)));
+//        }
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
-        JWindow fileSaver = new JWindow("Level File", new Vector2(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2(400, 100));
-        Label filePath = new Label("Default");
-        Constants.CURRENT_LEVEL = "Default";
-        fileSaver.addUIElement(filePath);
-        fileSaver.addUIElement(new FileExplorerButton(filePath.id, new Vector2(86, 20)));
-
-        fileSaver.addUIElement(new SaveLevelButton());
-        this.addJWindow(fileSaver);
-
-        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
-        Label layerLabel = new Label("" + Constants.Z_INDEX);
-        layerLabel.isCentered = true;
-        layerIndicator.addUIElement(new ZIndexButton(1, layerLabel.id, defaultAssets.sprites.get(0)));
-        layerIndicator.addUIElement(new LineBreak());
-        layerIndicator.addUIElement(layerLabel);
-        layerIndicator.addUIElement(new LineBreak());
-        layerIndicator.addUIElement(new ZIndexButton(-1, layerLabel.id, defaultAssets.sprites.get(1)));
-        this.addJWindow(layerIndicator);
+//        JWindow fileSaver = new JWindow("Level File", new Vector2(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2(400, 100));
+//        Label filePath = new Label("Default");
+//        Constants.CURRENT_LEVEL = "Default";
+//        fileSaver.addUIElement(filePath);
+//        fileSaver.addUIElement(new FileExplorerButton(filePath.id, new Vector2(86, 20)));
+//
+//        fileSaver.addUIElement(new SaveLevelButton());
+//        this.addJWindow(fileSaver);
+//
+//        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
+//        Label layerLabel = new Label("" + Constants.Z_INDEX);
+//        layerLabel.isCentered = true;
+//        layerIndicator.addUIElement(new ZIndexButton(1, layerLabel.id, defaultAssets.sprites.get(0)));
+//        layerIndicator.addUIElement(new LineBreak());
+//        layerIndicator.addUIElement(layerLabel);
+//        layerIndicator.addUIElement(new LineBreak());
+//        layerIndicator.addUIElement(new ZIndexButton(-1, layerLabel.id, defaultAssets.sprites.get(1)));
+//        this.addJWindow(layerIndicator);
     }
 
     public void initAssetPool() {
@@ -161,10 +154,6 @@ public class LevelEditorScene extends Scene {
         player.draw(g2);
 
         g2.setRenderingHints(Constants.ANTIALIASING_HINT);
-        // Draw level editor components
-        for (JWindow win : jWindows) {
-            win.draw(g2);
-        }
     }
 
     @Override

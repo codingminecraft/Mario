@@ -1,9 +1,9 @@
 package com.component;
 
 import com.dataStructure.Transform;
-import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.jade.*;
+import org.joml.Vector2f;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class AnimationMachine extends Component {
     public void update(double dt) {
         if (inLevelEditor) {
             Transform.copyValues(gameObject.transform, levelEditorGo.transform);
-            levelEditorGo.transform.position = Vector2.minus(levelEditorGo.transform.position, Window.getScene().camera.position());
+            levelEditorGo.transform.position.sub(Window.getScene().camera.position());
             levelEditorGo.zIndex = gameObject.zIndex;
         }
 

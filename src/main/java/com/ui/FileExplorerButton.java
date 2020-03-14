@@ -1,26 +1,26 @@
 package com.ui;
 
-import com.dataStructure.Vector2;
+import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.Window;
 import com.util.Constants;
+import com.util.JMath;
+import org.joml.Vector2f;
 
 import javax.swing.JFileChooser;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 
 public class FileExplorerButton extends JButton {
     private int labelId;
     private Label label;
-    private Vector2 stringPos = new Vector2();
+    private Vector2f stringPos = new Vector2f();
     private String text = "Browse";
 
-    public FileExplorerButton(int labelId, Vector2 size) {
+    public FileExplorerButton(int labelId, Vector2f size) {
         super();
         this.labelId = labelId;
-        this.size = size;
-        this.position = new Vector2();
+        this.renderComponent.setSize(size);
         //FontMetrics metrics = Constants.FONT_METRICS;
         //stringPos.x = (this.size.x / 2.0f) - (metrics.stringWidth(text) / 2.0f);
         //stringPos.y = (this.size.y / 2.0f) - (metrics.getHeight() / 2.0f) + 12;
@@ -53,11 +53,11 @@ public class FileExplorerButton extends JButton {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.setColor(Constants.BUTTON_COLOR);
-        if (active) g2.setColor(Color.GRAY);
-        g2.fill(new RoundRectangle2D.Float(this.position.x, this.position.y, this.size.x, this.size.y, 15f, 13f));
-        g2.setColor(Color.WHITE);
-        g2.drawString(text, (int)(this.position.x + stringPos.x), this.position.y + stringPos.y);
+//        g2.setColor(Constants.BUTTON_COLOR);
+//        if (active) g2.setColor(Color.GRAY);
+//        g2.fill(new RoundRectangle2D.Float(this.position.x, this.position.y, this.size.x, this.size.y, 15f, 13f));
+//        g2.setColor(Color.WHITE);
+//        g2.drawString(text, (int)(this.position.x + stringPos.x), this.position.y + stringPos.y);
     }
 
     @Override
@@ -68,9 +68,15 @@ public class FileExplorerButton extends JButton {
         // Label
         builder.append(addIntProperty("labelID", labelId, tabSize + 1, true, true));
 
+        // Position
+        builder.append(beginObjectProperty("Position", tabSize + 1));
+        builder.append(JMath.serialize(renderComponent.getPosition(), tabSize + 2));
+        builder.append(closeObjectProperty(tabSize + 1));
+        builder.append(addEnding(true, true));
+
         // Size
         builder.append(beginObjectProperty("Size", tabSize + 1));
-        builder.append(size.serialize(tabSize + 2));
+        builder.append(JMath.serialize(renderComponent.getSize(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
@@ -85,8 +91,13 @@ public class FileExplorerButton extends JButton {
         int labelId = Parser.consumeIntProperty("labelID");
         Parser.consume(',');
 
+        Parser.consumeBeginObjectProperty("Position");
+        Vector2f position = JMath.deserializeVector2f();
+        Parser.consumeEndObjectProperty();
+        Parser.consume(',');
+
         Parser.consumeBeginObjectProperty("Size");
-        Vector2 size = Vector2.deserialize();
+        Vector2f size = JMath.deserializeVector2f();
         Parser.consumeEndObjectProperty();
         Parser.consume(',');
 

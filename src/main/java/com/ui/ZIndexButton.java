@@ -1,11 +1,10 @@
 package com.ui;
 
 import com.component.Sprite;
-import com.dataStructure.Vector2;
 import com.file.Parser;
 import com.util.Constants;
+import org.joml.Vector2f;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class ZIndexButton extends JButton {
@@ -16,8 +15,7 @@ public class ZIndexButton extends JButton {
 
     public ZIndexButton(int direction, int labelId, Sprite sprite) {
         super();
-        this.position = new Vector2();
-        this.size = new Vector2(25, 22);
+        this.renderComponent.setSize(new Vector2f(25, 22));
         this.direction = direction;
         this.labelId = labelId;
         this.sprite = sprite;
@@ -37,9 +35,9 @@ public class ZIndexButton extends JButton {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.setColor(Color.WHITE);
-        if (active) g2.setColor(Color.GRAY);
-        g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
+//        g2.setColor(Color.WHITE);
+//        if (active) g2.setColor(Color.GRAY);
+//        g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
     }
 
     @Override

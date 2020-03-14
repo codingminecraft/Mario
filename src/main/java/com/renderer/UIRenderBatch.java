@@ -3,8 +3,6 @@ package com.renderer;
 import com.dataStructure.AssetPool;
 import com.jade.GameObject;
 import com.jade.Window;
-import com.sun.javafx.geom.Vec2f;
-import com.sun.javafx.geom.Vec4f;
 import com.util.JMath;
 import com.util.enums.DataType;
 import org.joml.Vector2f;
@@ -25,12 +23,12 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class RenderBatch implements Comparable {
+public class UIRenderBatch implements Comparable {
     /*
     /*      Vertex
     /*     ======
-    /*     Pos                      Color                       TexCoord         BorderRadius              BorderColor                BorderWidth     Dimensions      isUI
-    /*     123.0f, 232.0f, 10.f,    0.0f, 1.0f, 0.0f, 1.0f,     0.0f, 0.0f,      0.1f, 0.1f, 0.3f, 0.3f    0.0f, 0.0f, 0.0f, 0.0f     1.0f            64.0f, 64.0f    1
+    /*     Pos                      Color                       TexCoord         BorderRadius              BorderColor                BorderWidth     Dimensions
+    /*     123.0f, 232.0f, 10.f,    0.0f, 1.0f, 0.0f, 1.0f,     0.0f, 0.0f,      0.1f, 0.1f, 0.3f, 0.3f    0.0f, 0.0f, 0.0f, 0.0f     1.0f            64.0f, 64.0f
      */
 
     private final int POS_SIZE = 3;
@@ -40,7 +38,6 @@ public class RenderBatch implements Comparable {
     private final int BORDER_COLOR_SIZE = 4;
     private final int BORDER_WIDTH_SIZE = 1;
     private final int DIMENSIONS_SIZE = 2;
-    private final int UI_CHECK_SIZE = 1;
 
     private final int POS_OFFSET = 0 * JMath.sizeof(DataType.FLOAT);
     private final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * JMath.sizeof(DataType.FLOAT);
@@ -49,11 +46,10 @@ public class RenderBatch implements Comparable {
     private final int BORDER_COLOR_OFFSET = BORDER_RADIUS_OFFSET + BORDER_RADIUS_SIZE * JMath.sizeof(DataType.FLOAT);
     private final int BORDER_WIDTH_OFFSET = BORDER_COLOR_OFFSET + BORDER_COLOR_SIZE * JMath.sizeof(DataType.FLOAT);
     private final int DIMENSIONS_OFFSET = BORDER_WIDTH_OFFSET + BORDER_WIDTH_SIZE * JMath.sizeof(DataType.FLOAT);
-    private final int UI_CHECK_OFFSET = DIMENSIONS_OFFSET + DIMENSIONS_SIZE * JMath.sizeof(DataType.FLOAT);
-    private final int VERTEX_SIZE = 21;
+    private final int VERTEX_SIZE = 20;
     private final int VERTEX_SIZE_BYTES = JMath.sizeof(DataType.FLOAT) * VERTEX_SIZE;
 
-    private List<RenderComponent> renderables;
+    private List<UIRenderComponent> renderables;
     private float[] vertices;
     private int[] indices;
     private FloatBuffer verticesBuffer;
@@ -66,8 +62,8 @@ public class RenderBatch implements Comparable {
     public int zIndex;
     public boolean hasRoom = true;
 
-    public RenderBatch(int maxBatchSize, Renderer renderer, int zIndex) {
-        this.shader = AssetPool.getShader("assets/shaders/default.glsl");
+    public UIRenderBatch(int maxBatchSize, Renderer renderer, int zIndex) {
+        this.shader = AssetPool.getShader("assets/shaders/uiShader.glsl");
         this.renderables = new ArrayList<>();
         this.maxBatchSize = maxBatchSize;
 
@@ -126,12 +122,9 @@ public class RenderBatch implements Comparable {
 
         glVertexAttribPointer(6, DIMENSIONS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, DIMENSIONS_OFFSET);
         glEnableVertexAttribArray(6);
-
-        glVertexAttribPointer(7, UI_CHECK_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, UI_CHECK_OFFSET);
-        glEnableVertexAttribArray(7);
     }
 
-    public void add(RenderComponent renderable) {
+    public void add(UIRenderComponent renderable) {
         // Get index and add renderable
         int index = renderables.size();
         renderables.add(renderable);
@@ -147,7 +140,7 @@ public class RenderBatch implements Comparable {
     public void render() {
         boolean rebufferData = false;
         for (int i=0; i < renderables.size(); i++) {
-            RenderComponent renderable = renderables.get(i);
+            UIRenderComponent renderable = renderables.get(i);
             if (renderable.isDirty) {
                 loadVertexProperties(i);
                 renderable.isDirty = false;
@@ -163,8 +156,9 @@ public class RenderBatch implements Comparable {
         // Use our program
         shader.use();
         shader.uploadMat4f("uProjection", renderer.camera().getProjectionMatrix());
-        shader.uploadMat4f("uView", renderer.camera().getViewMatrix());
+        shader.uploadMat4f("uView", renderer.camera().getFixedViewMatrix());
         shader.uploadFloat("uAspect", Window.getWindow().getAsepct());
+
         // Bind the vertex array and enable our location
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
@@ -174,7 +168,6 @@ public class RenderBatch implements Comparable {
         glEnableVertexAttribArray(4);
         glEnableVertexAttribArray(5);
         glEnableVertexAttribArray(6);
-        glEnableVertexAttribArray(7);
 
         // Draw the batch
         glDrawElements(GL_TRIANGLES, renderables.size() * 6, GL_UNSIGNED_INT, 0);
@@ -187,7 +180,6 @@ public class RenderBatch implements Comparable {
         glDisableVertexAttribArray(4);
         glDisableVertexAttribArray(5);
         glDisableVertexAttribArray(6);
-        glDisableVertexAttribArray(7);
         glBindVertexArray(0);
 
         // Un-bind our program
@@ -195,7 +187,7 @@ public class RenderBatch implements Comparable {
     }
 
     public void loadVertexProperties(int index) {
-        RenderComponent renderable = renderables.get(index);
+        UIRenderComponent renderable = renderables.get(index);
         // Add it's transform and stuff to the vertex array
         int offset = index * VERTEX_SIZE * 4;
 
@@ -208,23 +200,22 @@ public class RenderBatch implements Comparable {
         Vector4f borderColor = renderable.getBorderColor();
         float borderWidth = renderable.getBorderWidth();
 
-
         // Add 4 vertices with the appropriate properties to vertex array
-        float xAdd = 0.5f;
-        float yAdd = 0.5f;
+        float xAdd = 1.0f;
+        float yAdd = 1.0f;
         for (int i=0; i < 4; i++) {
             if (i == 1) {
-                yAdd = -0.5f;
+                yAdd = 0.0f;
             } else if (i == 2) {
-                xAdd = -0.5f;
+                xAdd = 0.0f;
             } else if (i == 3) {
-                yAdd = 0.5f;
+                yAdd = 1.0f;
             }
 
             // Load position
-            vertices[offset] = renderable.gameObject.transform.position.x + (xAdd * renderable.getWidth());
-            vertices[offset + 1] = renderable.gameObject.transform.position.y + (yAdd * renderable.getHeight());
-            vertices[offset + 2] = renderable.gameObject.zIndex;
+            vertices[offset] = renderable.getPosX() + (xAdd * renderable.getWidth());
+            vertices[offset + 1] = renderable.getPosY() + (yAdd * renderable.getHeight());
+            vertices[offset + 2] = renderable.getZIndex();
 
             // Load color
             vertices[offset + 3] = color.x;
@@ -255,9 +246,6 @@ public class RenderBatch implements Comparable {
             vertices[offset + 18] = renderable.getWidth();
             vertices[offset + 19] = renderable.getHeight();
 
-            // Load isUi or not
-            vertices[offset + 20] = renderable.gameObject instanceof GameObject ? 0 : 1;
-
             offset += VERTEX_SIZE;
         }
     }
@@ -279,7 +267,7 @@ public class RenderBatch implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if (o == null || !(o instanceof RenderBatch)) return -1;
+        if (!(o instanceof RenderBatch)) return -1;
         RenderBatch batch = (RenderBatch)o;
         return Integer.compare(batch.zIndex, this.zIndex);
     }

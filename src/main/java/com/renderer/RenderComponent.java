@@ -1,6 +1,7 @@
 package com.renderer;
 
 import com.jade.GameObject;
+import com.jade.Object;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -17,7 +18,7 @@ public abstract class RenderComponent {
 
     protected float borderWidth = 0;
 
-    public GameObject gameObject;
+    public Object gameObject;
     public boolean isDirty = false;
 
     public void init(Vector2f[] texCoords, Vector4f borderRadius, Vector4f borderColor, Vector4f color, float borderWidth) {
@@ -42,6 +43,12 @@ public abstract class RenderComponent {
     }
     public float getBorderWidth() {
         return this.borderWidth;
+    }
+    public float getWidth() {
+        return this.gameObject.transform.scale.x;
+    }
+    public float getHeight() {
+        return this.gameObject.transform.scale.y;
     }
 
     public void setColor(float r, float g, float b, float a) {

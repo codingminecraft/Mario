@@ -1,17 +1,13 @@
 package com.component;
 
 import com.dataStructure.Transform;
-import com.dataStructure.Vector2;
 import com.jade.Camera;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.jade.Window;
-import com.renderer.quads.Quad;
 import com.renderer.RenderComponent;
-import com.renderer.quads.Rectangle;
-import com.sun.javafx.geom.Vec4f;
 import com.util.Constants;
-import org.joml.Vector4f;
+import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +18,12 @@ public class Grid extends Component {
     public int gridWidth, gridHeight;
     private int numXSquares = 34;
     private int numYSquares = 21;
-    private Vector2 offset;
+    private Vector2f offset;
 
     List<RenderComponent> renderObjs;
 
     public Grid() {
-        this.offset = new Vector2();
+        this.offset = new Vector2f();
         this.renderObjs = new ArrayList<>();
     }
 
@@ -41,18 +37,16 @@ public class Grid extends Component {
             for (int j=0; j < numYSquares; j++) {
                 int x = (int)(i * this.gridWidth + this.offset.x);
                 int y = (int)(j * this.gridHeight + this.offset.y);
-                GameObject square = new GameObject("Square", new Transform(new Vector2(x, y)), -10);
+                GameObject square = new GameObject("Square", new Transform(new Vector2f(x, y)), -10);
                 square.transform.scale.x = gridWidth;
                 square.transform.scale.y = gridHeight;
 
-                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.7f, 0.7f, 0.7f, 1.0f), 0.5f);
-
-                rect.gameObject = square;
-                Window.getScene().addRenderable(rect);
-                this.renderObjs.add(rect);
-
+//                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.7f, 0.7f, 0.7f, 1.0f), 0.5f);
+//                square.addRenderComponent(rect);
+//                Window.getScene().addGameObject(square);
+//
+//                this.renderObjs.add(rect);
             }
-            System.out.println();
         }
 
         calculateOffset();

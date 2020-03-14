@@ -1,6 +1,5 @@
 package com.component;
 
-import com.dataStructure.Vector2;
 import com.jade.Component;
 import com.jade.MouseListener;
 import com.jade.Window;

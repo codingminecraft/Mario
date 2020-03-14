@@ -2,29 +2,33 @@ package com.jade;
 
 import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
-import com.dataStructure.Vector2;
 import com.file.Parser;
-import com.file.Serialize;
+import com.renderer.RenderComponent;
 import com.util.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameObject extends Serialize {
+public class GameObject extends Object {
     private List<Component> components;
+    private List<RenderComponent> renderComponents;
+    private Transform lastTransform;
+    private float lastZIndex;
+
     private String name;
-    public Transform transform;
     private boolean serializable = true;
-    public int zIndex;
 
     public boolean isUi = false;
 
     public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
         this.transform = transform;
+        this.lastTransform = this.transform.copy();
         this.components = new ArrayList<>();
+        this.renderComponents = new ArrayList<>();
         this.zIndex = zIndex;
+        this.lastZIndex = this.zIndex;
     }
 
     public String getName() {
@@ -59,8 +63,17 @@ public class GameObject extends Serialize {
         return this.components;
     }
 
+    public List<RenderComponent> getAllRenderComponents() {
+        return this.renderComponents;
+    }
+
     public void addComponent(Component c) {
         components.add(c);
+        c.gameObject = this;
+    }
+
+    public void addRenderComponent(RenderComponent c) {
+        renderComponents.add(c);
         c.gameObject = this;
     }
 
@@ -87,6 +100,16 @@ public class GameObject extends Serialize {
         for (Component c : components) {
             c.update(dt);
         }
+
+        // Update our render components to dirty if any property has changed
+        if (!this.transform.equals(this.lastTransform) || this.zIndex != lastZIndex) {
+            for (RenderComponent comp : renderComponents) {
+                comp.isDirty = true;
+            }
+        }
+
+        lastZIndex = this.zIndex;
+        Transform.copyValues(this.transform, this.lastTransform);
     }
 
     public void setNonserializable() {
