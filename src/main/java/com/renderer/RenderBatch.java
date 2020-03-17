@@ -3,12 +3,9 @@ package com.renderer;
 import com.dataStructure.AssetPool;
 import com.jade.GameObject;
 import com.jade.Window;
-import com.sun.javafx.geom.Vec2f;
-import com.sun.javafx.geom.Vec4f;
 import com.util.JMath;
 import com.util.enums.DataType;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
@@ -19,13 +16,12 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class RenderBatch implements Comparable {
+public class RenderBatch implements Comparable<RenderBatch> {
     /*
     /*      Vertex
     /*     ======
@@ -278,9 +274,7 @@ public class RenderBatch implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o == null || !(o instanceof RenderBatch)) return -1;
-        RenderBatch batch = (RenderBatch)o;
+    public int compareTo(RenderBatch batch) {
         return Integer.compare(batch.zIndex, this.zIndex);
     }
 }

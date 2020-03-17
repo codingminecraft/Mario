@@ -11,6 +11,9 @@ public class Spritesheet {
     public int tileHeight;
     public int spacing;
 
+    public int overallWidth;
+    public int overallHeight;
+
     public Spritesheet(String pictureFile, int tileWidth, int tileHeight, int spacing, int columns, int size) {
         this.tileHeight = tileHeight;
         this.tileWidth = tileWidth;
@@ -18,6 +21,9 @@ public class Spritesheet {
 
         Sprite parent = AssetPool.getSprite(pictureFile);
         sprites = new ArrayList<>();
+        overallWidth = parent.image.getWidth();
+        overallHeight = parent.image.getHeight();
+
         int row = 0;
         int count = 0;
         while (count < size) {

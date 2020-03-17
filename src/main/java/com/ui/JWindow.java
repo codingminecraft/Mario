@@ -1,6 +1,5 @@
 package com.ui;
 
-import com.dataStructure.Transform;
 import com.file.Parser;
 import com.file.Serialize;
 import com.jade.*;
@@ -10,7 +9,6 @@ import com.util.Constants;
 import com.util.JMath;
 import org.joml.Vector2f;
 
-import java.awt.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,6 @@ public class JWindow extends Serialize {
     private String title;
 
     // TITLE BAR
-    private Vector2f titleBarSize = new Vector2f(0, 20);
     private Vector2f draggableClickSize = new Vector2f(20, 20);
     private float titleBarHeight = 20;
 
@@ -29,38 +26,46 @@ public class JWindow extends Serialize {
     private Tab currentTab;
 
     // SCROLL BAR
-    private Vector2f scrollbarPos = new Vector2f(0, 0);
-    private Vector2f scrollbarSize = new Vector2f(10, 0);
     private boolean drawScrollbar = false;
+    private float localScrollbarY = 0.0f;
 
     private Vector2f clickedPosDelta = new Vector2f();
     private boolean beingDragged = false;
     private boolean beingResized = false;
-    private Cursor resizeCursor = new Cursor(Cursor.NW_RESIZE_CURSOR);
-    private Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
     private List<UIRenderComponent> renderComponents;
 
-    private Rectangle mainBackground, titleBar;
+    private Rectangle mainBackground, titleBar, scrollbar;
 
     public JWindow(String title, Vector2f pos, Vector2f size) {
         this.title = title;
 
         this.tabs = new ArrayList<>();
-        titleBarSize.x = size.x;
         beginTab(title);
 
         this.renderComponents = new ArrayList<>();
         this.mainBackground = new Rectangle(Constants.BG_COLOR);
         this.mainBackground.setWidth(size.x);
         this.mainBackground.setHeight(size.y);
+        this.mainBackground.setPosition(pos);
         this.renderComponents.add(this.mainBackground);
+
         this.titleBar = new Rectangle(Constants.TITLE_BG_COLOR);
         this.titleBar.setZIndex(1);
-        this.titleBar.setPosY(size.y - titleBarHeight);
+        this.titleBar.setPosX(mainBackground.getPosX());
+        this.titleBar.setPosY(mainBackground.getPosY() + size.y - titleBarHeight);
         this.titleBar.setWidth(size.x);
         this.titleBar.setHeight(titleBarHeight);
         this.renderComponents.add(this.titleBar);
+
+        this.scrollbar = new Rectangle(Constants.HOT_TAB);
+        this.scrollbar.setZIndex(1);
+        this.scrollbar.setBorderRadius(4.0f);
+        this.scrollbar.setBorderWidth(0.1f);
+        this.scrollbar.setBorderColor(Constants.HOT_TAB);
+        this.scrollbar.setPosX(-1000);
+        this.scrollbar.setWidth(10);
+        this.renderComponents.add(this.scrollbar);
     }
 
     public List<UIRenderComponent> getAllRenderComponents() {
@@ -78,23 +83,26 @@ public class JWindow extends Serialize {
     }
 
     public void addUIElement(JComponent uiElement) {
+        uiElement.renderComponent.setPosX(-1000);
         this.currentTab.addUIElement(uiElement);
     }
 
     public void start() {
+        tabs.get(0).setActive();
+        positionElements();
+
         for (Tab tab : tabs) {
             renderComponents.add(tab.renderComponent);
+            renderComponents.addAll(tab.label.getRenderComponents());
             for (JComponent comp : tab.getUIElements()) {
                 comp.start();
                 renderComponents.add(comp.renderComponent);
             }
         }
-
-        tabs.get(0).setActive();
     }
 
     private boolean mouseInTitleBar() {
-        return MouseListener.isDragging() && pointInRectangle(MouseListener.positionScreenCoords(), titleBar.getPosition(), titleBarSize) || beingDragged;
+        return MouseListener.isDragging() && pointInRectangle(MouseListener.positionScreenCoords(), titleBar.getPosition(), titleBar.getSize()) || beingDragged;
     }
     private boolean mouseInResizeArea() {
         return MouseListener.isDragging() &&
@@ -115,7 +123,9 @@ public class JWindow extends Serialize {
         this.mainBackground.setHeight(newHeight);
         this.mainBackground.setPosY(this.mainBackground.getPosY() - deltaHeight);
         this.titleBar.setWidth(MouseListener.positionScreenCoords().x - this.mainBackground.getPosX());
-        scrollbarPos.y = 0;
+        scrollbar.setPosY(0.0f);
+
+        positionElements();
     }
     private void positionWindowToMousePos() {
         if (!beingDragged) {
@@ -126,15 +136,19 @@ public class JWindow extends Serialize {
         this.mainBackground.setPosX(MouseListener.positionScreenCoords().x - clickedPosDelta.x);
         this.mainBackground.setPosY(MouseListener.positionScreenCoords().y - clickedPosDelta.y);
         this.titleBar.setPosX(this.mainBackground.getPosX());
-        this.titleBar.setPosY(this.mainBackground.getPosY() + this.mainBackground.getHeight());
+        this.titleBar.setPosY(this.mainBackground.getPosY() + this.mainBackground.getHeight() - this.titleBar.getHeight());
+
+        positionElements();
     }
     private void scrollToMouseScrollPos() {
-        scrollbarPos.y += MouseListener.getScrollY() * Math.exp(1 / scrollbarSize.y) * 3;
-        if (scrollbarPos.y < 0.0f) {
-            scrollbarPos.y = 0.0f;
-        } else if (scrollbarPos.y + scrollbarSize.y > mainBackground.getPosY() - titleBarSize.y) {
-            scrollbarPos.y = mainBackground.getPosY() - titleBarSize.y - scrollbarSize.y;
+        localScrollbarY -= (float)(MouseListener.getScrollY() * Math.exp(1 / scrollbar.getHeight()) * 3);
+
+        if (localScrollbarY < 0.0f) {
+            localScrollbarY = 0.0f;
+        } else if (localScrollbarY + scrollbar.getHeight() > mainBackground.getHeight() - titleBar.getHeight() - scrollbar.getHeight()) {
+            localScrollbarY = mainBackground.getHeight() - titleBar.getHeight() - scrollbar.getHeight();
         }
+        positionElements();
     }
     private void updateTabs() {
         for (Tab tab : tabs) {
@@ -145,6 +159,8 @@ public class JWindow extends Serialize {
                 }
                 tab.setActive();
                 this.currentTab = tab;
+
+                positionElements();
             } else if (!tab.isActive() && tab.mouseInButton()) {
                 tab.setHot();
             } else if (!tab.isActive()) {
@@ -180,7 +196,6 @@ public class JWindow extends Serialize {
 
         updateTabs();
         updateComponents(dt);
-        positionElements();
     }
 
     private void positionElements() {
@@ -190,60 +205,65 @@ public class JWindow extends Serialize {
             tabs.get(i).renderComponent.setPosX(currentX + this.titleBar.getPosX());
             tabs.get(i).renderComponent.setPosY(this.titleBar.getPosY());
             tabs.get(i).renderComponent.setHeight(titleBar.getHeight());
+            tabs.get(i).label.setPosX(currentX + this.titleBar.getPosX() + Constants.TAB_TITLE_PADDING.x);
+            tabs.get(i).label.setPosY(this.titleBar.getPosY() + Constants.TAB_TITLE_PADDING.y);
             currentX += tabs.get(i).renderComponent.getWidth() + Constants.MARGIN.x;
         }
-//
-//        currentX = (int)Constants.PADDING.x;
-//        int currentY = (int)(titleBarSize.y + Constants.PADDING.y);
-//        int rowHeight = 0;
-//        // First pass, position everything roughly and calculate total height
-//        for (JComponent comp : this.currentTab.getUIElements()) {
-//            comp.transform.position.x = this.position.x + currentX;
-//            if (comp.transform.position.y > rowHeight) rowHeight = (int)Math.ceil(comp.transform.position.y);
-//            if (comp.transform.position.x + comp.transform.scale.x > this.position.x + size.x || comp.isLineBreak) {
-//                comp.transform.position.x = this.position.x + Constants.PADDING.x;
-//                currentY += rowHeight + Constants.PADDING.y;
-//                currentX = (int)Constants.PADDING.x;
-//                rowHeight = 0;
-//                if (comp.isLineBreak) continue;
-//            }
-//
-//            if (comp.isCentered) {
-//                comp.transform.position.x = ((size.x - currentX) / 2.0f) - (comp.transform.scale.x / 2.0f) + position.x;
-//            }
-//
-//            comp.transform.position.y = this.position.y + currentY;
-//            currentX += comp.transform.scale.x + Constants.PADDING.x;
-//        }
-//
-//        float totalHeight = currentY + rowHeight;
-//        if (totalHeight > size.y) {
-//            drawScrollbar = true;
-//        } else {
-//            drawScrollbar = false;
-//            scrollbarPos.y = 0;
-//        }
-//
-//        // Second pass adjust according to position of scrollbar
-//        for (JComponent comp : this.currentTab.getUIElements()) {
-//            float percentOfHeight = 1 / ((size.y - titleBarSize.y) / totalHeight);
-//            comp.transform.position.y -= (scrollbarPos.y * percentOfHeight) + 1;
-//
-//            if (comp.transform.position.y >= this.position.y + titleBarSize.y && comp.transform.position.y + comp.transform.scale.y <= this.position.y + size.y) {
-//                comp.visible = true;
-//                comp.draw(g2);
-//            } else {
-//                comp.visible = false;
-//            }
-//        }
-//
-//        if (drawScrollbar) {
-//            g2.setColor(Color.BLACK);
-//            float percentOfHeight = size.y / totalHeight;
-//            float height = percentOfHeight * (size.y - titleBarSize.y);
-//            scrollbarSize.y = height;
-//            g2.fillRect((int)(position.x + size.x - scrollbarSize.x), (int)(titleBarHeight + scrollbarPos.y + position.y), (int)scrollbarSize.x, (int)height);
-//        }
+
+        currentX = (int)Constants.PADDING.x;
+        int currentY = (int)(-(titleBar.getHeight() * 2) - Constants.PADDING.y);
+        int rowHeight = 0;
+        // First pass, position everything roughly and calculate total height
+        for (JComponent comp : this.currentTab.getUIElements()) {
+            UIRenderComponent renderComp = comp.renderComponent;
+            renderComp.setPosX(this.mainBackground.getPosX() + currentX);
+            if (renderComp.getHeight() > rowHeight) rowHeight = (int)Math.ceil(renderComp.getHeight());
+            if (renderComp.getPosX() + renderComp.getWidth() > mainBackground.getPosX() + mainBackground.getWidth() || comp.isLineBreak) {
+                renderComp.setPosX(mainBackground.getPosX() + Constants.PADDING.x);
+                currentY -= rowHeight + Constants.PADDING.y;
+                currentX = (int)Constants.PADDING.x;
+                rowHeight = 0;
+                if (comp.isLineBreak) continue;
+            }
+
+            if (comp.isCentered) {
+                renderComp.setPosX(((mainBackground.getWidth() - currentX) / 2.0f) - (renderComp.getWidth() / 2.0f) + mainBackground.getPosX());
+            }
+
+            renderComp.setPosY(mainBackground.getPosY() + mainBackground.getHeight() + currentY);
+            currentX += renderComp.getWidth() + Constants.PADDING.x;
+        }
+
+        float totalHeight = -(currentY - rowHeight);
+        if (totalHeight > mainBackground.getHeight()) {
+            drawScrollbar = true;
+        } else {
+            drawScrollbar = false;
+            scrollbar.setPosY(0.0f);
+        }
+
+        if (drawScrollbar) {
+            // Second pass adjust according to position of scrollbar
+            for (JComponent comp : this.currentTab.getUIElements()) {
+                UIRenderComponent renderComp = comp.renderComponent;
+                float percentOfHeight = 1 / ((mainBackground.getHeight() - titleBar.getHeight()) / totalHeight);
+                renderComp.setPosY(renderComp.getPosY() + ((localScrollbarY * percentOfHeight) + 1));
+
+                if (renderComp.getPosY() >= mainBackground.getPosY() + titleBar.getHeight() &&
+                        renderComp.getPosY() + renderComp.getHeight() <= mainBackground.getPosY() + mainBackground.getHeight()) {
+                    comp.visible = true;
+                } else {
+                    comp.visible = false;
+                    comp.renderComponent.setPosX(-1000);
+                }
+            }
+
+            float percentOfHeight = mainBackground.getHeight() / totalHeight;
+            float height = percentOfHeight * (mainBackground.getHeight() - titleBar.getHeight());
+            scrollbar.setHeight(height);
+            scrollbar.setPosX(mainBackground.getPosX() + mainBackground.getWidth() - scrollbar.getWidth());
+            scrollbar.setPosY(mainBackground.getPosY() + mainBackground.getHeight() - titleBar.getHeight() - scrollbar.getHeight() - localScrollbarY);
+        }
     }
 
     private boolean pointInRectangle(Vector2f point, Vector2f rectPos, Vector2f rectSize) {

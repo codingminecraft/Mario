@@ -59,37 +59,37 @@ public class LevelEditorScene extends Scene {
         }
 
         JWindow blockSelector = new JWindow("Blocks", new Vector2f(0, 100), new Vector2f(33 * 16 + (33 * Constants.PADDING.x), 400));
-//        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
-//        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
-//        Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
-//        int totalSprites = 10 * 33;
-//        int current = 0;
-//        while (current < totalSprites) {
-//            GameObject tile = new GameObject("Tile", new Transform(new Vector2(0, 0)), 0);
-//            tile.transform.scale.x = 2;
-//            tile.transform.scale.y = 2;
-//            tile.addComponent(spritesheet.sprites.get(current).copy());
-//            Button button = new Button(spritesheet.sprites.get(current), new Vector2(0, 0), new Vector2(16, 16), tile);
-//            blockSelector.addUIElement(button);
-//            current++;
-//        }
-//
+        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
+        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
+        Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
+        int totalSprites = 10 * 33;
+        int current = 0;
+        while (current < totalSprites) {
+            GameObject tile = new GameObject("Tile", new Transform(new Vector2f(0, 0)), 0);
+            tile.transform.scale.x = 2;
+            tile.transform.scale.y = 2;
+            tile.addComponent(spritesheet.sprites.get(current).copy());
+            Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
+            blockSelector.addUIElement(button);
+            current++;
+        }
+
         blockSelector.beginTab("Prefabs");
-//        blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2(0, 0), new Vector2(32, 32), Prefabs.MARIO_PREFAB()));
-//        for (int i=0; i < 4; i++) {
-//            blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2(0, 0), new Vector2(32, 32), Prefabs.GOOMBA_PREFAB(i)));
-//        }
+        blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.MARIO_PREFAB()));
+        for (int i=0; i < 4; i++) {
+            blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.GOOMBA_PREFAB(i)));
+        }
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
-//        JWindow fileSaver = new JWindow("Level File", new Vector2(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2(400, 100));
+        JWindow fileSaver = new JWindow("Level File", new Vector2f(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2f(400, 100));
 //        Label filePath = new Label("Default");
 //        Constants.CURRENT_LEVEL = "Default";
 //        fileSaver.addUIElement(filePath);
-//        fileSaver.addUIElement(new FileExplorerButton(filePath.id, new Vector2(86, 20)));
-//
-//        fileSaver.addUIElement(new SaveLevelButton());
-//        this.addJWindow(fileSaver);
+
+        //fileSaver.addUIElement(new FileExplorerButton(filePath.id, new Vector2f(86, 20)));
+        fileSaver.addUIElement(new SaveLevelButton());
+        this.addJWindow(fileSaver);
 //
 //        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
 //        Label layerLabel = new Label("" + Constants.Z_INDEX);

@@ -1,16 +1,18 @@
 package com.jade;
 
+import com.renderer.fonts.FontTexture;
 import com.util.Constants;
 import com.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import java.awt.Font;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_DEPTH;
-import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -102,7 +104,7 @@ public class Window {
         // bindings available for use.
         GL.createCapabilities();
 
-        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

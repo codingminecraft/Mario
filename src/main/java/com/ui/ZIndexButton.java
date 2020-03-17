@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 public class ZIndexButton extends JButton {
     int labelId;
     int direction;
-    Label label;
+//    Label label;
     Sprite sprite;
 
     public ZIndexButton(int direction, int labelId, Sprite sprite) {
@@ -24,13 +24,13 @@ public class ZIndexButton extends JButton {
 
     @Override
     public void start() {
-        this.label = (Label)parent.getJComponent(labelId);
+//        this.label = (Label)parent.getJComponent(labelId);
     }
 
     @Override
     public void clicked() {
-        Constants.Z_INDEX += direction;
-        this.label.setText("" + Constants.Z_INDEX);
+//        Constants.Z_INDEX += direction;
+//        this.label.setText("" + Constants.Z_INDEX);
     }
 
     @Override

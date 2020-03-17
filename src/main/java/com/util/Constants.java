@@ -1,9 +1,11 @@
 package com.util;
 
+import com.renderer.fonts.FontTexture;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.RenderingHints;
 
@@ -46,4 +48,6 @@ public class Constants {
     public static final Vector2f PADDING = new Vector2f(6, 6);
     public static final Vector2f TAB_TITLE_PADDING = new Vector2f(10, 0);
     public static final Vector2f MARGIN = new Vector2f(4, 0);
+
+    public static final FontTexture DEFAULT_FONT_TEXTURE = new FontTexture(new Font("Arial", Font.PLAIN, 14), "US-ASCII");
 }

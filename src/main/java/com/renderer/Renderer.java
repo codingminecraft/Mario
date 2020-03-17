@@ -28,8 +28,8 @@ public class Renderer {
             batch.start();
         }
 
-        batches.sort(Collections.reverseOrder());
-        uiBatches.sort(Collections.reverseOrder());
+        Collections.sort(batches);
+        Collections.sort(uiBatches);
 }
 
     public Camera camera() {
@@ -56,15 +56,15 @@ public class Renderer {
         boolean added = false;
         for (UIRenderBatch batch : uiBatches) {
             if (batch.hasRoom && batch.zIndex == renderable.getZIndex()) {
-                System.out.println("Added here with z-index: " + batch.zIndex);
-                batch.add(renderable);
-                added = true;
-                break;
+                if (renderable.getTexture() == null || (batch.hasTexture(renderable.getTexture()) || batch.hasTextureRoom())) {
+                    batch.add(renderable);
+                    added = true;
+                    break;
+                }
             }
         }
         if (!added) {
             UIRenderBatch newBatch = new UIRenderBatch(UI_MAX_BATCH_SIZE, this, renderable.getZIndex());
-            System.out.println("Created new batch with z-index: " + renderable.getZIndex());
             uiBatches.add(newBatch);
             newBatch.add(renderable);
         }

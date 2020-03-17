@@ -1,25 +1,27 @@
 package com.ui;
 
-import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.Window;
+import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import com.util.JMath;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import javax.swing.JFileChooser;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.io.File;
 
 public class FileExplorerButton extends JButton {
     private int labelId;
-    private Label label;
+//    private Label label;
     private Vector2f stringPos = new Vector2f();
     private String text = "Browse";
 
     public FileExplorerButton(int labelId, Vector2f size) {
         super();
         this.labelId = labelId;
+        this.renderComponent = new Rectangle(Constants.BUTTON_COLOR);
         this.renderComponent.setSize(size);
         //FontMetrics metrics = Constants.FONT_METRICS;
         //stringPos.x = (this.size.x / 2.0f) - (metrics.stringWidth(text) / 2.0f);
@@ -28,9 +30,9 @@ public class FileExplorerButton extends JButton {
 
     @Override
     public void start() {
-        this.label = (Label)parent.getJComponent(labelId);
-        Constants.CURRENT_LEVEL = this.label.text;
-        Window.getScene().importLevel(label.text);
+//        this.label = (Label)parent.getJComponent(labelId);
+//        Constants.CURRENT_LEVEL = this.label.text;
+//        Window.getScene().importLevel(label.text);
     }
 
     @Override
@@ -46,9 +48,9 @@ public class FileExplorerButton extends JButton {
             filename = filename.replaceFirst("[.][^.]+$", "");
         }
 
-        this.label.setText(filename);
-        Constants.CURRENT_LEVEL = filename;
-        Window.getScene().importLevel(filename);
+//        this.label.setText(filename);
+//        Constants.CURRENT_LEVEL = filename;
+//        Window.getScene().importLevel(filename);
     }
 
     @Override

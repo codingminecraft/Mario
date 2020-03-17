@@ -3,6 +3,7 @@ package com.ui;
 import com.file.Parser;
 import com.jade.Scene;
 import com.jade.Window;
+import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import org.joml.Vector2f;
 
@@ -14,6 +15,7 @@ public class SaveLevelButton extends JButton {
 
     public SaveLevelButton() {
         super();
+        this.renderComponent = new Rectangle(Constants.BUTTON_COLOR);
         this.renderComponent.setSize(new Vector2f(86, 20));
         //FontMetrics metrics = Constants.FONT_METRICS;
         //stringPos.x = (this.size.x / 2.0f) - (metrics.stringWidth(text) / 2.0f);

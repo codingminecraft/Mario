@@ -7,6 +7,7 @@ layout (location = 3) in vec4 borderRadius;
 layout (location = 4) in vec4 borderColor;
 layout (location = 5) in float borderWidth;
 layout (location = 6) in vec2 dimensions;
+layout (location = 7) in float texSlot;
 
 out vec3 fPos;
 out vec4 fColor;
@@ -15,6 +16,7 @@ out vec4 fBorderRadius;
 out vec4 fBorderColor;
 out float fBorderWidth;
 out vec2 fDimensions;
+out float fTexSlot;
 
 uniform mat4 uView;
 uniform mat4 uProjection;
@@ -28,6 +30,7 @@ void main()
     fBorderColor = borderColor;
     fBorderWidth = borderWidth;
     fDimensions = dimensions;
+    fTexSlot = texSlot;
 
     gl_Position = uProjection * uView * vec4(aPos, 1.0);
 }
@@ -45,6 +48,15 @@ in vec4 fBorderRadius;
 in vec4 fBorderColor;
 in float fBorderWidth;
 in vec2 fDimensions;
+in float fTexSlot;
+
+uniform sampler2D TEX_1;
+uniform sampler2D TEX_2;
+uniform sampler2D TEX_3;
+uniform sampler2D TEX_4;
+uniform sampler2D TEX_5;
+uniform sampler2D TEX_6;
+uniform sampler2D TEX_7;
 
 void isBorder(in vec2 position, in vec2 cornerPosition, in float outerRadius, in float borderWidth, in vec4 borderColor, in vec4 fillColor, out vec4 color)
 {
@@ -70,6 +82,25 @@ void isBorder(in vec2 position, in vec2 cornerPosition, in float outerRadius, in
 
 void main()
 {
+    vec4 texColor = vec4(1, 1, 1, 1);
+    if (fTexSlot > 0) {
+        if (fTexSlot < 2) {
+            texColor = texture(TEX_1, fTexCoords);
+        } else if (fTexSlot < 3) {
+            texColor = texture(TEX_2, fTexCoords);
+        } else if (fTexSlot < 4) {
+            texColor = texture(TEX_3, fTexCoords);
+        } else if (fTexSlot < 5) {
+            texColor = texture(TEX_4, fTexCoords);
+        } else if (fTexSlot < 6) {
+            texColor = texture(TEX_5, fTexCoords);
+        } else if (fTexSlot < 7) {
+            texColor = texture(TEX_6, fTexCoords);
+        } else if (fTexSlot < 8) {
+            texColor = texture(TEX_7, fTexCoords);
+        }
+    }
+
     if (fBorderWidth > 0) {
         float maxX = fDimensions.x - fBorderWidth;
         float minX = fBorderWidth;
@@ -115,7 +146,15 @@ void main()
         } else if (pos.y < bottomRight.y && pos.x > bottomRight.x) {
             isBorder(pos, bottomRight, fBorderRadius.w, fBorderWidth, fBorderColor, fColor, color);
         }
-    } else {
+    } else if (fColor.w > 0.0 && fTexSlot < 1) {
         color = fColor;
+    } else if (fTexSlot > 0) {
+        if (fColor.x < 1 && fColor.y < 1 && fColor.z < 1 && fColor.w < 1) {
+            color = texColor;
+        } else {
+            color = texColor * fColor;
+        }
+    } else {
+        color = vec4(0, 0, 0, 0);
     }
 }

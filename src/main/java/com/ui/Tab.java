@@ -2,10 +2,10 @@ package com.ui;
 
 import com.file.Parser;
 import com.file.Serialize;
+import com.renderer.quads.Label;
 import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.List;
 public class Tab extends JComponent {
     private String name;
     private List<JComponent> components;
+    public Label label;
     private boolean active = false;
     private boolean hot = false;
     private Vector2f centerAdjustment = new Vector2f();
@@ -26,9 +27,14 @@ public class Tab extends JComponent {
         //this.size.y = Constants.FONT_METRICS.getHeight();
         //this.centerAdjustment.x = (this.size.x / 2.0f) - (Constants.FONT_METRICS.stringWidth(this.name) / 2.0f);
         this.renderComponent = new Rectangle(Constants.TITLE_BG_COLOR);
-        this.renderComponent.setSize(new Vector2f(80.0f, 0.0f));
+        this.renderComponent.setSize(new Vector2f(Constants.DEFAULT_FONT_TEXTURE.getWidthOf(name) + 2 * Constants.TAB_TITLE_PADDING.x, 0.0f));
         this.renderComponent.setZIndex(2);
         this.centerAdjustment.y = 15.0f;
+
+        this.label = new Label(Constants.DEFAULT_FONT_TEXTURE, name,
+                new Vector2f(this.renderComponent.getPosX() + Constants.TAB_TITLE_PADDING.x,
+                        this.renderComponent.getPosY() + Constants.TAB_TITLE_PADDING.y));
+        this.label.setZIndex(3);
     }
 
     public List<JComponent> getUIElements() {
@@ -39,6 +45,10 @@ public class Tab extends JComponent {
         this.renderComponent.setColor(Constants.TITLE_BG_COLOR);
         this.active = false;
         this.hot = false;
+
+        for (JComponent comp : this.components) {
+            comp.renderComponent.setPosition(new Vector2f(-1000, -1000));
+        }
     }
 
     public void setActive() {

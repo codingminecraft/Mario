@@ -221,8 +221,6 @@ public class Parser {
                 return Button.deserialize();
             case "FileExplorerButton":
                 return FileExplorerButton.deserialize();
-            case "Label":
-                return Label.deserialize();
             case "SaveLevelButton":
                 return SaveLevelButton.deserialize();
             case "ZIndexButton":

@@ -3,15 +3,19 @@ package com.dataStructure;
 import com.component.Sprite;
 import com.component.Spritesheet;
 import com.renderer.Shader;
+import com.renderer.Texture;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AssetPool {
     static Map<String, Sprite> sprites = new HashMap<>();
     static Map<String, Spritesheet> spritesheets = new HashMap<>();
     static Map<String, Shader> shaders = new HashMap<>();
+    static Map<String, Texture> textures = new HashMap<>();
 
     public static boolean hasSprite(String pictureFile) {
         File tmp = new File(pictureFile);
@@ -26,6 +30,22 @@ public class AssetPool {
     public static boolean hasShader(String shaderPath) {
         File tmp = new File(shaderPath);
         return AssetPool.shaders.containsKey(tmp.getAbsolutePath());
+    }
+
+    public static boolean hasTexture(String pictureFile) {
+        File tmp = new File(pictureFile);
+        return AssetPool.textures.containsKey(tmp.getAbsolutePath());
+    }
+
+    public static Texture getTexture(String pictureFile) {
+        File file = new File(pictureFile);
+        if (hasTexture(pictureFile)) {
+            return textures.get(file.getAbsolutePath());
+        } else {
+            Texture texture = new Texture(file.getAbsolutePath());
+            AssetPool.textures.put(file.getAbsolutePath(), texture);
+            return AssetPool.textures.get(file.getAbsolutePath());
+        }
     }
 
     public static Sprite getSprite(String pictureFile) {

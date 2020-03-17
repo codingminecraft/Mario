@@ -5,6 +5,7 @@ import com.component.Sprite;
 import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.*;
+import com.renderer.quads.Rectangle;
 import com.util.JMath;
 import org.joml.Vector2f;
 
@@ -24,6 +25,8 @@ public class Button extends JComponent {
     public Button(Sprite sprite, Vector2f position, Vector2f size, GameObject objToCopy) {
         super();
         this.sprite = sprite;
+        this.renderComponent = new Rectangle(sprite, new Vector2f(16, 16));
+        this.renderComponent.setZIndex(1);
         this.renderComponent.setPosition(position);
         this.renderComponent.setSize(size);
         this.objToCopy = objToCopy;
