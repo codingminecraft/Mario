@@ -81,6 +81,8 @@ public class UIRenderBatch implements Comparable<UIRenderBatch> {
         this.renderer = renderer;
 
         this.zIndex = zIndex;
+
+        generateIndices();
     }
 
     public void start() {
@@ -146,7 +148,6 @@ public class UIRenderBatch implements Comparable<UIRenderBatch> {
 
         // Add properties to local array
         loadVertexProperties(index);
-        loadElementIndices(index);
 
         if (renderables.size() >= this.maxBatchSize) {
             this.hasRoom = false;
@@ -311,6 +312,12 @@ public class UIRenderBatch implements Comparable<UIRenderBatch> {
         indices[offsetArray + 3] = offset + 0;
         indices[offsetArray + 4] = offset + 2;
         indices[offsetArray + 5] = offset + 1;
+    }
+
+    public void generateIndices() {
+        for (int i=0; i < maxBatchSize; i++) {
+            loadElementIndices(i);
+        }
     }
 
     @Override

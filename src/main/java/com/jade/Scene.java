@@ -55,8 +55,6 @@ public abstract class Scene {
                 renderer.add(comp);
             }
         }
-
-        renderer.start();
     }
 
     public void moveGameObject(GameObject g, Vector2f direction) {
@@ -82,6 +80,14 @@ public abstract class Scene {
         worldPartition.put(gridPos, g);
     }
 
+    public void addLowUI(UIRenderComponent comp) {
+        this.renderer.addLow(comp);
+    }
+
+    public void addRenderComponent(UIRenderComponent comp) {
+        this.renderer.add(comp);
+    }
+
     public void addJWindow(JWindow win) {
         this.jWindows.add(win);
     }
@@ -105,7 +111,10 @@ public abstract class Scene {
 
     public abstract void update(double dt);
     public abstract void draw(Graphics2D g2);
-    public abstract void render();
+
+    public void render() {
+        renderer.render();
+    }
 
     public void importLevel(String filename) {
         if (gameObjects.size() > 0) {

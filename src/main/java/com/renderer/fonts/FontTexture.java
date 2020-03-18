@@ -90,8 +90,8 @@ public class FontTexture {
             x += charInfo.getWidth();
             if (x > fontMetrics.getFont().getSize() * rowLength) {
                 x = 0;
-                y += fontMetrics.getHeight() * 1.2f;
-                height += fontMetrics.getHeight() * 1.2f;
+                y += fontMetrics.getHeight() * 1.4f;
+                height += fontMetrics.getHeight() * 1.4f;
             }
         }
 

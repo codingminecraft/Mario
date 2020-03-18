@@ -2,10 +2,12 @@ package com.ui;
 
 import com.file.Parser;
 import com.file.Serialize;
+import com.renderer.UIRenderComponent;
 import com.renderer.quads.Label;
 import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -23,18 +25,17 @@ public class Tab extends JComponent {
         this.name = name;
         this.components = new ArrayList<>();
 
-        //this.size.x = Constants.FONT_METRICS.stringWidth(this.name) + Constants.TAB_TITLE_PADDING.x * 2;
-        //this.size.y = Constants.FONT_METRICS.getHeight();
-        //this.centerAdjustment.x = (this.size.x / 2.0f) - (Constants.FONT_METRICS.stringWidth(this.name) / 2.0f);
-        this.renderComponent = new Rectangle(Constants.TITLE_BG_COLOR);
-        this.renderComponent.setSize(new Vector2f(Constants.DEFAULT_FONT_TEXTURE.getWidthOf(name) + 2 * Constants.TAB_TITLE_PADDING.x, 0.0f));
-        this.renderComponent.setZIndex(2);
+        this.mainComp = new Rectangle(Constants.TITLE_BG_COLOR, new Vector4f(7, 7, 0, 0), Constants.TITLE_BG_COLOR, 0.1f);
+        this.mainComp.setSize(new Vector2f(Constants.DEFAULT_FONT_TEXTURE.getWidthOf(name) + 2 * Constants.TAB_TITLE_PADDING.x, 0.0f));
+        this.mainComp.setZIndex(2);
+        this.renderComponents.add(mainComp);
         this.centerAdjustment.y = 15.0f;
 
         this.label = new Label(Constants.DEFAULT_FONT_TEXTURE, name,
-                new Vector2f(this.renderComponent.getPosX() + Constants.TAB_TITLE_PADDING.x,
-                        this.renderComponent.getPosY() + Constants.TAB_TITLE_PADDING.y));
+                new Vector2f(this.mainComp.getPosX() + Constants.TAB_TITLE_PADDING.x,
+                        this.mainComp.getPosY() + Constants.TAB_TITLE_PADDING.y));
         this.label.setZIndex(3);
+        this.renderComponents.addAll(this.label.getRenderComponents());
     }
 
     public List<JComponent> getUIElements() {
@@ -42,17 +43,19 @@ public class Tab extends JComponent {
     }
 
     public void setInactive() {
-        this.renderComponent.setColor(Constants.TITLE_BG_COLOR);
+        this.mainComp.setColor(Constants.TITLE_BG_COLOR);
         this.active = false;
         this.hot = false;
 
         for (JComponent comp : this.components) {
-            comp.renderComponent.setPosition(new Vector2f(-1000, -1000));
+            for (UIRenderComponent renderComponent : comp.getRenderComponents()) {
+                renderComponent.setPosition(new Vector2f(-1000, -1000));
+            }
         }
     }
 
     public void setActive() {
-        this.renderComponent.setColor(Constants.ACTIVE_TAB);
+        this.mainComp.setColor(Constants.ACTIVE_TAB);
         this.active = true;
     }
 
@@ -62,7 +65,7 @@ public class Tab extends JComponent {
 
     public void setHot() {
         this.hot = true;
-        this.renderComponent.setColor(Constants.HOT_TAB);
+        this.mainComp.setColor(Constants.HOT_TAB);
     }
 
     public boolean isHot() {
@@ -71,7 +74,7 @@ public class Tab extends JComponent {
 
     public void setNotHot() {
         this.hot = false;
-        this.renderComponent.setColor(Constants.TITLE_BG_COLOR);
+        this.mainComp.setColor(Constants.TITLE_BG_COLOR);
     }
 
     public JComponent getJComponent(int id) {
@@ -98,21 +101,6 @@ public class Tab extends JComponent {
 
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-//        if (active) {
-//            g2.setColor(Constants.ACTIVE_TAB);
-//        } else if (hot) {
-//            g2.setColor(Constants.HOT_TAB);
-//        } else {
-//            g2.setColor(Constants.TITLE_BG_COLOR);
-//        }
-//
-//        g2.fillRect((int)this.position.x, (int)this.position.y, (int)this.size.x, (int)this.size.y);
-//        g2.setColor(Color.WHITE);
-//        g2.drawString(this.name, this.position.x + centerAdjustment.x, this.position.y + centerAdjustment.y);
     }
 
     @Override

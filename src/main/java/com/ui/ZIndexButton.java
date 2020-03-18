@@ -15,11 +15,12 @@ public class ZIndexButton extends JButton {
 
     public ZIndexButton(int direction, int labelId, Sprite sprite) {
         super();
-        this.renderComponent.setSize(new Vector2f(25, 22));
+        this.mainComp.setSize(new Vector2f(25, 22));
         this.direction = direction;
         this.labelId = labelId;
         this.sprite = sprite;
         this.isCentered = true;
+        this.renderComponents.add(mainComp);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class CameraControls extends Component {
     public void update(double dt) {
         if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_3)) {
             Window.getScene().camera.position().x += MouseListener.getDx() * dt * mouseSensitivity;
-            Window.getScene().camera.position().y -= MouseListener.getDy() * dt * mouseSensitivity;
+            Window.getScene().camera.position().y += MouseListener.getDy() * dt * mouseSensitivity;
         }
     }
 

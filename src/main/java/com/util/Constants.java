@@ -46,8 +46,8 @@ public class Constants {
     // GUI constraints
     // =========================================================================
     public static final Vector2f PADDING = new Vector2f(6, 6);
-    public static final Vector2f TAB_TITLE_PADDING = new Vector2f(10, 0);
+    public static final Vector2f TAB_TITLE_PADDING = new Vector2f(10, 3);
     public static final Vector2f MARGIN = new Vector2f(4, 0);
 
-    public static final FontTexture DEFAULT_FONT_TEXTURE = new FontTexture(new Font("Arial", Font.PLAIN, 14), "US-ASCII");
+    public static final FontTexture DEFAULT_FONT_TEXTURE = new FontTexture(new Font("Arial", Font.PLAIN, 12), "US-ASCII");
 }

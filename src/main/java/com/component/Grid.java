@@ -6,8 +6,11 @@ import com.jade.Component;
 import com.jade.GameObject;
 import com.jade.Window;
 import com.renderer.RenderComponent;
+import com.renderer.UIRenderComponent;
+import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +19,11 @@ public class Grid extends Component {
 
     Camera camera;
     public int gridWidth, gridHeight;
-    private int numXSquares = 34;
-    private int numYSquares = 21;
+    private int numXSquares = 41;
+    private int numYSquares = 23;
     private Vector2f offset;
 
-    List<RenderComponent> renderObjs;
+    List<UIRenderComponent> renderObjs;
 
     public Grid() {
         this.offset = new Vector2f();
@@ -37,15 +40,15 @@ public class Grid extends Component {
             for (int j=0; j < numYSquares; j++) {
                 int x = (int)(i * this.gridWidth + this.offset.x);
                 int y = (int)(j * this.gridHeight + this.offset.y);
-                GameObject square = new GameObject("Square", new Transform(new Vector2f(x, y)), -10);
-                square.transform.scale.x = gridWidth;
-                square.transform.scale.y = gridHeight;
 
-//                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.7f, 0.7f, 0.7f, 1.0f), 0.5f);
-//                square.addRenderComponent(rect);
-//                Window.getScene().addGameObject(square);
-//
-//                this.renderObjs.add(rect);
+                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.7f, 0.7f, 0.7f, 1.0f), 0.5f);
+                rect.setPosX(x);
+                rect.setPosY(y);
+                rect.setWidth(this.gridWidth);
+                rect.setHeight(this.gridHeight);
+                Window.getScene().addLowUI(rect);
+
+                this.renderObjs.add(rect);
             }
         }
 
@@ -53,22 +56,22 @@ public class Grid extends Component {
     }
 
     private void calculateOffset() {
-        int offsetX = (int)(Math.floor(camera.position().x / gridWidth) * gridWidth);
-        int offsetY = (int)(Math.floor(camera.position().y / gridHeight) * gridHeight);
+        float offsetX = (float)(Math.floor(camera.position().x / gridWidth) * gridWidth) - camera.position().x;
+        float offsetY = (float)(Math.floor(camera.position().y / gridHeight) * gridHeight) - camera.position().y;
 
         if (this.offset.x != offsetX || this.offset.y != offsetY) {
             this.offset.x = offsetX;
             this.offset.y = offsetY;
             int i = 0;
             int j = 0;
-            for (RenderComponent comp : renderObjs) {
+            for (UIRenderComponent comp : renderObjs) {
                 if (j >= numYSquares) {
                     j = 0;
                     i++;
                 }
 
-                comp.gameObject.transform.position.x = i * this.gridWidth + this.offset.x;
-                comp.gameObject.transform.position.y = j * this.gridHeight + this.offset.y;
+                comp.setPosX(i * this.gridWidth + this.offset.x);
+                comp.setPosY( j * this.gridHeight + this.offset.y);
                 comp.isDirty = true;
 
                 j++;

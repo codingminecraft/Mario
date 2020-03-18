@@ -6,6 +6,7 @@ import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.prefabs.Prefabs;
+import com.renderer.quads.Label;
 import com.ui.*;
 import com.util.Constants;
 import org.joml.Vector2f;
@@ -83,11 +84,8 @@ public class LevelEditorScene extends Scene {
         this.addJWindow(blockSelector);
 
         JWindow fileSaver = new JWindow("Level File", new Vector2f(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2f(400, 100));
-//        Label filePath = new Label("Default");
-//        Constants.CURRENT_LEVEL = "Default";
-//        fileSaver.addUIElement(filePath);
-
-        //fileSaver.addUIElement(new FileExplorerButton(filePath.id, new Vector2f(86, 20)));
+        Constants.CURRENT_LEVEL = "Default";
+        fileSaver.addUIElement(new FileExplorerButton(new Vector2f(86, 20)));
         fileSaver.addUIElement(new SaveLevelButton());
         this.addJWindow(fileSaver);
 //
@@ -154,11 +152,6 @@ public class LevelEditorScene extends Scene {
         player.draw(g2);
 
         g2.setRenderingHints(Constants.ANTIALIASING_HINT);
-    }
-
-    @Override
-    public void render() {
-        renderer.render();
     }
 
     public void exportLevelEditorData() {

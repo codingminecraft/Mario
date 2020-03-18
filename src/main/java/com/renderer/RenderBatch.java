@@ -76,6 +76,8 @@ public class RenderBatch implements Comparable<RenderBatch> {
         this.renderer = renderer;
 
         this.zIndex = zIndex;
+
+        generateIndices();
     }
 
     public void start() {
@@ -133,7 +135,6 @@ public class RenderBatch implements Comparable<RenderBatch> {
         renderables.add(renderable);
         // Add properties to local array
         loadVertexProperties(index);
-        loadElementIndices(index);
 
         if (renderables.size() >= this.maxBatchSize) {
             this.hasRoom = false;
@@ -271,6 +272,12 @@ public class RenderBatch implements Comparable<RenderBatch> {
         indices[offsetArray + 3] = offset + 0;
         indices[offsetArray + 4] = offset + 2;
         indices[offsetArray + 5] = offset + 1;
+    }
+
+    public void generateIndices() {
+        for (int i=0; i < maxBatchSize; i++) {
+            this.loadElementIndices(i);
+        }
     }
 
     @Override

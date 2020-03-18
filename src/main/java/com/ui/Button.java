@@ -25,10 +25,11 @@ public class Button extends JComponent {
     public Button(Sprite sprite, Vector2f position, Vector2f size, GameObject objToCopy) {
         super();
         this.sprite = sprite;
-        this.renderComponent = new Rectangle(sprite, new Vector2f(16, 16));
-        this.renderComponent.setZIndex(1);
-        this.renderComponent.setPosition(position);
-        this.renderComponent.setSize(size);
+        this.mainComp = new Rectangle(sprite, new Vector2f(16, 16));
+        this.mainComp.setZIndex(1);
+        this.mainComp.setPosition(position);
+        this.mainComp.setSize(size);
+        this.renderComponents.add(mainComp);
         this.objToCopy = objToCopy;
     }
 
@@ -56,21 +57,6 @@ public class Button extends JComponent {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-//        if (active) {
-//            float alpha = 0.5f;
-//            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-//            g2.setComposite(ac);
-//            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
-//            alpha = 1.0f;
-//            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-//            g2.setComposite(ac);
-//        } else {
-//            g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
-//        }
-    }
-
-    @Override
     public String serialize(int tabSize) {
         StringBuilder builder = new StringBuilder();
 
@@ -82,13 +68,13 @@ public class Button extends JComponent {
 
         // Position
         builder.append(beginObjectProperty("Position", tabSize + 1));
-        builder.append(JMath.serialize(renderComponent.getPosition(), tabSize + 2));
+        builder.append(JMath.serialize(mainComp.getPosition(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
         // Size
         builder.append(beginObjectProperty("Size", tabSize + 1));
-        builder.append(JMath.serialize(renderComponent.getSize(), tabSize + 2));
+        builder.append(JMath.serialize(mainComp.getSize(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 

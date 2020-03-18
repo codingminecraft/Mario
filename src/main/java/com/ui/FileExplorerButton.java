@@ -2,6 +2,7 @@ package com.ui;
 
 import com.file.Parser;
 import com.jade.Window;
+import com.renderer.quads.Label;
 import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import com.util.JMath;
@@ -13,26 +14,49 @@ import java.awt.Graphics2D;
 import java.io.File;
 
 public class FileExplorerButton extends JButton {
-    private int labelId;
-//    private Label label;
-    private Vector2f stringPos = new Vector2f();
+    private Label label, buttonText;
     private String text = "Browse";
 
-    public FileExplorerButton(int labelId, Vector2f size) {
+    public FileExplorerButton(Vector2f size) {
         super();
-        this.labelId = labelId;
-        this.renderComponent = new Rectangle(Constants.BUTTON_COLOR);
-        this.renderComponent.setSize(size);
-        //FontMetrics metrics = Constants.FONT_METRICS;
-        //stringPos.x = (this.size.x / 2.0f) - (metrics.stringWidth(text) / 2.0f);
-        //stringPos.y = (this.size.y / 2.0f) - (metrics.getHeight() / 2.0f) + 12;
+        this.mainComp = new Rectangle(Constants.BUTTON_COLOR, new Vector4f(10, 10, 10, 10), Constants.BUTTON_COLOR, 0.1f);
+        this.mainComp.setSize(size);
+        this.renderComponents.add(mainComp);
+
+        this.buttonText = new Label(Constants.DEFAULT_FONT_TEXTURE, text, new Vector2f(0, 0));
+        this.buttonText.setZIndex(3);
+        this.renderComponents.addAll(this.buttonText.getRenderComponents());
+        this.label = new Label(Constants.DEFAULT_FONT_TEXTURE, Constants.CURRENT_LEVEL, new Vector2f(0, 0));
+        this.label.setZIndex(3);
+        this.renderComponents.addAll(this.label.getRenderComponents());
+    }
+
+    @Override
+    public void setPosX(float x) {
+        this.label.setPosX(x);
+        x += this.label.getWidth() + Constants.PADDING.x;
+        this.mainComp.setPosX(x);
+
+        this.buttonText.setPosX(x + (this.mainComp.getWidth() / 2.0f) - (this.label.getWidth() / 2.0f));
+    }
+
+    @Override
+    public void setPosY(float y) {
+        this.label.setPosY(y + (this.mainComp.getHeight() / 2.0f) - (Constants.DEFAULT_FONT_TEXTURE.getLineHeight() / 2.0f) + 2);
+        this.mainComp.setPosY(y);
+
+        this.buttonText.setPosY(y + (this.mainComp.getHeight() / 2.0f) - (Constants.DEFAULT_FONT_TEXTURE.getLineHeight() / 2.0f) + 2);
+    }
+
+    @Override
+    public float getWidth() {
+        return this.label.getWidth() + this.mainComp.getWidth();
     }
 
     @Override
     public void start() {
-//        this.label = (Label)parent.getJComponent(labelId);
-//        Constants.CURRENT_LEVEL = this.label.text;
-//        Window.getScene().importLevel(label.text);
+        Constants.CURRENT_LEVEL = this.label.getText();
+        Window.getScene().importLevel(label.getText());
     }
 
     @Override
@@ -48,18 +72,9 @@ public class FileExplorerButton extends JButton {
             filename = filename.replaceFirst("[.][^.]+$", "");
         }
 
-//        this.label.setText(filename);
-//        Constants.CURRENT_LEVEL = filename;
-//        Window.getScene().importLevel(filename);
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-//        g2.setColor(Constants.BUTTON_COLOR);
-//        if (active) g2.setColor(Color.GRAY);
-//        g2.fill(new RoundRectangle2D.Float(this.position.x, this.position.y, this.size.x, this.size.y, 15f, 13f));
-//        g2.setColor(Color.WHITE);
-//        g2.drawString(text, (int)(this.position.x + stringPos.x), this.position.y + stringPos.y);
+        this.label.setText(filename);
+        Constants.CURRENT_LEVEL = filename;
+        //Window.getScene().importLevel(filename);
     }
 
     @Override
@@ -67,18 +82,15 @@ public class FileExplorerButton extends JButton {
         StringBuilder builder = new StringBuilder();
         builder.append(beginObjectProperty("FileExplorerButton", tabSize));
 
-        // Label
-        builder.append(addIntProperty("labelID", labelId, tabSize + 1, true, true));
-
         // Position
         builder.append(beginObjectProperty("Position", tabSize + 1));
-        builder.append(JMath.serialize(renderComponent.getPosition(), tabSize + 2));
+        builder.append(JMath.serialize(mainComp.getPosition(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
         // Size
         builder.append(beginObjectProperty("Size", tabSize + 1));
-        builder.append(JMath.serialize(renderComponent.getSize(), tabSize + 2));
+        builder.append(JMath.serialize(mainComp.getSize(), tabSize + 2));
         builder.append(closeObjectProperty(tabSize + 1));
         builder.append(addEnding(true, true));
 
@@ -90,9 +102,6 @@ public class FileExplorerButton extends JButton {
     }
 
     public static FileExplorerButton deserialize() {
-        int labelId = Parser.consumeIntProperty("labelID");
-        Parser.consume(',');
-
         Parser.consumeBeginObjectProperty("Position");
         Vector2f position = JMath.deserializeVector2f();
         Parser.consumeEndObjectProperty();
@@ -106,7 +115,7 @@ public class FileExplorerButton extends JButton {
         int id = Parser.consumeIntProperty("ID");
         Parser.consumeEndObjectProperty();
 
-        FileExplorerButton button = new FileExplorerButton(labelId, size);
+        FileExplorerButton button = new FileExplorerButton(size);
         button.id = id;
         return button;
     }

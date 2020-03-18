@@ -8,6 +8,7 @@ import com.renderer.quads.Rectangle;
 import com.util.Constants;
 import com.util.JMath;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +45,13 @@ public class JWindow extends Serialize {
         beginTab(title);
 
         this.renderComponents = new ArrayList<>();
-        this.mainBackground = new Rectangle(Constants.BG_COLOR);
+        this.mainBackground = new Rectangle(Constants.BG_COLOR, new Vector4f(5, 5, 5, 5), Constants.BG_COLOR, 0.1f);
         this.mainBackground.setWidth(size.x);
         this.mainBackground.setHeight(size.y);
         this.mainBackground.setPosition(pos);
         this.renderComponents.add(this.mainBackground);
 
-        this.titleBar = new Rectangle(Constants.TITLE_BG_COLOR);
+        this.titleBar = new Rectangle(Constants.TITLE_BG_COLOR, new Vector4f(5, 5, 0, 0), Constants.TITLE_BG_COLOR, 0.1f);
         this.titleBar.setZIndex(1);
         this.titleBar.setPosX(mainBackground.getPosX());
         this.titleBar.setPosY(mainBackground.getPosY() + size.y - titleBarHeight);
@@ -83,7 +84,7 @@ public class JWindow extends Serialize {
     }
 
     public void addUIElement(JComponent uiElement) {
-        uiElement.renderComponent.setPosX(-1000);
+        uiElement.mainComp.setPosX(-1000);
         this.currentTab.addUIElement(uiElement);
     }
 
@@ -92,11 +93,10 @@ public class JWindow extends Serialize {
         positionElements();
 
         for (Tab tab : tabs) {
-            renderComponents.add(tab.renderComponent);
-            renderComponents.addAll(tab.label.getRenderComponents());
+            renderComponents.addAll(tab.getRenderComponents());
             for (JComponent comp : tab.getUIElements()) {
                 comp.start();
-                renderComponents.add(comp.renderComponent);
+                renderComponents.addAll(comp.getRenderComponents());
             }
         }
     }
@@ -202,24 +202,24 @@ public class JWindow extends Serialize {
         // First position all tabs
         int currentX = (int)Constants.MARGIN.x;
         for (int i=0; i < tabs.size(); i++) {
-            tabs.get(i).renderComponent.setPosX(currentX + this.titleBar.getPosX());
-            tabs.get(i).renderComponent.setPosY(this.titleBar.getPosY());
-            tabs.get(i).renderComponent.setHeight(titleBar.getHeight());
+            tabs.get(i).mainComp.setPosX(currentX + this.titleBar.getPosX());
+            tabs.get(i).mainComp.setPosY(this.titleBar.getPosY());
+            tabs.get(i).mainComp.setHeight(titleBar.getHeight() * 0.8f);
             tabs.get(i).label.setPosX(currentX + this.titleBar.getPosX() + Constants.TAB_TITLE_PADDING.x);
             tabs.get(i).label.setPosY(this.titleBar.getPosY() + Constants.TAB_TITLE_PADDING.y);
-            currentX += tabs.get(i).renderComponent.getWidth() + Constants.MARGIN.x;
+            currentX += tabs.get(i).mainComp.getWidth() + Constants.MARGIN.x;
         }
 
         currentX = (int)Constants.PADDING.x;
-        int currentY = (int)(-(titleBar.getHeight() * 2) - Constants.PADDING.y);
+        int currentY = (int)(-(titleBar.getHeight() * 3) - Constants.PADDING.y);
         int rowHeight = 0;
         // First pass, position everything roughly and calculate total height
         for (JComponent comp : this.currentTab.getUIElements()) {
-            UIRenderComponent renderComp = comp.renderComponent;
-            renderComp.setPosX(this.mainBackground.getPosX() + currentX);
-            if (renderComp.getHeight() > rowHeight) rowHeight = (int)Math.ceil(renderComp.getHeight());
-            if (renderComp.getPosX() + renderComp.getWidth() > mainBackground.getPosX() + mainBackground.getWidth() || comp.isLineBreak) {
-                renderComp.setPosX(mainBackground.getPosX() + Constants.PADDING.x);
+
+            comp.setPosX(this.mainBackground.getPosX() + currentX);
+            if (comp.getHeight() > rowHeight) rowHeight = (int)Math.ceil(comp.getHeight());
+            if (comp.getPosX() + comp.getWidth() > mainBackground.getPosX() + mainBackground.getWidth() || comp.isLineBreak) {
+                comp.setPosX(mainBackground.getPosX() + Constants.PADDING.x);
                 currentY -= rowHeight + Constants.PADDING.y;
                 currentX = (int)Constants.PADDING.x;
                 rowHeight = 0;
@@ -227,11 +227,11 @@ public class JWindow extends Serialize {
             }
 
             if (comp.isCentered) {
-                renderComp.setPosX(((mainBackground.getWidth() - currentX) / 2.0f) - (renderComp.getWidth() / 2.0f) + mainBackground.getPosX());
+                comp.setPosX(((mainBackground.getWidth() - currentX) / 2.0f) - (comp.getWidth() / 2.0f) + mainBackground.getPosX());
             }
 
-            renderComp.setPosY(mainBackground.getPosY() + mainBackground.getHeight() + currentY);
-            currentX += renderComp.getWidth() + Constants.PADDING.x;
+            comp.setPosY(mainBackground.getPosY() + mainBackground.getHeight() + currentY);
+            currentX += comp.getWidth() + Constants.PADDING.x;
         }
 
         float totalHeight = -(currentY - rowHeight);
@@ -245,16 +245,16 @@ public class JWindow extends Serialize {
         if (drawScrollbar) {
             // Second pass adjust according to position of scrollbar
             for (JComponent comp : this.currentTab.getUIElements()) {
-                UIRenderComponent renderComp = comp.renderComponent;
-                float percentOfHeight = 1 / ((mainBackground.getHeight() - titleBar.getHeight()) / totalHeight);
-                renderComp.setPosY(renderComp.getPosY() + ((localScrollbarY * percentOfHeight) + 1));
 
-                if (renderComp.getPosY() >= mainBackground.getPosY() + titleBar.getHeight() &&
-                        renderComp.getPosY() + renderComp.getHeight() <= mainBackground.getPosY() + mainBackground.getHeight()) {
+                float percentOfHeight = 1 / ((mainBackground.getHeight() - titleBar.getHeight()) / totalHeight);
+                comp.setPosY(comp.getPosY() + ((localScrollbarY * percentOfHeight) + 1));
+
+                if (comp.getPosY() >= mainBackground.getPosY() + titleBar.getHeight() &&
+                        comp.getPosY() + comp.getHeight() <= mainBackground.getPosY() + mainBackground.getHeight()) {
                     comp.visible = true;
                 } else {
                     comp.visible = false;
-                    comp.renderComponent.setPosX(-1000);
+                    comp.mainComp.setPosX(-1000);
                 }
             }
 
