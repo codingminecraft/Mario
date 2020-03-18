@@ -88,14 +88,14 @@ public class AnimationMachine extends Component {
         return machine;
     }
 
-    @Override
-    public void draw(Graphics2D g2) {
-        if (!inLevelEditor) {
-            current.draw(g2);
-        } else {
-            levelEditorGo.draw(g2);
-        }
-    }
+//    @Override
+//    public void draw(Graphics2D g2) {
+//        if (!inLevelEditor) {
+//            current.draw(g2);
+//        } else {
+//            levelEditorGo.draw(g2);
+//        }
+//    }
 
     @Override
     public String serialize(int tabSize) {

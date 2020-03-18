@@ -215,6 +215,7 @@ public class JWindow extends Serialize {
         int rowHeight = 0;
         // First pass, position everything roughly and calculate total height
         for (JComponent comp : this.currentTab.getUIElements()) {
+            comp.visible = true;
 
             comp.setPosX(this.mainBackground.getPosX() + currentX);
             if (comp.getHeight() > rowHeight) rowHeight = (int)Math.ceil(comp.getHeight());

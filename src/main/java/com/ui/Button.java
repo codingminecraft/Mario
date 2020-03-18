@@ -5,7 +5,9 @@ import com.component.Sprite;
 import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.*;
+import com.renderer.RenderComponent;
 import com.renderer.quads.Rectangle;
+import com.util.Constants;
 import com.util.JMath;
 import org.joml.Vector2f;
 
@@ -33,6 +35,14 @@ public class Button extends JComponent {
         this.objToCopy = objToCopy;
     }
 
+    private void deleteCurrent() {
+        LevelEditorScene scene = (LevelEditorScene) Window.getScene();
+
+        for (RenderComponent comp : scene.mouseCursor.getAllRenderComponents()) {
+            comp.delete();
+        }
+    }
+
     @Override
     public void update(double dt) {
         this.hot = mouseInButton();
@@ -41,18 +51,24 @@ public class Button extends JComponent {
             if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_1)) {
                 active = true;
                 ACTIVE_ITEM = this.id;
+                this.mainComp.setColor(Constants.COLOR_HALF_ALPHA);
                 LevelEditorScene scene = (LevelEditorScene) Window.getScene();
                 LevelEditorControls levelEditorControls = scene.mouseCursor.getComponent(LevelEditorControls.class);
+
+                deleteCurrent();
                 scene.mouseCursor = objToCopy.copy();
+                Window.getScene().addRenderComponents(scene.mouseCursor.getAllRenderComponents());
                 scene.mouseCursor.addComponent(levelEditorControls);
                 scene.mouseCursor.start();
                 levelEditorControls.gameObjectAdded();
             }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
             active = false;
+            this.mainComp.setColor(Constants.COLOR_WHITE);
             ACTIVE_ITEM = -1;
         } else if (active && ACTIVE_ITEM != this.id) {
             active = false;
+            this.mainComp.setColor(Constants.COLOR_WHITE);
         }
     }
 

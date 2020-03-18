@@ -40,7 +40,11 @@ public class Constants {
     public static final Vector4f BUTTON_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
     public static final Vector4f ACTIVE_TAB = new Vector4f(0.26f, 0.59f, 0.98f, 1.00f);
     public static final Vector4f HOT_TAB = new Vector4f(0.26f, 0.59f, 0.98f, 0.80f);
-    public static final Vector4f CLEAR_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    public static final Vector4f COLOR_CLEAR = new Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    public static final Vector4f COLOR_HALF_ALPHA = new Vector4f(1.0f, 1.0f, 1.0f, 0.5f);
+    public static final Vector4f COLOR_WHITE = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    public static final Vector4f COLOR_BLACK = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    public static final Vector4f COLOR_GREEN = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
 
     // =========================================================================
     // GUI constraints

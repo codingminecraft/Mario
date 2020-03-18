@@ -12,10 +12,6 @@ public abstract class Component extends Serialize {
         return;
     }
 
-    public void draw(Graphics2D g2) {
-        return;
-    }
-
     public void start() {
         return;
     }

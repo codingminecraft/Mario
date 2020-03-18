@@ -44,12 +44,12 @@ public class Animation extends Component {
         }
     }
 
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.drawImage(this.sprites.get(this.currentSprite).image,
-                (int)machine.gameObject.transform.position.x, (int)machine.gameObject.transform.position.y,
-                (int)(this.width * machine.gameObject.transform.scale.x), (int)(this.height * machine.gameObject.transform.scale.y), null);
-    }
+//    @Override
+//    public void draw(Graphics2D g2) {
+//        g2.drawImage(this.sprites.get(this.currentSprite).image,
+//                (int)machine.gameObject.transform.position.x, (int)machine.gameObject.transform.position.y,
+//                (int)(this.width * machine.gameObject.transform.scale.x), (int)(this.height * machine.gameObject.transform.scale.y), null);
+//    }
 
     public Animation trigger(String trigger) {
         if (machine.getAnimation(stateTransfers.get(trigger)) != null)

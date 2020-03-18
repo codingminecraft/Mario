@@ -7,9 +7,11 @@ import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.prefabs.Prefabs;
 import com.renderer.quads.Label;
+import com.renderer.quads.Quad;
 import com.ui.*;
 import com.util.Constants;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -67,9 +69,10 @@ public class LevelEditorScene extends Scene {
         int current = 0;
         while (current < totalSprites) {
             GameObject tile = new GameObject("Tile", new Transform(new Vector2f(0, 0)), 0);
-            tile.transform.scale.x = 2;
-            tile.transform.scale.y = 2;
+            tile.transform.scale.x = 32;
+            tile.transform.scale.y = 32;
             tile.addComponent(spritesheet.sprites.get(current).copy());
+            //tile.addRenderComponent(new Quad(spritesheet.sprites.get(current), Constants.COLOR_WHITE));
             Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;
@@ -119,9 +122,9 @@ public class LevelEditorScene extends Scene {
 
         if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
             LevelEditorControls levelEditorControls = mouseCursor.getComponent(LevelEditorControls.class);
+            levelEditorControls.gameObjectRemoved();
             mouseCursor = new GameObject("Mouse Cursor", mouseCursor.transform.copy(), mouseCursor.zIndex);
             mouseCursor.addComponent(levelEditorControls);
-            levelEditorControls.gameObjectRemoved();
         }
 
         // Update level editor components
@@ -139,19 +142,6 @@ public class LevelEditorScene extends Scene {
             worldPartition.remove(new Tuple<>((int)go.transform.position.x, (int)go.transform.position.y, go.zIndex));
         }
         objsToDelete.clear();
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.setRenderingHints(Constants.NO_ANTIALIASING_HINT);
-        g2.setColor(Color.WHITE);
-        g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
-        grid.draw(g2);
-        //renderer.render(g2);
-        mouseCursor.getComponent(LevelEditorControls.class).draw(g2);
-        player.draw(g2);
-
-        g2.setRenderingHints(Constants.ANTIALIASING_HINT);
     }
 
     public void exportLevelEditorData() {

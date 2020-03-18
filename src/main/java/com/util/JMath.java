@@ -5,6 +5,7 @@ import com.file.Serialize;
 import com.util.enums.DataType;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class JMath {
     private static final int FLOAT_SIZE = 4;
@@ -31,6 +32,10 @@ public class JMath {
 
     public static Vector3f copy(Vector3f vec) {
         return new Vector3f(vec.x, vec.y, vec.z);
+    }
+
+    public static Vector4f copy(Vector4f vec) {
+        return new Vector4f(vec.x, vec.y, vec.z, vec.w);
     }
 
     public static String serialize(Vector2f vec, int tabSize) {

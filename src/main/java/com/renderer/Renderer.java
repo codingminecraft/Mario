@@ -28,11 +28,14 @@ public class Renderer {
 
     public void add(RenderComponent renderable) {
         boolean added = false;
+        renderable.isDirty = true;
         for (RenderBatch batch : batches) {
             if (batch.hasRoom && batch.zIndex == renderable.gameObject.zIndex) {
-                batch.add(renderable);
-                added = true;
-                break;
+                if (renderable.getTexture() == null || (batch.hasTexture(renderable.getTexture()) || batch.hasTextureRoom())) {
+                    batch.add(renderable);
+                    added = true;
+                    break;
+                }
             }
         }
         if (!added) {

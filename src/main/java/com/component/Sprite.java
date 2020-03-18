@@ -3,10 +3,12 @@ package com.component;
 import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
+import com.jade.Window;
+import com.renderer.quads.Quad;
 import com.util.Constants;
+import org.joml.Vector4f;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -20,6 +22,7 @@ public class Sprite extends Component {
     public int row, column, index;
 
     public boolean isSelected = false;
+    private Quad quad;
 
     public Sprite(String pictureFile) {
         this.pictureFile = pictureFile;
@@ -40,6 +43,17 @@ public class Sprite extends Component {
         }
     }
 
+    public void setSelected(boolean val) {
+        isSelected = val;
+        this.quad.setColor(val ? Constants.COLOR_GREEN : Constants.COLOR_WHITE);
+    }
+
+    @Override
+    public void start() {
+        quad = new Quad(this, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+        gameObject.addRenderComponent(quad);
+    }
+
     public Sprite(BufferedImage image, String pictureFile) {
         this.image = image;
         this.width = image.getWidth();
@@ -58,27 +72,27 @@ public class Sprite extends Component {
         this.pictureFile = pictureFile;
     }
 
-    @Override
-    public void draw(Graphics2D g2) {
-        if (!isSelected && Constants.Z_INDEX == gameObject.zIndex) {
-            g2.drawImage(image, (int) gameObject.transform.position.x,
-                    (int) gameObject.transform.position.y, (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y), null);
-        } else {
-            if (Constants.Z_INDEX == gameObject.zIndex) {
-                g2.setColor(Color.GREEN);
-                g2.fillRect((int) gameObject.transform.position.x, (int) gameObject.transform.position.y,
-                        (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y));
-            }
-            float alpha = 0.5f;
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-            g2.drawImage(image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
-                    (int)(width * gameObject.transform.scale.x), (int)(height * gameObject.transform.scale.y), null);
-            alpha = 1.0f;
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-        }
-    }
+//    @Override
+//    public void draw(Graphics2D g2) {
+//        if (!isSelected && Constants.Z_INDEX == gameObject.zIndex) {
+//            g2.drawImage(image, (int) gameObject.transform.position.x,
+//                    (int) gameObject.transform.position.y, (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y), null);
+//        } else {
+//            if (Constants.Z_INDEX == gameObject.zIndex) {
+//                g2.setColor(Color.GREEN);
+//                g2.fillRect((int) gameObject.transform.position.x, (int) gameObject.transform.position.y,
+//                        (int) (width * gameObject.transform.scale.x), (int) (height * gameObject.transform.scale.y));
+//            }
+//            float alpha = 0.5f;
+//            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+//            g2.setComposite(ac);
+//            g2.drawImage(image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
+//                    (int)(width * gameObject.transform.scale.x), (int)(height * gameObject.transform.scale.y), null);
+//            alpha = 1.0f;
+//            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+//            g2.setComposite(ac);
+//        }
+//    }
 
     @Override
     public Component copy() {

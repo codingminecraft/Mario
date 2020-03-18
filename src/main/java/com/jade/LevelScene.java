@@ -31,12 +31,4 @@ public class LevelScene extends Scene {
     public void update(double dt) {
 
     }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.setColor(Color.WHITE);
-        g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
-
-        //renderer.render(g2);
-    }
 }

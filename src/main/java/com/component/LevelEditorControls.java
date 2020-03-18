@@ -2,6 +2,7 @@ package com.component;
 
 import com.dataStructure.Tuple;
 import com.jade.*;
+import com.renderer.RenderComponent;
 import com.util.Constants;
 import org.joml.Vector2f;
 
@@ -42,20 +43,24 @@ public class LevelEditorControls extends Component {
         placingBlocks = false;
         sprite = null;
         machine = null;
+
+        for (RenderComponent comp : gameObject.getAllRenderComponents()) {
+            comp.delete();
+        }
     }
 
     private void calculateGameObjectPosition() {
-        screenX = (float)Math.floor((MouseListener.getX() + Window.getScene().camera.position().x + MouseListener.getDx()) / gridWidth);
-        screenY= (float)Math.floor((MouseListener.getY() + Window.getScene().camera.position().y + MouseListener.getDy()) / gridHeight);
-        this.gameObject.transform.position.x = screenX * gridWidth - Window.getScene().camera.position().x;
-        this.gameObject.transform.position.y = screenY * gridHeight - Window.getScene().camera.position().y;
+        screenX = (float)Math.floor((MouseListener.positionScreenCoords().x + Window.getScene().camera.position().x) / gridWidth);
+        screenY= (float)Math.floor((MouseListener.positionScreenCoords().y + Window.getScene().camera.position().y) / gridHeight);
+        this.gameObject.transform.position.x = screenX * gridWidth;
+        this.gameObject.transform.position.y = screenY * gridHeight;
     }
 
     private void placeGameObject() {
         Tuple<Integer> gridPos = new Tuple<>((int)(screenX * gridWidth), (int)(screenY * gridHeight), Constants.Z_INDEX);
         // Check if object has already been placed there
         // If not, we will place a block
-        if (!Window.getScene().getWorldPartition().containsKey(gridPos) && !Window.getScene().inJWindow(MouseListener.position())) {
+        if (!Window.getScene().getWorldPartition().containsKey(gridPos) && !Window.getScene().inJWindow(MouseListener.positionScreenCoords())) {
             GameObject object = gameObject.copy();
             object.transform.position = new Vector2f(screenX * gridWidth, screenY * gridHeight);
             object.zIndex = Constants.Z_INDEX;
@@ -91,10 +96,10 @@ public class LevelEditorControls extends Component {
         GameObject obj = Window.getScene().getWorldPartition().get(gridPos);
         if (obj != null) {
             if (!selected.contains(obj)) {
-                obj.getComponent(Sprite.class).isSelected = true;
+                obj.getComponent(Sprite.class).setSelected(true);
                 selected.add(obj);
             } else {
-                obj.getComponent(Sprite.class).isSelected = false;
+                obj.getComponent(Sprite.class).setSelected(false);
                 selected.remove(obj);
             }
         }
@@ -102,7 +107,7 @@ public class LevelEditorControls extends Component {
 
     private void deselectAll() {
         for (GameObject go : selected) {
-            go.getComponent(Sprite.class).isSelected = false;
+            go.getComponent(Sprite.class).setSelected(false);
         }
         selected.clear();
     }
@@ -117,9 +122,9 @@ public class LevelEditorControls extends Component {
     private void moveSelectedObjects() {
         Vector2f direction = new Vector2f(0, 0);
         if (KeyListener.isKeyPressed(GLFW_KEY_UP)) {
-            direction.y = -1;
-        } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
             direction.y = 1;
+        } else if (KeyListener.isKeyPressed(GLFW_KEY_DOWN)) {
+            direction.y = -1;
         }
         if (KeyListener.isKeyPressed(GLFW_KEY_LEFT)) {
             direction.x = -1;
@@ -159,30 +164,6 @@ public class LevelEditorControls extends Component {
                 moveSelectedObjects();
                 keyDebounceLeft = keyDebounceTime;
             }
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        if (sprite != null) {
-            float alpha = 0.5f;
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-            g2.drawImage(sprite.image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
-                    (int)sprite.width * 2, (int)sprite.height * 2, null);
-            alpha = 1.0f;
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-        } else if (machine != null) {
-            sprite = machine.getPreviewSprite();
-            float alpha = 0.5f;
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-            g2.drawImage(sprite.image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
-                    (int)sprite.width * 2, (int)sprite.height * 2, null);
-            alpha = 1.0f;
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
         }
     }
 

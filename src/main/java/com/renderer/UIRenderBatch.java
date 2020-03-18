@@ -212,7 +212,6 @@ public class UIRenderBatch implements Comparable<UIRenderBatch> {
         glDisableVertexAttribArray(5);
         glDisableVertexAttribArray(6);
         glDisableVertexAttribArray(7);
-
         for (Texture tex : textures) {
             tex.unbind();
         }
@@ -230,7 +229,6 @@ public class UIRenderBatch implements Comparable<UIRenderBatch> {
         Vector4f color = renderable.getColor();
 
         Vector2f[] texCoords = renderable.getTexCoords();
-        assert(texCoords.length == 4);
 
         Vector4f borderRadius = renderable.getBorderRadius();
         Vector4f borderColor = renderable.getBorderColor();

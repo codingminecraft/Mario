@@ -177,8 +177,6 @@ public class Window {
     public void update(double dt) {
         currentScene.update(dt);
         MouseListener.endFrame();
-
-        //draw(getGraphics());
     }
 
     public void setWidth(int width) {

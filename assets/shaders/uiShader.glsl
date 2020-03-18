@@ -149,11 +149,7 @@ void main()
     } else if (fColor.w > 0.0 && fTexSlot < 1) {
         color = fColor;
     } else if (fTexSlot > 0) {
-        if (fColor.x < 1 && fColor.y < 1 && fColor.z < 1 && fColor.w < 1) {
-            color = texColor;
-        } else {
-            color = texColor * fColor;
-        }
+        color = texColor * fColor;
     } else {
         color = vec4(0, 0, 0, 0);
     }

@@ -92,6 +92,16 @@ public class GameObject extends Object {
                 newGameObject.addComponent(copy);
             }
         }
+
+        for (RenderComponent c : renderComponents) {
+            RenderComponent copy = c.copy();
+            if (copy != null) {
+                newGameObject.addRenderComponent(copy);
+            }
+        }
+
+        newGameObject.start();
+
         return newGameObject;
     }
 
@@ -114,12 +124,6 @@ public class GameObject extends Object {
 
     public void setNonserializable() {
         serializable = false;
-    }
-
-    public void draw(Graphics2D g2) {
-        for (Component c : components) {
-            c.draw(g2);
-        }
     }
 
     public void start() {
