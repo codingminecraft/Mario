@@ -26,6 +26,13 @@ public class JMath {
         }
     }
 
+    public static void copyValues(Vector4f from, Vector4f to) {
+        to.x = from.x;
+        to.y = from.y;
+        to.z = from.z;
+        to.w = from.w;
+    }
+
     public static Vector2f copy(Vector2f vec) {
         return new Vector2f(vec.x, vec.y);
     }

@@ -67,18 +67,12 @@ public abstract class Scene {
             g.transform.position.x = newCoords.x;
             g.transform.position.y = newCoords.y;
             worldPartition.put(newCoords, g);
-
-            for (RenderComponent comp : g.getAllRenderComponents()) {
-                comp.isDirty = true;
-            }
         }
     }
 
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
-        for (RenderComponent comp : g.getAllRenderComponents()) {
-            renderer.add(comp);
-        }
+        renderer.add(g);
 
         Tuple<Integer> gridPos = g.getGridCoords();
         worldPartition.put(gridPos, g);
@@ -90,16 +84,6 @@ public abstract class Scene {
 
     public void addRenderComponent(UIRenderComponent comp) {
         this.renderer.add(comp);
-    }
-
-    public void addRenderComponent(RenderComponent comp) {
-        this.renderer.add(comp);
-    }
-
-    public void addRenderComponents(List<RenderComponent> components) {
-        for (RenderComponent comp : components) {
-            this.renderer.add(comp);
-        }
     }
 
     public void addJWindow(JWindow win) {

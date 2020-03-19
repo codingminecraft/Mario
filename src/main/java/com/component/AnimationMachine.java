@@ -16,6 +16,7 @@ public class AnimationMachine extends Component {
 
     private boolean inLevelEditor = false;
     private GameObject levelEditorGo;
+    private SpriteRenderer spriteRenderer;
 
     public AnimationMachine() {
         this.animations = new ArrayList<>();
@@ -56,6 +57,9 @@ public class AnimationMachine extends Component {
             this.levelEditorGo = new GameObject("LevelEditorCopy", gameObject.transform.copy(), gameObject.zIndex);
             levelEditorGo.addComponent(getPreviewSprite().copy());
         }
+
+        this.spriteRenderer = gameObject.getComponent(SpriteRenderer.class);
+        assert this.spriteRenderer != null : "Animation machine must be attached to GameObject with SpriteRenderer!";
     }
 
     @Override
@@ -87,15 +91,6 @@ public class AnimationMachine extends Component {
 
         return machine;
     }
-
-//    @Override
-//    public void draw(Graphics2D g2) {
-//        if (!inLevelEditor) {
-//            current.draw(g2);
-//        } else {
-//            levelEditorGo.draw(g2);
-//        }
-//    }
 
     @Override
     public String serialize(int tabSize) {

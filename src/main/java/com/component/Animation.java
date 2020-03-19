@@ -25,7 +25,8 @@ public class Animation extends Component {
         this.animationName = name;
         this.sprites = new ArrayList<>();
         for (Sprite sprite : sprites) {
-            this.sprites.add((Sprite)sprite.copy());
+            Sprite copy = (Sprite)sprite.copy();
+            this.sprites.add(copy);
         }
         this.speed = speed;
         this.timeLeft = speed;
@@ -40,16 +41,10 @@ public class Animation extends Component {
 
         if (this.timeLeft <= 0.0f) {
             this.currentSprite = (this.currentSprite + 1) % this.sprites.size();
+
             this.timeLeft = this.speed;
         }
     }
-
-//    @Override
-//    public void draw(Graphics2D g2) {
-//        g2.drawImage(this.sprites.get(this.currentSprite).image,
-//                (int)machine.gameObject.transform.position.x, (int)machine.gameObject.transform.position.y,
-//                (int)(this.width * machine.gameObject.transform.scale.x), (int)(this.height * machine.gameObject.transform.scale.y), null);
-//    }
 
     public Animation trigger(String trigger) {
         if (machine.getAnimation(stateTransfers.get(trigger)) != null)

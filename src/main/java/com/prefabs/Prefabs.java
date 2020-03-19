@@ -2,6 +2,7 @@ package com.prefabs;
 
 import com.component.Animation;
 import com.component.AnimationMachine;
+import com.component.SpriteRenderer;
 import com.component.Spritesheet;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
@@ -47,9 +48,10 @@ public class Prefabs {
         playerMachine.addAnimation(swim);
 
         player.addComponent(playerMachine);
+        player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
 
-        player.transform.scale.x = 2;
-        player.transform.scale.y = 2;
+        player.transform.scale.x = 32;
+        player.transform.scale.y = 32;
 
         return player;
     }
@@ -95,8 +97,9 @@ public class Prefabs {
 
         goomba.addComponent(goombaMachine);
 
-        goomba.transform.scale.x = 2;
-        goomba.transform.scale.y = 2;
+        goomba.addComponent(new SpriteRenderer(goombaMachine.getPreviewSprite()));
+        goomba.transform.scale.x = 32;
+        goomba.transform.scale.y = 32;
 
         return goomba;
     }

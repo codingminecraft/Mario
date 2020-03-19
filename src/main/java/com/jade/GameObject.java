@@ -12,7 +12,6 @@ import java.util.List;
 
 public class GameObject extends Object {
     private List<Component> components;
-    private List<RenderComponent> renderComponents;
     private Transform lastTransform;
     private float lastZIndex;
 
@@ -26,7 +25,6 @@ public class GameObject extends Object {
         this.transform = transform;
         this.lastTransform = this.transform.copy();
         this.components = new ArrayList<>();
-        this.renderComponents = new ArrayList<>();
         this.zIndex = zIndex;
         this.lastZIndex = this.zIndex;
     }
@@ -63,17 +61,8 @@ public class GameObject extends Object {
         return this.components;
     }
 
-    public List<RenderComponent> getAllRenderComponents() {
-        return this.renderComponents;
-    }
-
     public void addComponent(Component c) {
         components.add(c);
-        c.gameObject = this;
-    }
-
-    public void addRenderComponent(RenderComponent c) {
-        renderComponents.add(c);
         c.gameObject = this;
     }
 
@@ -93,13 +82,6 @@ public class GameObject extends Object {
             }
         }
 
-        for (RenderComponent c : renderComponents) {
-            RenderComponent copy = c.copy();
-            if (copy != null) {
-                newGameObject.addRenderComponent(copy);
-            }
-        }
-
         newGameObject.start();
 
         return newGameObject;
@@ -109,13 +91,6 @@ public class GameObject extends Object {
     public void update(double dt) {
         for (Component c : components) {
             c.update(dt);
-        }
-
-        // Update our render components to dirty if any property has changed
-        if (!this.transform.equals(this.lastTransform) || this.zIndex != lastZIndex) {
-            for (RenderComponent comp : renderComponents) {
-                comp.isDirty = true;
-            }
         }
 
         lastZIndex = this.zIndex;

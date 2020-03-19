@@ -36,11 +36,11 @@ public class Button extends JComponent {
     }
 
     private void deleteCurrent() {
-        LevelEditorScene scene = (LevelEditorScene) Window.getScene();
-
-        for (RenderComponent comp : scene.mouseCursor.getAllRenderComponents()) {
-            comp.delete();
-        }
+//        LevelEditorScene scene = (LevelEditorScene) Window.getScene();
+//
+//        for (RenderComponent comp : scene.mouseCursor.getAllRenderComponents()) {
+//            comp.delete();
+//        }
     }
 
     @Override
@@ -57,7 +57,6 @@ public class Button extends JComponent {
 
                 deleteCurrent();
                 scene.mouseCursor = objToCopy.copy();
-                Window.getScene().addRenderComponents(scene.mouseCursor.getAllRenderComponents());
                 scene.mouseCursor.addComponent(levelEditorControls);
                 scene.mouseCursor.start();
                 levelEditorControls.gameObjectAdded();

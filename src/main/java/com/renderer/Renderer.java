@@ -1,6 +1,9 @@
 package com.renderer;
 
+import com.component.SpriteRenderer;
 import com.jade.Camera;
+import com.jade.GameObject;
+import com.renderer.quads.Quad;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,23 +29,30 @@ public class Renderer {
         return this.camera;
     }
 
-    public void add(RenderComponent renderable) {
+    public void add(GameObject go) {
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        if (spr != null) {
+            add(spr);
+        }
+    }
+
+    public void add(SpriteRenderer renderer) {
         boolean added = false;
-        renderable.isDirty = true;
+        renderer.setDirty();
         for (RenderBatch batch : batches) {
-            if (batch.hasRoom && batch.zIndex == renderable.gameObject.zIndex) {
-                if (renderable.getTexture() == null || (batch.hasTexture(renderable.getTexture()) || batch.hasTextureRoom())) {
-                    batch.add(renderable);
+            if (batch.hasRoom && batch.zIndex == renderer.gameObject.zIndex) {
+                if (renderer.getQuad().getTexture() == null || (batch.hasTexture(renderer.getQuad().getTexture()) || batch.hasTextureRoom())) {
+                    batch.add(renderer);
                     added = true;
                     break;
                 }
             }
         }
         if (!added) {
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, this, renderable.gameObject.zIndex);
+            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, this, renderer.gameObject.zIndex);
             newBatch.start();
             batches.add(newBatch);
-            newBatch.add(renderable);
+            newBatch.add(renderer);
 
             Collections.sort(batches);
         }

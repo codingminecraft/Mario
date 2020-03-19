@@ -1,5 +1,6 @@
 package com.renderer;
 
+import com.component.SpriteRenderer;
 import com.dataStructure.AssetPool;
 import com.jade.GameObject;
 import com.jade.Window;
@@ -41,7 +42,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private final int VERTEX_SIZE = 10;
     private final int VERTEX_SIZE_BYTES = JMath.sizeof(DataType.FLOAT) * VERTEX_SIZE;
 
-    private List<RenderComponent> renderables;
+    private List<SpriteRenderer> sprites;
     private List<Texture> textures;
     private float[] vertices;
     private int[] indices;
@@ -57,8 +58,8 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     public RenderBatch(int maxBatchSize, Renderer renderer, int zIndex) {
         this.shader = AssetPool.getShader("assets/shaders/default.glsl");
-        this.renderables = new ArrayList<>();
         this.textures = new ArrayList<>();
+        this.sprites = new ArrayList<>();
         this.maxBatchSize = maxBatchSize;
 
         // 4 Vertices per quad
@@ -111,22 +112,22 @@ public class RenderBatch implements Comparable<RenderBatch> {
         glEnableVertexAttribArray(3);
     }
 
-    public void add(RenderComponent renderable) {
+    public void add(SpriteRenderer spr) {
         // Get index and add renderable
-        int index = renderables.size();
-        renderables.add(renderable);
+        int index = this.sprites.size();
+        this.sprites.add(spr);
 
         // If renderable has texture add it if it is needed to this batch's textures
-        if (renderable.getTexture() != null) {
-            if (!textures.contains(renderable.getTexture())) {
-                textures.add(renderable.getTexture());
+        if (spr.getQuad().getTexture() != null) {
+            if (!textures.contains(spr.getQuad().getTexture())) {
+                textures.add(spr.getQuad().getTexture());
             }
         }
 
         // Add properties to local array
         loadVertexProperties(index);
 
-        if (renderables.size() >= this.maxBatchSize) {
+        if (sprites.size() >= this.maxBatchSize) {
             this.hasRoom = false;
         }
     }
@@ -141,15 +142,11 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     public void render() {
         boolean rebufferData = false;
-        for (int i=0; i < renderables.size(); i++) {
-            RenderComponent renderable = renderables.get(i);
-            if (renderable.isDirty) {
+        for (int i=0; i < sprites.size(); i++) {
+            SpriteRenderer spr = sprites.get(i);
+            if (spr.isDirty()) {
                 loadVertexProperties(i);
-                renderable.isDirty = false;
-                rebufferData = true;
-            } else if (renderable.shouldDelete) {
-                deleteVertexProperties(i);
-                renderable.shouldDelete = false;
+                spr.setClean();
                 rebufferData = true;
             }
         }
@@ -179,7 +176,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         glEnableVertexAttribArray(3);
 
         // Draw the batch
-        glDrawElements(GL_TRIANGLES, renderables.size() * 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sprites.size() * 6, GL_UNSIGNED_INT, 0);
 
         // Disable our location
         glDisableVertexAttribArray(0);
@@ -223,16 +220,16 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     public void loadVertexProperties(int index) {
-        RenderComponent renderable = renderables.get(index);
+        SpriteRenderer sprite = sprites.get(index);
         // Add it's transform and stuff to the vertex array
         int offset = index * VERTEX_SIZE * 4;
 
-        Vector4f color = renderable.getColor();
+        Vector4f color = sprite.getQuad().getColor();
 
-        Vector2f[] texCoords = renderable.getTexCoords();
+        Vector2f[] texCoords = sprite.getQuad().getTexCoords();
         assert(texCoords.length == 4);
 
-        Texture tex = renderable.getTexture();
+        Texture tex = sprite.getQuad().getTexture();
         int texSlot = 0;
         if (tex != null) {
             for (int i=0; i < textures.size(); i++) {
@@ -256,9 +253,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
             }
 
             // Load position
-            vertices[offset] = renderable.gameObject.transform.position.x + (xAdd * renderable.getWidth());
-            vertices[offset + 1] = renderable.gameObject.transform.position.y + (yAdd * renderable.getHeight());
-            vertices[offset + 2] = renderable.gameObject.zIndex;
+            vertices[offset] = sprite.gameObject.transform.position.x + (xAdd * sprite.gameObject.transform.scale.x);
+            vertices[offset + 1] = sprite.gameObject.transform.position.y + (yAdd * sprite.gameObject.transform.scale.y);
+            vertices[offset + 2] = sprite.gameObject.zIndex;
 
             // Load color
             vertices[offset + 3] = color.x;

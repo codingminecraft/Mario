@@ -43,10 +43,6 @@ public class LevelEditorControls extends Component {
         placingBlocks = false;
         sprite = null;
         machine = null;
-
-        for (RenderComponent comp : gameObject.getAllRenderComponents()) {
-            comp.delete();
-        }
     }
 
     private void calculateGameObjectPosition() {
@@ -96,10 +92,10 @@ public class LevelEditorControls extends Component {
         GameObject obj = Window.getScene().getWorldPartition().get(gridPos);
         if (obj != null) {
             if (!selected.contains(obj)) {
-                obj.getComponent(Sprite.class).setSelected(true);
+                obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_GREEN;
                 selected.add(obj);
             } else {
-                obj.getComponent(Sprite.class).setSelected(false);
+                obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
                 selected.remove(obj);
             }
         }
@@ -107,7 +103,7 @@ public class LevelEditorControls extends Component {
 
     private void deselectAll() {
         for (GameObject go : selected) {
-            go.getComponent(Sprite.class).setSelected(false);
+            go.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
         }
         selected.clear();
     }

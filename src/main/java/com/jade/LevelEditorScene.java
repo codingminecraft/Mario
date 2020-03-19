@@ -28,6 +28,8 @@ public class LevelEditorScene extends Scene {
     public GameObject mouseCursor;
     GameObject player = new GameObject("Player", new Transform(new Vector2f(800, 500)), 0);
 
+    GameObject test;
+
     public LevelEditorScene(String name) {
         super.Scene(name);
         grid = new Grid();
@@ -44,13 +46,6 @@ public class LevelEditorScene extends Scene {
         cameraControls.start();
         mouseCursor.addComponent(new LevelEditorControls(32, 32));
 
-//        GameObject test = new GameObject("Test", new Transform(new Vector2(0.0f, 0.0f)), 0);
-//        test.transform.scale.x *= 128.0f;
-//        test.transform.scale.y *= 128.0f;
-//        Rectangle rect = new Rectangle(new Vector4f(0.2f, 0.1f, 0.8f, 1.0f), new Vector4f(10.0f, 10.0f, 10.0f, 10.0f), new Vector4f(0.1f, 0.1f, 0.1f, 1.0f), 1.0f);
-//        test.addRenderComponent(rect);
-//        addGameObject(test);
-
         initLevelEditorComponents();
     }
 
@@ -65,14 +60,14 @@ public class LevelEditorScene extends Scene {
         Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
         Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
         Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
+
         int totalSprites = 10 * 33;
         int current = 0;
         while (current < totalSprites) {
             GameObject tile = new GameObject("Tile", new Transform(new Vector2f(0, 0)), 0);
             tile.transform.scale.x = 32;
             tile.transform.scale.y = 32;
-            tile.addComponent(spritesheet.sprites.get(current).copy());
-            //tile.addRenderComponent(new Quad(spritesheet.sprites.get(current), Constants.COLOR_WHITE));
+            tile.addComponent(new SpriteRenderer((Sprite)spritesheet.sprites.get(current).copy()));
             Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;
