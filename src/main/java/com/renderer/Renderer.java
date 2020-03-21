@@ -29,6 +29,10 @@ public class Renderer {
         return this.camera;
     }
 
+    public void resetLevel() {
+        batches.clear();
+    }
+
     public void add(GameObject go) {
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         if (spr != null) {

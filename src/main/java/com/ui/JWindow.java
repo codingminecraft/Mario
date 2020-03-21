@@ -84,7 +84,7 @@ public class JWindow extends Serialize {
     }
 
     public void addUIElement(JComponent uiElement) {
-        uiElement.mainComp.setPosX(-1000);
+        uiElement.setPosX(-1000);
         this.currentTab.addUIElement(uiElement);
     }
 
@@ -255,7 +255,7 @@ public class JWindow extends Serialize {
                     comp.visible = true;
                 } else {
                     comp.visible = false;
-                    comp.mainComp.setPosX(-1000);
+                    comp.setPosX(-1000);
                 }
             }
 

@@ -6,6 +6,10 @@ import com.component.SpriteRenderer;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.ui.*;
+import com.ui.buttons.FileExplorerButton;
+import com.ui.buttons.NewLevelButton;
+import com.ui.buttons.SaveLevelButton;
+import com.ui.buttons.ZIndexButton;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +23,7 @@ public class Parser {
     private static byte[] bytes;
 
     public static void openLevelFile(String filename) {
-        File tmp = new File("levels/" + filename + ".zip");
+        File tmp = new File("assets/levels/" + filename + ".zip");
         if (!tmp.exists()) {
             bytes = new byte[0];
             return;
@@ -28,7 +32,7 @@ public class Parser {
         line = 1;
 
         try {
-            ZipFile zipFile = new ZipFile("levels/" + filename + ".zip");
+            ZipFile zipFile = new ZipFile("assets/levels/" + filename + ".zip");
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
@@ -230,6 +234,8 @@ public class Parser {
                 return ZIndexButton.deserialize();
             case "LineBreak":
                 return LineBreak.deserialize();
+            case "NewLevelButton":
+                return NewLevelButton.deserialize();
             default:
                 System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
                 System.exit(-1);

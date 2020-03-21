@@ -1,8 +1,7 @@
-package com.ui;
+package com.ui.buttons;
 
 import com.component.Sprite;
 import com.file.Parser;
-import com.util.Constants;
 import org.joml.Vector2f;
 
 import java.awt.Graphics2D;

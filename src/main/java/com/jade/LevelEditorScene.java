@@ -6,15 +6,13 @@ import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.prefabs.Prefabs;
-import com.renderer.quads.Label;
-import com.renderer.quads.Quad;
 import com.ui.*;
+import com.ui.buttons.FileExplorerButton;
+import com.ui.buttons.NewLevelButton;
+import com.ui.buttons.SaveLevelButton;
 import com.util.Constants;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
@@ -49,6 +47,7 @@ public class LevelEditorScene extends Scene {
         renderer.add(mouseCursor);
 
         initLevelEditorComponents();
+        importLevel(Constants.CURRENT_LEVEL);
     }
 
     private void initLevelEditorComponents() {
@@ -85,8 +84,10 @@ public class LevelEditorScene extends Scene {
 
         JWindow fileSaver = new JWindow("Level File", new Vector2f(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2f(400, 100));
         Constants.CURRENT_LEVEL = "Default";
-        fileSaver.addUIElement(new FileExplorerButton(new Vector2f(86, 20)));
+        fileSaver.addUIElement(new FileExplorerButton(new Vector2f(86, 20), Constants.CURRENT_LEVEL));
         fileSaver.addUIElement(new SaveLevelButton());
+        fileSaver.addUIElement(new LineBreak());
+        fileSaver.addUIElement(new NewLevelButton());
         this.addJWindow(fileSaver);
 //
 //        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));

@@ -116,8 +116,12 @@ public abstract class Scene {
     public void importLevel(String filename) {
         if (gameObjects.size() > 0) {
             gameObjects.clear();
-            //renderer.reset();
+            renderer.resetLevel();
             worldPartition.clear();
+            if (this instanceof LevelEditorScene) {
+                LevelEditorScene scene = (LevelEditorScene)this;
+                renderer.add(scene.mouseCursor);
+            }
         }
 
         Parser.openLevelFile(filename);
@@ -136,7 +140,7 @@ public abstract class Scene {
 
     public void export(String filename) {
         try {
-            FileOutputStream fos = new FileOutputStream("levels/" + filename + ".zip");
+            FileOutputStream fos = new FileOutputStream("assets/levels/" + filename + ".zip");
             ZipOutputStream zos = new ZipOutputStream(fos);
 
             zos.putNextEntry(new ZipEntry(filename + ".json"));

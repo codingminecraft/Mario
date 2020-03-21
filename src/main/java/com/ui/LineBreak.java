@@ -11,6 +11,37 @@ public class LineBreak extends JComponent {
     }
 
     @Override
+    public void setPosX(float val) {
+
+    }
+
+    @Override
+    public void setPosY(float val) {
+
+    }
+
+    @Override
+    public float getHeight() {
+        return 0;
+    }
+
+    @Override
+    public float getWidth() {
+        return 0;
+    }
+
+    @Override
+    public float getPosX() {
+        return 0;
+    }
+
+    @Override
+    public float getPosY() {
+        return 0;
+    }
+
+
+    @Override
     public String serialize(int tabSize) {
         StringBuilder builder = new StringBuilder();
 

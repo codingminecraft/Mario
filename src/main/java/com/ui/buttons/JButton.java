@@ -1,7 +1,8 @@
-package com.ui;
+package com.ui.buttons;
 
 import com.jade.MouseListener;
 import com.jade.Window;
+import com.ui.JComponent;
 
 import java.awt.event.MouseEvent;
 

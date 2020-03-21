@@ -1,4 +1,4 @@
-package com.ui;
+package com.ui.buttons;
 
 import com.file.Parser;
 import com.jade.Scene;
@@ -62,14 +62,5 @@ public class SaveLevelButton extends JButton {
     public void clicked() {
         Scene scene = Window.getScene();
         scene.export(Constants.CURRENT_LEVEL);
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-//        g2.setColor(Constants.BUTTON_COLOR);
-//        if (active) g2.setColor(Color.GRAY);
-//        g2.fill(new RoundRectangle2D.Float(this.position.x, this.position.y, this.size.x, this.size.y, 15f, 13f));
-//        g2.setColor(Color.WHITE);
-//        g2.drawString(text, (int)(this.position.x + stringPos.x), this.position.y + stringPos.y);
     }
 }

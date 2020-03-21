@@ -29,7 +29,7 @@ public class Constants {
     public static final int TILES_MAX_X = 200;
 
     public static FontMetrics FONT_METRICS;
-    public static String CURRENT_LEVEL = "";
+    public static String CURRENT_LEVEL = "Default";
     public static int Z_INDEX = 0;
 
     // =========================================================================
