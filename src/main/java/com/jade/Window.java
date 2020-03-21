@@ -150,8 +150,6 @@ public class Window {
             case 1:
                 isInEditor = false;
                 currentScene = new LevelScene("Level");
-                currentScene.init();
-                currentScene.start();
                 break;
             case 2:
                 isInEditor = false;

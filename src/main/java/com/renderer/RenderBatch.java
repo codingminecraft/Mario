@@ -144,9 +144,10 @@ public class RenderBatch implements Comparable<RenderBatch> {
         boolean rebufferData = false;
         for (int i=0; i < sprites.size(); i++) {
             SpriteRenderer spr = sprites.get(i);
-            if (spr.isDirty()) {
+            if (spr.isDirty() || spr.getQuad().isDirty) {
                 loadVertexProperties(i);
                 spr.setClean();
+                spr.getQuad().isDirty = false;
                 rebufferData = true;
             }
         }

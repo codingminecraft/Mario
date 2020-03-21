@@ -2,6 +2,7 @@ package com.ui;
 
 import com.component.LevelEditorControls;
 import com.component.Sprite;
+import com.component.SpriteRenderer;
 import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.*;
@@ -35,14 +36,6 @@ public class Button extends JComponent {
         this.objToCopy = objToCopy;
     }
 
-    private void deleteCurrent() {
-//        LevelEditorScene scene = (LevelEditorScene) Window.getScene();
-//
-//        for (RenderComponent comp : scene.mouseCursor.getAllRenderComponents()) {
-//            comp.delete();
-//        }
-    }
-
     @Override
     public void update(double dt) {
         this.hot = mouseInButton();
@@ -55,11 +48,7 @@ public class Button extends JComponent {
                 LevelEditorScene scene = (LevelEditorScene) Window.getScene();
                 LevelEditorControls levelEditorControls = scene.mouseCursor.getComponent(LevelEditorControls.class);
 
-                deleteCurrent();
-                scene.mouseCursor = objToCopy.copy();
-                scene.mouseCursor.addComponent(levelEditorControls);
-                scene.mouseCursor.start();
-                levelEditorControls.gameObjectAdded();
+                levelEditorControls.gameObjectAdded((Sprite)this.sprite.copy(), objToCopy);
             }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
             active = false;

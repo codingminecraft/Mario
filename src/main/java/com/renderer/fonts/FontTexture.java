@@ -112,13 +112,14 @@ public class FontTexture {
         }
         g2D.dispose();
 
-        try {
-            File file =  new java.io.File("temp.png");
-            ImageIO.write(img, "png", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        // Uncomment for testing purposes if you need to check if font is generating properly
+//        try {
+//            File file =  new java.io.File("temp.png");
+//            ImageIO.write(img, "png", file);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.exit(-1);
+//        }
 
         this.texture = new Texture(img, true);
     }

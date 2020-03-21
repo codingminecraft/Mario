@@ -26,17 +26,12 @@ public class LevelEditorScene extends Scene {
     private Grid grid;
     private CameraControls cameraControls;
     public GameObject mouseCursor;
-    GameObject player = new GameObject("Player", new Transform(new Vector2f(800, 500)), 0);
-
-    GameObject test;
 
     public LevelEditorScene(String name) {
         super.Scene(name);
         grid = new Grid();
         cameraControls = new CameraControls();
         mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2f(0.0f, 0.0f)), -10);
-        camera.position().x = -32 * 10;
-        camera.position().y = -32 * 10;
     }
 
     @Override
@@ -44,7 +39,14 @@ public class LevelEditorScene extends Scene {
         initAssetPool();
         grid.start();
         cameraControls.start();
+
         mouseCursor.addComponent(new LevelEditorControls(32, 32));
+        mouseCursor.addComponent(new SpriteRenderer((Sprite)AssetPool.getSpritesheet("assets/marioTilesheet.png").sprites.get(0).copy()));
+        mouseCursor.transform.scale.x = 32;
+        mouseCursor.transform.scale.y = 32;
+        mouseCursor.getComponent(SpriteRenderer.class).color = Constants.COLOR_CLEAR;
+        mouseCursor.start();
+        renderer.add(mouseCursor);
 
         initLevelEditorComponents();
     }
@@ -113,13 +115,6 @@ public class LevelEditorScene extends Scene {
 
         for (GameObject go : gameObjects) {
            go.update(dt);
-        }
-
-        if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
-            LevelEditorControls levelEditorControls = mouseCursor.getComponent(LevelEditorControls.class);
-            levelEditorControls.gameObjectRemoved();
-            mouseCursor = new GameObject("Mouse Cursor", mouseCursor.transform.copy(), mouseCursor.zIndex);
-            mouseCursor.addComponent(levelEditorControls);
         }
 
         // Update level editor components

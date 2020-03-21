@@ -28,6 +28,7 @@ public class SpriteRenderer extends Component {
         this.lastSpritePictureFile = this.sprite.pictureFile;
         this.lastColor = JMath.copy(this.color);
         this.quad = new Quad(this.sprite, this.color);
+        this.dirty = true;
     }
 
     public boolean isDirty() {
@@ -49,6 +50,7 @@ public class SpriteRenderer extends Component {
     @Override
     public void start() {
         this.lastTransform = gameObject.transform.copy();
+        this.dirty = true;
     }
 
     @Override
@@ -56,13 +58,13 @@ public class SpriteRenderer extends Component {
         if (!this.lastSpritePictureFile.equals(this.sprite.pictureFile)) {
             this.dirty = true;
             this.lastSpritePictureFile = this.sprite.pictureFile;
-            //this.quad.setSprite(sprite);
+            this.quad.setSprite(sprite);
         }
 
         if (this.lastSpriteIndex != this.sprite.index) {
             this.dirty = true;
             this.lastSpriteIndex = this.sprite.index;
-            //this.quad.setSprite(sprite);
+            this.quad.setSprite(sprite);
         }
 
         if (!this.lastTransform.equals(this.gameObject.transform)) {

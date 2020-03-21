@@ -4,6 +4,7 @@ import com.dataStructure.Tuple;
 import com.jade.*;
 import com.renderer.RenderComponent;
 import com.util.Constants;
+import com.util.JMath;
 import org.joml.Vector2f;
 
 import java.awt.AlphaComposite;
@@ -21,11 +22,11 @@ public class LevelEditorControls extends Component {
     private boolean placingBlocks = false;
 
     int gridWidth, gridHeight;
-    Sprite sprite = null;
     AnimationMachine machine = null;
 
     private float screenX, screenY;
     private List<GameObject> selected;
+    private GameObject objToCopy = null;
 
     public LevelEditorControls(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -33,16 +34,20 @@ public class LevelEditorControls extends Component {
         this.selected = new ArrayList<>();
     }
 
-    public void gameObjectAdded() {
+    public void gameObjectAdded(Sprite sprite, GameObject objToCopy) {
         placingBlocks = true;
-        sprite = gameObject.getComponent(Sprite.class);
         machine = gameObject.getComponent(AnimationMachine.class);
+        SpriteRenderer renderer = gameObject.getComponent(SpriteRenderer.class);
+        renderer.sprite = sprite;
+        renderer.color = Constants.COLOR_HALF_ALPHA;
+        this.objToCopy = objToCopy.copy();
     }
 
     public void gameObjectRemoved() {
         placingBlocks = false;
-        sprite = null;
         machine = null;
+        SpriteRenderer renderer = gameObject.getComponent(SpriteRenderer.class);
+        renderer.color = Constants.COLOR_CLEAR;
     }
 
     private void calculateGameObjectPosition() {
@@ -53,11 +58,14 @@ public class LevelEditorControls extends Component {
     }
 
     private void placeGameObject() {
+        if (objToCopy == null) return;
+
         Tuple<Integer> gridPos = new Tuple<>((int)(screenX * gridWidth), (int)(screenY * gridHeight), Constants.Z_INDEX);
         // Check if object has already been placed there
         // If not, we will place a block
         if (!Window.getScene().getWorldPartition().containsKey(gridPos) && !Window.getScene().inJWindow(MouseListener.positionScreenCoords())) {
-            GameObject object = gameObject.copy();
+            GameObject object = objToCopy.copy();
+            object.removeComponent(LevelEditorControls.class);
             object.transform.position = new Vector2f(screenX * gridWidth, screenY * gridHeight);
             object.zIndex = Constants.Z_INDEX;
             object.start();
@@ -80,6 +88,10 @@ public class LevelEditorControls extends Component {
 
     private boolean deleteKey() {
         return KeyListener.isKeyPressed(GLFW_KEY_DELETE);
+    }
+
+    private boolean escapeKeyPressed() {
+        return KeyListener.isKeyPressed(GLFW_KEY_ESCAPE);
     }
 
     private boolean arrowKeyPressed() {
@@ -159,6 +171,13 @@ public class LevelEditorControls extends Component {
             } else if (arrowKeyPressed()) {
                 moveSelectedObjects();
                 keyDebounceLeft = keyDebounceTime;
+            }
+        }
+
+        if (escapeKeyPressed()) {
+            SpriteRenderer renderer = gameObject.getComponent(SpriteRenderer.class);
+            if (renderer != null) {
+                gameObjectRemoved();
             }
         }
     }
