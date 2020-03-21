@@ -203,6 +203,8 @@ public class Parser {
                 return BoxBounds.deserialize();
             case "Rigidbody":
                 return Rigidbody.deserialize();
+            case "PlayerController":
+                return PlayerController.deserialize();
 //            case "BoxBounds":
 //                return BoxBounds.deserialize();
 //            case "TriangleBounds":

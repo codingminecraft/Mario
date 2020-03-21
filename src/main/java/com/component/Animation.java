@@ -35,6 +35,10 @@ public class Animation extends Component {
         this.stateTransfers = new HashMap<>();
     }
 
+    public Sprite getCurrentSprite() {
+        return this.sprites.get(this.currentSprite);
+    }
+
     @Override
     public void update(double dt) {
         this.timeLeft -= dt;

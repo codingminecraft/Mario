@@ -13,20 +13,12 @@ public class Constants {
     public static final int SCREEN_WIDTH = 32 * 32;
     public static final int SCREEN_HEIGHT = 32 * 18;
     public static final String SCREEN_TITLE = "Jade";
-    public static final RenderingHints ANTIALIASING_HINT = new RenderingHints(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON );
-    public static final RenderingHints NO_ANTIALIASING_HINT = new RenderingHints(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_OFF );
 
-    public static final float GRAVITY = -2850;
+    public static final float GRAVITY = -800;
     public static final float TERMINAL_VELOCITY = 1900;
 
     public static final int TILE_WIDTH = 32;
     public static final int TILE_HEIGHT = 32;
-
-    public static final int TILES_MAX_X = 200;
 
     public static FontMetrics FONT_METRICS;
     public static String CURRENT_LEVEL = "Default";

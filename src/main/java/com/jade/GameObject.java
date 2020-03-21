@@ -20,6 +20,8 @@ public class GameObject extends Object {
 
     public boolean isUi = false;
 
+    private Tuple<Integer> gridCoords = new Tuple<>(0, 0, 0);
+
     public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
         this.transform = transform;
@@ -69,12 +71,15 @@ public class GameObject extends Object {
     public Tuple<Integer> getGridCoords() {
         Integer gridX = (int)(Math.floor(this.transform.position.x / Constants.TILE_WIDTH) * Constants.TILE_WIDTH);
         Integer gridY = (int)(Math.floor(this.transform.position.y / Constants.TILE_WIDTH) * Constants.TILE_HEIGHT);
+        gridCoords.x = gridX;
+        gridCoords.y = gridY;
+        gridCoords.z = this.zIndex;
 
-        return new Tuple<>(gridX, gridY, this.zIndex);
+        return gridCoords;
     }
 
     public GameObject copy() {
-        GameObject newGameObject = new GameObject("Generated", transform.copy(), this.zIndex);
+        GameObject newGameObject = new GameObject(this.name, transform.copy(), this.zIndex);
         for (Component c : components) {
             Component copy = c.copy();
             if (copy != null) {

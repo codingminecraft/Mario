@@ -45,10 +45,7 @@ public class AnimationMachine extends Component {
     @Override
     public void start() {
         Animation startAnim = this.getAnimation(startAnimation);
-        if (startAnim == null) {
-            System.out.println("Error: Start Animation was never set for: " + this.gameObject.getName() + ". Did you forget to setStartAnimation?");
-            System.exit(-1);
-        }
+        assert startAnim != null : "Error: Start Animation was never set for: " + this.gameObject.getName() + ". Did you forget to setStartAnimation?";
         this.current = startAnim;
 
         Scene scene = Window.getScene();
@@ -68,9 +65,10 @@ public class AnimationMachine extends Component {
             Transform.copyValues(gameObject.transform, levelEditorGo.transform);
             levelEditorGo.transform.position.sub(Window.getScene().camera.position());
             levelEditorGo.zIndex = gameObject.zIndex;
+        } else {
+            spriteRenderer.sprite = current.getCurrentSprite();
+            current.update(dt);
         }
-
-        current.update(dt);
     }
 
     public void trigger(String trigger) {

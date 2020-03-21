@@ -13,8 +13,8 @@ public class Prefabs {
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
-        Animation idle = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4));
-        Animation run = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1));
+        Animation idle = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1));
+        Animation run = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4));
         Animation jump = new Animation("Jump", 0.2f, characterSprites.sprites.subList(4, 6));
         Animation swim = new Animation("Swim", 0.2f, characterSprites.sprites.subList(9, 14));
         playerMachine.setStartAnimation("Idle");
@@ -46,8 +46,9 @@ public class Prefabs {
 
         player.addComponent(playerMachine);
         player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
-        player.addComponent(new BoxBounds(32, 32));
+        player.addComponent(new BoxBounds(32, 32, false));
         player.addComponent(new Rigidbody());
+        player.addComponent(new PlayerController());
 
         player.transform.scale.x = 32;
         player.transform.scale.y = 32;
@@ -99,6 +100,9 @@ public class Prefabs {
         goomba.addComponent(new SpriteRenderer(goombaMachine.getPreviewSprite()));
         goomba.transform.scale.x = 32;
         goomba.transform.scale.y = 32;
+
+        goomba.addComponent(new BoxBounds(32, 32, false));
+        goomba.addComponent(new Rigidbody());
 
         return goomba;
     }

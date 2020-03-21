@@ -22,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 public abstract class Scene {
     String name;
     public Camera camera;
+    public Physics physics;
     List<GameObject> gameObjects;
     Map<Tuple<Integer>, GameObject> worldPartition;
     List<GameObject> objsToDelete;
@@ -36,6 +37,7 @@ public abstract class Scene {
         this.worldPartition = new HashMap<>();
         this.jWindows = new ArrayList<>();
         this.objsToDelete = new ArrayList<>();
+        this.physics = new Physics();
     }
 
     public void init() {
@@ -73,6 +75,7 @@ public abstract class Scene {
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.add(g);
+        physics.addGameObject(g);
 
         Tuple<Integer> gridPos = g.getGridCoords();
         worldPartition.put(gridPos, g);

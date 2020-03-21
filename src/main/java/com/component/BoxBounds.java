@@ -9,21 +9,17 @@ public class BoxBounds extends Bounds {
     public float width, height;
     public float halfWidth, halfHeight;
     public Vector2f center = new Vector2f();
-    public boolean isTrigger;
     public float xBuffer = 0.0f;
     public float yBuffer = 0.0f;
 
     public float enclosingRadius;
+    public boolean onGround = false;
 
-    public BoxBounds(float width, float height) {
-        init(width, height, false);
+    public BoxBounds(float width, float height, boolean isStatic) {
+        init(width, height, isStatic);
     }
 
-    public BoxBounds(float width, float height, boolean isTrigger) {
-        init(width, height, isTrigger);
-    }
-
-    public void init(float width, float height, boolean isTrigger) {
+    public void init(float width, float height, boolean isStatic) {
         this.width = width;
         this.height = height;
         this.halfWidth = this.width / 2.0f;
@@ -31,7 +27,7 @@ public class BoxBounds extends Bounds {
         this.enclosingRadius = (float)Math.sqrt((this.halfWidth * this.halfWidth) +
                 (this.halfHeight * this.halfHeight));
         this.type = BoundsType.Box;
-        this.isTrigger = isTrigger;
+        this.isStatic = isStatic;
     }
 
     @Override
@@ -42,11 +38,6 @@ public class BoxBounds extends Bounds {
     public void calculateCenter() {
         this.center.x = this.gameObject.transform.position.x + this.halfWidth + this.xBuffer;
         this.center.y = this.gameObject.transform.position.y + this.halfHeight + this.yBuffer;
-    }
-
-    @Override
-    public void update(double dt){
-
     }
 
     public static boolean checkCollision(BoxBounds b1, BoxBounds b2) {
@@ -67,8 +58,6 @@ public class BoxBounds extends Bounds {
     }
 
     public void resolveCollision(BoxBounds otherBounds) {
-        if (isTrigger) return;
-
         otherBounds.calculateCenter();
         this.calculateCenter();
 
@@ -84,27 +73,30 @@ public class BoxBounds extends Bounds {
         if (overlapX >= overlapY) {
             if (dy > 0) {
                 // Collision on the top of the oBounds
-
+                this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
+                this.onGround = true;
+                if (this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
+                    this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
             } else {
                 // Collision on the bottom of the oBounds
-
+                this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
+                if (this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
+                    this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
             }
         } else {
             if (dx < 0) {
                 // Collision on the left of the oBounds
-
+                this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x - this.getWidth();
             } else {
                 // Collision on the right of the oBounds
-
+                this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x + otherBounds.getWidth();
             }
         }
-
-        System.out.println("Resolving collision!");
     }
 
     @Override
     public Component copy() {
-        BoxBounds bounds = new BoxBounds(width, height, isTrigger);
+        BoxBounds bounds = new BoxBounds(width, height, isStatic);
         bounds.xBuffer = xBuffer;
         bounds.yBuffer = yBuffer;
         return bounds;
@@ -119,7 +111,7 @@ public class BoxBounds extends Bounds {
         builder.append(addFloatProperty("Height", this.height, tabSize + 1, true, true));
         builder.append(addFloatProperty("xBuffer", this.xBuffer, tabSize + 1, true, true));
         builder.append(addFloatProperty("yBuffer", this.yBuffer, tabSize + 1, true, true));
-        builder.append(addBooleanProperty("isTrigger", this.isTrigger, tabSize + 1, true, false));
+        builder.append(addBooleanProperty("isStatic", this.isStatic, tabSize + 1, true, false));
         builder.append(closeObjectProperty(tabSize));
 
         return builder.toString();
@@ -134,10 +126,10 @@ public class BoxBounds extends Bounds {
         Parser.consume(',');
         float yBuffer = Parser.consumeFloatProperty("yBuffer");
         Parser.consume(',');
-        boolean isTrigger = Parser.consumeBooleanProperty("isTrigger");
+        boolean isStatic = Parser.consumeBooleanProperty("isStatic");
         Parser.consumeEndObjectProperty();
 
-        BoxBounds bounds =  new BoxBounds(width, height, isTrigger);
+        BoxBounds bounds =  new BoxBounds(width, height, isStatic);
         bounds.xBuffer = xBuffer;
         bounds.yBuffer = yBuffer;
         return bounds;
@@ -157,18 +149,4 @@ public class BoxBounds extends Bounds {
     public boolean raycast(Vector2f position) {
         return false;
     }
-
-//    @Override
-//    public void draw(Graphics2D g2) {
-//        if (isSelected) {
-//            g2.setColor(Color.GREEN);
-//            g2.setStroke(Constants.THICK_LINE);
-//            g2.draw(new Rectangle2D.Float(
-//                    this.gameObject.transform.position.x + xBuffer,
-//                    this.gameObject.transform.position.y + yBuffer,
-//                    this.width,
-//                    this.height));
-//            g2.setStroke(Constants.LINE);
-//        }
-//    }
 }

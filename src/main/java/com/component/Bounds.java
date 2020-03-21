@@ -11,7 +11,7 @@ enum BoundsType {
 
 public abstract class Bounds extends Component {
     public BoundsType type;
-    public boolean isSelected;
+    public boolean isStatic;
 
     abstract public float getWidth();
     abstract public float getHeight();
