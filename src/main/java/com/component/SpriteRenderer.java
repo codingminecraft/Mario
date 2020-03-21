@@ -2,6 +2,7 @@ package com.component;
 
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.file.Parser;
 import com.jade.Component;
 import com.renderer.Shader;
 import com.renderer.quads.Quad;
@@ -86,6 +87,20 @@ public class SpriteRenderer extends Component {
 
     @Override
     public String serialize(int tabSize) {
-        return null;
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(beginObjectProperty("SpriteRenderer", tabSize));
+        builder.append(sprite.serialize(tabSize + 1));
+        builder.append(addEnding(true, false));
+        builder.append(closeObjectProperty(tabSize));
+
+        return builder.toString();
+    }
+
+    public static SpriteRenderer deserialize() {
+        Sprite sprite = (Sprite) Parser.parseComponent();
+        Parser.consumeEndObjectProperty();
+
+        return new SpriteRenderer(sprite);
     }
 }

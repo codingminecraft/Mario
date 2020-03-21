@@ -74,19 +74,13 @@ public class FileExplorerButton extends JButton {
 
         this.label.setText(filename);
         Constants.CURRENT_LEVEL = filename;
-        //Window.getScene().importLevel(filename);
+        Window.getScene().importLevel(filename);
     }
 
     @Override
     public String serialize(int tabSize) {
         StringBuilder builder = new StringBuilder();
         builder.append(beginObjectProperty("FileExplorerButton", tabSize));
-
-        // Position
-        builder.append(beginObjectProperty("Position", tabSize + 1));
-        builder.append(JMath.serialize(mainComp.getPosition(), tabSize + 2));
-        builder.append(closeObjectProperty(tabSize + 1));
-        builder.append(addEnding(true, true));
 
         // Size
         builder.append(beginObjectProperty("Size", tabSize + 1));
@@ -102,11 +96,6 @@ public class FileExplorerButton extends JButton {
     }
 
     public static FileExplorerButton deserialize() {
-        Parser.consumeBeginObjectProperty("Position");
-        Vector2f position = JMath.deserializeVector2f();
-        Parser.consumeEndObjectProperty();
-        Parser.consume(',');
-
         Parser.consumeBeginObjectProperty("Size");
         Vector2f size = JMath.deserializeVector2f();
         Parser.consumeEndObjectProperty();

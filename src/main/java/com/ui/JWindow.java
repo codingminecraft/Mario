@@ -339,7 +339,6 @@ public class JWindow extends Serialize {
         JWindow window = new JWindow(title, position, size);
 
         // TABS
-        Parser.consume(',');
         Parser.consumeBeginObjectProperty("Tabs");
         // Remove the default tab created by the window, and then add the appropriate deserialized tab
         Tab firstTab = Tab.deserialize();

@@ -47,15 +47,13 @@ public class JMath {
 
     public static String serialize(Vector2f vec, int tabSize) {
         return Serialize.addFloatProperty("X", vec.x, tabSize, true, true) +
-                Serialize.addFloatProperty("Y", vec.y, tabSize, true, false) +
-                Serialize.closeObjectProperty(tabSize);
+                Serialize.addFloatProperty("Y", vec.y, tabSize, true, false);
     }
 
     public static String serialize(Vector3f vec, int tabSize) {
         return Serialize.addFloatProperty("X", vec.x, tabSize, true, true) +
                 Serialize.addFloatProperty("Y", vec.y, tabSize, true, true) +
-                Serialize.addFloatProperty("Z", vec.z, tabSize, true, false) +
-                Serialize.closeObjectProperty(tabSize);
+                Serialize.addFloatProperty("Z", vec.z, tabSize, true, false);
     }
 
     public static Vector3f deserializeVector3f() {
@@ -64,7 +62,6 @@ public class JMath {
         float y = Parser.consumeFloatProperty("Y");
         Parser.consume(',');
         float z = Parser.consumeFloatProperty("Z");
-        Parser.consumeEndObjectProperty();
 
         return new Vector3f(x, y, z);
     }
@@ -73,7 +70,6 @@ public class JMath {
         float x = Parser.consumeFloatProperty("X");
         Parser.consume(',');
         float y = Parser.consumeFloatProperty("Y");
-        Parser.consumeEndObjectProperty();
 
         return new Vector2f(x, y);
     }

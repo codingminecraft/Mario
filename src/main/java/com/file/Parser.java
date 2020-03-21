@@ -2,6 +2,7 @@ package com.file;
 
 import com.component.AnimationMachine;
 import com.component.Sprite;
+import com.component.SpriteRenderer;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.ui.*;
@@ -197,6 +198,8 @@ public class Parser {
                 return Sprite.deserialize();
             case "AnimationMachine":
                 return AnimationMachine.deserialize();
+            case "SpriteRenderer":
+                return SpriteRenderer.deserialize();
 //            case "BoxBounds":
 //                return BoxBounds.deserialize();
 //            case "TriangleBounds":

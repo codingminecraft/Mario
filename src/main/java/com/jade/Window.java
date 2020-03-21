@@ -137,6 +137,10 @@ public class Window {
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
         }
+
+        if (this.currentScene instanceof LevelEditorScene) {
+            ((LevelEditorScene) this.currentScene).exportLevelEditorData();
+        }
     }
 
     public void changeScene(int scene) {
