@@ -10,6 +10,7 @@ import com.ui.*;
 import com.ui.buttons.FileExplorerButton;
 import com.ui.buttons.NewLevelButton;
 import com.ui.buttons.SaveLevelButton;
+import com.ui.buttons.TestLevelButton;
 import com.util.Constants;
 import org.joml.Vector2f;
 
@@ -69,6 +70,7 @@ public class LevelEditorScene extends Scene {
             tile.transform.scale.x = 32;
             tile.transform.scale.y = 32;
             tile.addComponent(new SpriteRenderer((Sprite)spritesheet.sprites.get(current).copy()));
+            tile.addComponent(new BoxBounds(32, 32));
             Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;
@@ -88,6 +90,7 @@ public class LevelEditorScene extends Scene {
         fileSaver.addUIElement(new SaveLevelButton());
         fileSaver.addUIElement(new LineBreak());
         fileSaver.addUIElement(new NewLevelButton());
+        fileSaver.addUIElement(new TestLevelButton());
         this.addJWindow(fileSaver);
 //
 //        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));

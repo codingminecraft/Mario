@@ -118,6 +118,9 @@ public abstract class Scene {
             gameObjects.clear();
             renderer.resetLevel();
             worldPartition.clear();
+
+            // If we are in a LevelEditorScene make sure to copy the mouse cursor GameObject to the renderer.
+            // Maybe find a better way to do this?
             if (this instanceof LevelEditorScene) {
                 LevelEditorScene scene = (LevelEditorScene)this;
                 renderer.add(scene.mouseCursor);

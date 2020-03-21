@@ -20,7 +20,7 @@ public class Constants {
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_OFF );
 
-    public static final float GRAVITY = 2850;
+    public static final float GRAVITY = -2850;
     public static final float TERMINAL_VELOCITY = 1900;
 
     public static final int TILE_WIDTH = 32;

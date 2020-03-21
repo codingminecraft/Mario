@@ -1,15 +1,10 @@
 package com.file;
 
-import com.component.AnimationMachine;
-import com.component.Sprite;
-import com.component.SpriteRenderer;
+import com.component.*;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.ui.*;
-import com.ui.buttons.FileExplorerButton;
-import com.ui.buttons.NewLevelButton;
-import com.ui.buttons.SaveLevelButton;
-import com.ui.buttons.ZIndexButton;
+import com.ui.buttons.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -204,6 +199,10 @@ public class Parser {
                 return AnimationMachine.deserialize();
             case "SpriteRenderer":
                 return SpriteRenderer.deserialize();
+            case "BoxBounds":
+                return BoxBounds.deserialize();
+            case "Rigidbody":
+                return Rigidbody.deserialize();
 //            case "BoxBounds":
 //                return BoxBounds.deserialize();
 //            case "TriangleBounds":
@@ -236,6 +235,8 @@ public class Parser {
                 return LineBreak.deserialize();
             case "NewLevelButton":
                 return NewLevelButton.deserialize();
+            case "TestLevelButton":
+                return TestLevelButton.deserialize();
             default:
                 System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
                 System.exit(-1);

@@ -1,9 +1,6 @@
 package com.prefabs;
 
-import com.component.Animation;
-import com.component.AnimationMachine;
-import com.component.SpriteRenderer;
-import com.component.Spritesheet;
+import com.component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.GameObject;
@@ -49,6 +46,8 @@ public class Prefabs {
 
         player.addComponent(playerMachine);
         player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
+        player.addComponent(new BoxBounds(32, 32));
+        player.addComponent(new Rigidbody());
 
         player.transform.scale.x = 32;
         player.transform.scale.y = 32;
