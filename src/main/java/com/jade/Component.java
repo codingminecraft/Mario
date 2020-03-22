@@ -1,6 +1,7 @@
 package com.jade;
 
 import com.file.Serialize;
+import com.physics.Collision;
 
 import java.awt.Graphics2D;
 
@@ -13,6 +14,10 @@ public abstract class Component extends Serialize {
     }
 
     public void start() {
+        return;
+    }
+
+    public void collision(Collision coll) {
         return;
     }
 

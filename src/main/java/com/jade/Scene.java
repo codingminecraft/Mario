@@ -2,14 +2,13 @@ package com.jade;
 
 import com.dataStructure.Tuple;
 import com.file.Parser;
-import com.renderer.RenderComponent;
+import com.physics.Physics;
 import com.renderer.Renderer;
 import com.renderer.UIRenderComponent;
 import com.ui.JWindow;
 import com.util.Constants;
 import org.joml.Vector2f;
 
-import java.awt.Graphics2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;

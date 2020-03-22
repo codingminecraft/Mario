@@ -16,12 +16,13 @@ public class Animation extends Component {
     float timeLeft;
     private int currentSprite;
     private float width, height;
+    private boolean loops;
 
     private Map<String, String> stateTransfers;
     private String animationName;
     public AnimationMachine machine;
 
-    public Animation(String name, float speed, List<Sprite> sprites) {
+    public Animation(String name, float speed, List<Sprite> sprites, boolean loops) {
         this.animationName = name;
         this.sprites = new ArrayList<>();
         for (Sprite sprite : sprites) {
@@ -33,6 +34,7 @@ public class Animation extends Component {
         this.width = this.sprites.get(0).width;
         this.height = this.sprites.get(0).height;
         this.stateTransfers = new HashMap<>();
+        this.loops = loops;
     }
 
     public Sprite getCurrentSprite() {
@@ -44,7 +46,11 @@ public class Animation extends Component {
         this.timeLeft -= dt;
 
         if (this.timeLeft <= 0.0f) {
-            this.currentSprite = (this.currentSprite + 1) % this.sprites.size();
+            if (loops) {
+                this.currentSprite = (this.currentSprite + 1) % this.sprites.size();
+            } else {
+                this.currentSprite = Math.min(this.currentSprite + 1, this.sprites.size() - 1);
+            }
 
             this.timeLeft = this.speed;
         }
@@ -74,7 +80,7 @@ public class Animation extends Component {
         for (Sprite sprite : this.sprites) {
             spriteCopies.add((Sprite)sprite.copy());
         }
-        Animation animation = new Animation(this.animationName, this.speed, spriteCopies);
+        Animation animation = new Animation(this.animationName, this.speed, spriteCopies, this.loops);
         for (String key : stateTransfers.keySet()) {
             animation.addStateTransfer(key, stateTransfers.get(key));
         }
@@ -88,6 +94,7 @@ public class Animation extends Component {
         builder.append(beginObjectProperty("Animation", tabSize));
 
         builder.append(addStringProperty("Name", this.animationName, tabSize + 1, true, true));
+        builder.append(addBooleanProperty("Loops", this.loops, tabSize + 1, true, true));
         builder.append(addIntProperty("NumberOfSprites", this.sprites.size(), tabSize + 1, true, true));
         for (int i=0; i < sprites.size(); i++) {
             Sprite sprite = sprites.get(i);
@@ -108,6 +115,8 @@ public class Animation extends Component {
     public static Animation deserialize() {
         String name = Parser.consumeStringProperty("Name");
         Parser.consume(',');
+        boolean loops = Parser.consumeBooleanProperty("Loops");
+        Parser.consume(',');
 
         int numOfSprites = Parser.consumeIntProperty("NumberOfSprites");
         Parser.consume(',');
@@ -120,7 +129,7 @@ public class Animation extends Component {
 
         float speed = Parser.consumeFloatProperty("Speed");
         Parser.consume(',');
-        Animation anim = new Animation(name, speed, sprites);
+        Animation anim = new Animation(name, speed, sprites, loops);
 
         int numOfStates = Parser.consumeIntProperty("NumberOfStates");
         Parser.consume(',');

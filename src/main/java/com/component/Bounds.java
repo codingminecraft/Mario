@@ -2,6 +2,7 @@ package com.component;
 
 import com.jade.Component;
 import com.jade.GameObject;
+import com.physics.Collision;
 import org.joml.Vector2f;
 
 enum BoundsType {
@@ -26,10 +27,12 @@ public abstract class Bounds extends Component {
         return false;
     }
 
-    public static void resolveCollision(Bounds b1, Bounds b2) {
+    public static Collision resolveCollision(Bounds b1, Bounds b2) {
         if (b1.type == BoundsType.Box && b2.type == BoundsType.Box) {
             BoxBounds b1Bounds = (BoxBounds)b1;
-            b1Bounds.resolveCollision((BoxBounds)b2);
+            return b1Bounds.resolveCollision((BoxBounds)b2);
         }
+
+        return null;
     }
 }

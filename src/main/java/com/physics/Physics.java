@@ -1,7 +1,9 @@
-package com.jade;
+package com.physics;
 
 import com.component.Bounds;
 import com.dataStructure.Tuple;
+import com.jade.GameObject;
+import com.jade.Window;
 import com.util.Constants;
 
 import java.util.ArrayList;
@@ -48,7 +50,13 @@ public class Physics {
                     Bounds otherBounds = otherGo.getComponent(Bounds.class);
                     if (otherBounds != null) {
                         if (Bounds.checkCollision(bounds, otherBounds)) {
-                            Bounds.resolveCollision(bounds, otherBounds);
+                            Collision collision = Bounds.resolveCollision(bounds, otherBounds);
+                            go.collision(collision);
+
+                            // Flip the collision side for the other game object
+                            collision.flip(go);
+
+                            otherGo.collision(collision);
                         }
                     }
                 }

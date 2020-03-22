@@ -3,6 +3,7 @@ package com.component;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.physics.Collision;
 import org.joml.Vector2f;
 
 public class BoxBounds extends Bounds {
@@ -13,7 +14,6 @@ public class BoxBounds extends Bounds {
     public float yBuffer = 0.0f;
 
     public float enclosingRadius;
-    public boolean onGround = false;
 
     public BoxBounds(float width, float height, boolean isStatic) {
         init(width, height, isStatic);
@@ -57,7 +57,7 @@ public class BoxBounds extends Bounds {
         return false;
     }
 
-    public void resolveCollision(BoxBounds otherBounds) {
+    public Collision resolveCollision(BoxBounds otherBounds) {
         otherBounds.calculateCenter();
         this.calculateCenter();
 
@@ -72,24 +72,39 @@ public class BoxBounds extends Bounds {
 
         if (overlapX >= overlapY) {
             if (dy > 0) {
-                // Collision on the top of the oBounds
+                // Collision on the bottom of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
-                this.onGround = true;
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
+
+                // Top of other bounds
+                Vector2f contactPoint = new Vector2f(otherBounds.center.x, otherBounds.gameObject.transform.position.y + otherBounds.getHeight());
+                return new Collision(otherBounds.gameObject, Collision.CollisionSide.BOTTOM, contactPoint, this);
             } else {
-                // Collision on the bottom of the oBounds
+                // Collision on the top of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
+
+                // Bottom of other bounds
+                Vector2f contactPoint = new Vector2f(otherBounds.center.x, otherBounds.gameObject.transform.position.y);
+                return new Collision(otherBounds.gameObject, Collision.CollisionSide.TOP, contactPoint, this);
             }
         } else {
             if (dx < 0) {
-                // Collision on the left of the oBounds
+                // Collision on the right of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x - this.getWidth();
+
+                // Left of other bounds
+                Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x, otherBounds.center.y);
+                return new Collision(otherBounds.gameObject, Collision.CollisionSide.RIGHT, contactPoint, this);
             } else {
-                // Collision on the right of the oBounds
+                // Collision on the left of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x + otherBounds.getWidth();
+
+                // Right of other bounds
+                Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x + otherBounds.getWidth(), otherBounds.center.y);
+                return new Collision(otherBounds.gameObject, Collision.CollisionSide.LEFT, contactPoint, this);
             }
         }
     }

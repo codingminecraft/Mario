@@ -71,6 +71,7 @@ public class LevelEditorScene extends Scene {
             tile.transform.scale.y = 32;
             tile.addComponent(new SpriteRenderer((Sprite)spritesheet.sprites.get(current).copy()));
             tile.addComponent(new BoxBounds(32, 32, true));
+            tile.addComponent(new Brick());
             Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;

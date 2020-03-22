@@ -13,10 +13,10 @@ public class Prefabs {
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
-        Animation idle = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1));
-        Animation run = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4));
-        Animation jump = new Animation("Jump", 0.2f, characterSprites.sprites.subList(4, 6));
-        Animation swim = new Animation("Swim", 0.2f, characterSprites.sprites.subList(9, 14));
+        Animation idle = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1), false);
+        Animation run = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4), true);
+        Animation jump = new Animation("Jump", 0.2f, characterSprites.sprites.subList(4, 6), false);
+        Animation swim = new Animation("Swim", 0.2f, characterSprites.sprites.subList(9, 14), true);
         playerMachine.setStartAnimation("Idle");
 
         // IDLE
@@ -46,7 +46,11 @@ public class Prefabs {
 
         player.addComponent(playerMachine);
         player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
-        player.addComponent(new BoxBounds(32, 32, false));
+
+        BoxBounds playerBoxBounds = new BoxBounds(30, 32, false);
+        playerBoxBounds.xBuffer = 1;
+        player.addComponent(playerBoxBounds);
+
         player.addComponent(new Rigidbody());
         player.addComponent(new PlayerController());
 
@@ -68,21 +72,21 @@ public class Prefabs {
 
         switch (type) {
             case 1:
-                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(17, 19));
-                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(19, 20));
+                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(17, 19), true);
+                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(19, 20), false);
                 break;
             case 2:
-                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(20, 22));
-                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(22, 23));
+                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(20, 22), true);
+                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(22, 23), false);
                 break;
             case 3:
-                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(23, 25));
-                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(25, 26));
+                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(23, 25), true);
+                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(25, 26), false);
                 break;
             case 0:
             default:
-                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(14, 16));
-                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(16, 17));
+                walk = new Animation("Walk", 0.2f, characterSprites.sprites.subList(14, 16), true);
+                squash = new Animation("Squash", 0.2f, characterSprites.sprites.subList(16, 17), false);
                 break;
         }
 

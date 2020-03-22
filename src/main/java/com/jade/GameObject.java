@@ -3,6 +3,7 @@ package com.jade;
 import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
+import com.physics.Collision;
 import com.renderer.RenderComponent;
 import com.util.Constants;
 
@@ -33,6 +34,12 @@ public class GameObject extends Object {
 
     public String getName() {
         return this.name;
+    }
+
+    public void collision(Collision coll) {
+        for (Component c : components) {
+            c.collision(coll);
+        }
     }
 
     public <T extends Component> T getComponent(Class<T> componentClass) {
