@@ -13,10 +13,10 @@ public class Prefabs {
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
-        Animation idle = new Animation("Idle", 0.2f, characterSprites.sprites.subList(0, 1), false);
-        Animation run = new Animation("Run", 0.2f, characterSprites.sprites.subList(0, 4), true);
-        Animation jump = new Animation("Jump", 0.2f, characterSprites.sprites.subList(4, 6), false);
-        Animation swim = new Animation("Swim", 0.2f, characterSprites.sprites.subList(9, 14), true);
+        Animation idle = new Animation("Idle", 0.1f, characterSprites.sprites.subList(0, 1), false);
+        Animation run = new Animation("Run", 0.1f, characterSprites.sprites.subList(0, 4), true);
+        Animation jump = new Animation("Jump", 0.1f, characterSprites.sprites.subList(4, 6), false);
+        Animation swim = new Animation("Swim", 0.1f, characterSprites.sprites.subList(9, 14), true);
         playerMachine.setStartAnimation("Idle");
 
         // IDLE
@@ -107,6 +107,7 @@ public class Prefabs {
 
         goomba.addComponent(new BoxBounds(32, 32, false));
         goomba.addComponent(new Rigidbody());
+        goomba.addComponent(new GoombaAI());
 
         return goomba;
     }

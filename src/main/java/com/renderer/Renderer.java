@@ -1,5 +1,6 @@
 package com.renderer;
 
+import com.component.Sprite;
 import com.component.SpriteRenderer;
 import com.jade.Camera;
 import com.jade.GameObject;
@@ -37,6 +38,13 @@ public class Renderer {
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         if (spr != null) {
             add(spr);
+        }
+    }
+
+    public void deleteGameObject(GameObject go) {
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        if (spr != null) {
+            spr.getQuad().shouldDelete = true;
         }
     }
 

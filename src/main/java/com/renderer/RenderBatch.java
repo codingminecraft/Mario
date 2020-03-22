@@ -149,6 +149,11 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 spr.setClean();
                 spr.getQuad().isDirty = false;
                 rebufferData = true;
+            } else if (spr.getQuad().shouldDelete) {
+                deleteVertexProperties(i);
+                spr.getQuad().shouldDelete = false;
+                spr.setClean();
+                spr.getQuad().isDirty = false;
             }
         }
         if (rebufferData) {

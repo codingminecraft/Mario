@@ -1,9 +1,12 @@
 package com.component;
 
+import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.jade.Window;
 import com.physics.Collision;
+import com.util.Constants;
 import org.joml.Vector2f;
 
 public class BoxBounds extends Bounds {
@@ -14,6 +17,11 @@ public class BoxBounds extends Bounds {
     public float yBuffer = 0.0f;
 
     public float enclosingRadius;
+
+    private boolean shouldCheckTop = true;
+    private boolean shouldCheckBottom = true;
+    private boolean shouldCheckLeft = true;
+    private boolean shouldCheckRight = true;
 
     public BoxBounds(float width, float height, boolean isStatic) {
         init(width, height, isStatic);
@@ -33,6 +41,33 @@ public class BoxBounds extends Bounds {
     @Override
     public void start() {
         this.calculateCenter();
+
+        if (isStatic) {
+            // Figure out if static blocks have blocks above, below, right, or left of them
+            // to avoid 'catching' on edges
+            Tuple<Integer> gridCoords = gameObject.getGridCoords().copy();
+            gridCoords.y += Constants.TILE_HEIGHT;
+            GameObject go = Window.getScene().getWorldPartition().get(gridCoords);
+            if (go != null && go.getComponent(BoxBounds.class).isStatic) {
+                shouldCheckTop = false;
+            }
+            gridCoords.y -= Constants.TILE_HEIGHT * 2;
+            go = Window.getScene().getWorldPartition().get(gridCoords);
+            if (go != null && go.getComponent(BoxBounds.class).isStatic) {
+                shouldCheckBottom = false;
+            }
+            gridCoords.y += Constants.TILE_HEIGHT;
+            gridCoords.x += Constants.TILE_WIDTH;
+            go = Window.getScene().getWorldPartition().get(gridCoords);
+            if (go != null && go.getComponent(BoxBounds.class).isStatic) {
+                shouldCheckRight = false;
+            }
+            gridCoords.x -= Constants.TILE_WIDTH * 2;
+            go = Window.getScene().getWorldPartition().get(gridCoords);
+            if (go != null && go.getComponent(BoxBounds.class).isStatic) {
+                shouldCheckLeft = false;
+            }
+        }
     }
 
     public void calculateCenter() {
@@ -72,6 +107,8 @@ public class BoxBounds extends Bounds {
 
         if (overlapX >= overlapY) {
             if (dy > 0) {
+                if (otherBounds.isStatic && !otherBounds.shouldCheckTop) return null;
+
                 // Collision on the bottom of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
@@ -81,6 +118,8 @@ public class BoxBounds extends Bounds {
                 Vector2f contactPoint = new Vector2f(otherBounds.center.x, otherBounds.gameObject.transform.position.y + otherBounds.getHeight());
                 return new Collision(otherBounds.gameObject, Collision.CollisionSide.BOTTOM, contactPoint, this);
             } else {
+                if (otherBounds.isStatic && !otherBounds.shouldCheckBottom) return null;
+
                 // Collision on the top of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
@@ -92,6 +131,8 @@ public class BoxBounds extends Bounds {
             }
         } else {
             if (dx < 0) {
+                if (otherBounds.isStatic && !otherBounds.shouldCheckLeft) return null;
+
                 // Collision on the right of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x - this.getWidth();
 
@@ -99,6 +140,8 @@ public class BoxBounds extends Bounds {
                 Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x, otherBounds.center.y);
                 return new Collision(otherBounds.gameObject, Collision.CollisionSide.RIGHT, contactPoint, this);
             } else {
+                if (otherBounds.isStatic && !otherBounds.shouldCheckRight) return null;
+
                 // Collision on the left of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x + otherBounds.getWidth();
 

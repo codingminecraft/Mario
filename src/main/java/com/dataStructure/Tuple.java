@@ -14,6 +14,10 @@ public class Tuple<T> {
         this.z = z;
     }
 
+    public Tuple<T> copy() {
+        return new Tuple<>(this.x, this.y, this.z);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;

@@ -207,6 +207,8 @@ public class Parser {
                 return PlayerController.deserialize();
             case "Brick":
                 return Brick.deserialize();
+            case "GoombaAI":
+                return GoombaAI.deserialize();
 //            case "BoxBounds":
 //                return BoxBounds.deserialize();
 //            case "TriangleBounds":

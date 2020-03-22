@@ -40,5 +40,14 @@ public class LevelScene extends Scene {
         if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
             Window.getWindow().changeScene(0);
         }
+
+        if (objsToDelete.size() > 0) {
+            for (GameObject obj : objsToDelete) {
+                this.gameObjects.remove(obj);
+                this.renderer.deleteGameObject(obj);
+                this.physics.deleteGameObject(obj);
+            }
+            objsToDelete.clear();
+        }
     }
 }

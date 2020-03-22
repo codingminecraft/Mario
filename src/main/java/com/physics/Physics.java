@@ -10,27 +10,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Physics {
-    List<GameObject> objects;
+    List<GameObject> staticObjects;
+    List<GameObject> dynamicObjects;
 
     private Tuple<Integer> tuple;
 
     public Physics() {
-        this.objects = new ArrayList<>();
+        this.staticObjects = new ArrayList<>();
+        this.dynamicObjects = new ArrayList<>();
         this.tuple = new Tuple<>(0, 0, 0);
     }
 
     public void addGameObject(GameObject go) {
-        this.objects.add(go);
+        Bounds bounds = go.getComponent(Bounds.class);
+        if (bounds != null) {
+            if (bounds.isStatic) {
+                this.staticObjects.add(go);
+            } else {
+                this.dynamicObjects.add(go);
+            }
+        }
     }
 
     public void update(double dt) {
-        for (GameObject go : objects) {
+        for (GameObject go : dynamicObjects) {
             resolveCollisions(go);
         }
     }
 
+    public void deleteGameObject(GameObject go) {
+        staticObjects.remove(go);
+        dynamicObjects.remove(go);
+    }
+
     private void resolveCollisions(GameObject go) {
-        // Check all boundaries around GameObject
+        // Check all boundaries around GameObject for static objects
         // 0 0 0
         // 0 x 0
         // 0 0 0
@@ -51,6 +65,7 @@ public class Physics {
                     if (otherBounds != null) {
                         if (Bounds.checkCollision(bounds, otherBounds)) {
                             Collision collision = Bounds.resolveCollision(bounds, otherBounds);
+                            if (collision == null) continue;
                             go.collision(collision);
 
                             // Flip the collision side for the other game object
@@ -60,6 +75,23 @@ public class Physics {
                         }
                     }
                 }
+            }
+        }
+
+        // Check for collisions among dynamic objects
+        for (GameObject obj : dynamicObjects) {
+            if (obj == go) continue;
+
+            Bounds otherBounds = obj.getComponent(Bounds.class);
+            if (Bounds.checkCollision(bounds, otherBounds)) {
+                Collision collision = Bounds.resolveCollision(bounds, otherBounds);
+                if (collision == null) continue;
+                go.collision(collision);
+
+                // Flip the collision side for the other game object
+                collision.flip(go);
+
+                obj.collision(collision);
             }
         }
     }
