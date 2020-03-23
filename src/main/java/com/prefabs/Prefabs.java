@@ -1,11 +1,18 @@
 package com.prefabs;
 
 import com.component.*;
+import com.component.bricks.BreakableBrick;
+import com.component.bricks.Brick;
+import com.component.bricks.QuestionBlock;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.GameObject;
 import com.util.Constants;
 import org.joml.Vector2f;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Prefabs {
     public static GameObject MARIO_PREFAB() {
@@ -116,10 +123,27 @@ public class Prefabs {
     public static GameObject QUESTION_BLOCK() {
         Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
 
+        // Set up animation machine
+        AnimationMachine questionBlockMachine = new AnimationMachine();
+
+        List<Float> waitTimeIdle = new ArrayList<>(Arrays.asList(0.4f, 0.2f, 0.2f));
+        Animation idle = new Animation("Idle", waitTimeIdle, items.sprites.subList(0, 3), true);
+        Animation blockHit = new Animation("BlockHit", 0.1f, items.sprites.subList(3, 4), false);
+
+        idle.addStateTransfer("HitBlock", "BlockHit");
+
+        questionBlockMachine.addAnimation(idle);
+        questionBlockMachine.addAnimation(blockHit);
+        questionBlockMachine.setStartAnimation("Idle");
+
+        // Create game object and add components
         GameObject questionBlock = new GameObject("Question_Block_Prefab", new Transform(new Vector2f()), 0);
-        questionBlock.addComponent(new Brick());
+
+        questionBlock.addComponent(questionBlockMachine);
+        questionBlock.addComponent(new SpriteRenderer(questionBlockMachine.getPreviewSprite()));
+
+        questionBlock.addComponent(new QuestionBlock());
         questionBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
-        questionBlock.addComponent(new SpriteRenderer(items.sprites.get(0)));
 
         questionBlock.transform.scale.x = 32;
         questionBlock.transform.scale.y = 32;
@@ -131,7 +155,7 @@ public class Prefabs {
         Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
 
         GameObject brickBlock = new GameObject("Brick_Block_Prefab", new Transform(new Vector2f()), 0);
-        brickBlock.addComponent(new Brick());
+        brickBlock.addComponent(new BreakableBrick());
         brickBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
         brickBlock.addComponent(new SpriteRenderer(items.sprites.get(5)));
 
@@ -139,5 +163,35 @@ public class Prefabs {
         brickBlock.transform.scale.y = 32;
 
         return brickBlock;
+    }
+
+    public static GameObject COIN() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Set up animation machine
+        AnimationMachine machine = new AnimationMachine();
+
+        List<Float> waitTimes = new ArrayList<>(Arrays.asList(0.4f, 0.2f, 0.2f));
+        Animation idle = new Animation("Idle", waitTimes, items.sprites.subList(7, 10), true);
+        Animation collect = new Animation("Collect", 0.1f, items.sprites.subList(7, 8), false);
+
+        idle.addStateTransfer("CollectCoin", "Collect");
+
+        machine.addAnimation(idle);
+        machine.addAnimation(collect);
+        machine.setStartAnimation("Idle");
+
+        // Add components
+        GameObject coin = new GameObject("Coin_Prefab", new Transform(new Vector2f()), 0);
+        coin.addComponent(machine);
+
+        coin.addComponent(new Coin());
+        coin.addComponent(new BoxBounds(32, 32, true));
+        coin.addComponent(new SpriteRenderer(machine.getPreviewSprite()));
+
+        coin.transform.scale.x = 32;
+        coin.transform.scale.y = 32;
+
+        return coin;
     }
 }

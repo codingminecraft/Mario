@@ -3,6 +3,7 @@ package com.jade;
 import com.component.Bounds;
 import com.component.BoxBounds;
 import com.dataStructure.AssetPool;
+import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.util.Constants;
 
@@ -47,6 +48,8 @@ public class LevelScene extends Scene {
 
         if (objsToDelete.size() > 0) {
             for (GameObject obj : objsToDelete) {
+                Tuple<Integer> gridCoords = obj.getGridCoords();
+                worldPartition.remove(gridCoords);
                 this.gameObjects.remove(obj);
                 this.renderer.deleteGameObject(obj);
                 this.physics.deleteGameObject(obj);

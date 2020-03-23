@@ -25,6 +25,8 @@ public class Window {
     private String title;
     private float aspect;
 
+    public boolean isRunning = false;
+
     public static void framebufferSizeCallback(long window, int width, int height) {
         Window.getWindow().setWidth(width);
         Window.getWindow().setHeight(height);
@@ -119,6 +121,7 @@ public class Window {
         float lastFrameTime = Time.getTime();
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
+        this.isRunning = true;
         while ( !glfwWindowShouldClose(glfwWindow) ) {
             float time = Time.getTime();
             float deltaTime = time - lastFrameTime;
@@ -137,6 +140,8 @@ public class Window {
 
             glfwSwapBuffers(glfwWindow); // swap the color buffers
         }
+
+        this.isRunning = false;
 
         if (this.currentScene instanceof LevelEditorScene) {
             ((LevelEditorScene) this.currentScene).exportLevelEditorData();

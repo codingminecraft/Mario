@@ -78,6 +78,10 @@ public abstract class Scene {
 
         Tuple<Integer> gridPos = g.getGridCoords();
         worldPartition.put(gridPos, g);
+
+        if (Window.getWindow().isRunning) {
+            g.start();
+        }
     }
 
     public void addLowUI(UIRenderComponent comp) {

@@ -1,5 +1,6 @@
 package com.component;
 
+import com.component.enums.PlayerType;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.KeyListener;
@@ -13,6 +14,8 @@ public class PlayerController extends Component {
     private Rigidbody rb = null;
     private SpriteRenderer sprite = null;
     private boolean onGround = true;
+
+    public PlayerType type = PlayerType.SMALL;
 
     @Override
     public Component copy() {

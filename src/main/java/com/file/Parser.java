@@ -1,6 +1,10 @@
 package com.file;
 
 import com.component.*;
+import com.component.bricks.BreakableBrick;
+import com.component.bricks.Brick;
+import com.component.bricks.CoinBrick;
+import com.component.bricks.QuestionBlock;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.ui.*;
@@ -99,8 +103,7 @@ public class Parser {
     public static void consume(char c) {
         char actual = peek();
         if (actual != c) {
-            System.out.println("Error: Expected '" + c + "' but instead got '" + actual + "' at line: " + Parser.line);
-            System.exit(-1);
+            assert false : "Error: Expected '" + c + "' but instead got '" + actual + "' at line: " + Parser.line;
         }
         offset++;
     }
@@ -174,8 +177,7 @@ public class Parser {
             consume('s');
             consume('e');
         } else {
-            System.out.println("Expecting 'true' or 'false' instead got: " + peek() + " at line: " + Parser.line);
-            System.exit(-1);
+            assert false : "Expecting 'true' or 'false' instead got: " + peek() + " at line: " + Parser.line;
         }
 
         return builder.toString().compareTo("true") == 0;
@@ -205,17 +207,16 @@ public class Parser {
                 return Rigidbody.deserialize();
             case "PlayerController":
                 return PlayerController.deserialize();
-            case "Brick":
-                return Brick.deserialize();
+            case "CoinBrick":
+                return CoinBrick.deserialize();
+            case "QuestionBlock":
+                return QuestionBlock.deserialize();
+            case "BreakableBrick":
+                return BreakableBrick.deserialize();
             case "GoombaAI":
                 return GoombaAI.deserialize();
-//            case "BoxBounds":
-//                return BoxBounds.deserialize();
-//            case "TriangleBounds":
-//                return TriangleBounds.deserialize();
             default:
-                System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
-                System.exit(-1);
+                assert false : ("Could not find component '" + componentTitle + "' at line: " + Parser.line);
         }
 
         return null;
@@ -244,8 +245,7 @@ public class Parser {
             case "TestLevelButton":
                 return TestLevelButton.deserialize();
             default:
-                System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
-                System.exit(-1);
+                assert false : "Could not find component '" + componentTitle + "' at line: " + Parser.line;
         }
 
         return null;
@@ -303,8 +303,7 @@ public class Parser {
     private static void checkString(String str) {
         String title = Parser.parseString();
         if (title.compareTo(str) != 0) {
-            System.out.println("Expected '" + str + "' instead got '" + title + "' at line: " + Parser.line);
-            System.exit(-1);
+            assert false : "Expected '" + str + "' instead got '" + title + "' at line: " + Parser.line;
         }
     }
 }

@@ -137,8 +137,8 @@ public class LevelEditorScene extends Scene {
 
         for (GameObject go : objsToDelete) {
             gameObjects.remove(go);
-            //renderer.gameObjects.get(go.zIndex).remove(go);
-            worldPartition.remove(new Tuple<>((int)go.transform.position.x, (int)go.transform.position.y, go.zIndex));
+            renderer.deleteGameObject(go);
+            worldPartition.remove(go.getGridCoords());
         }
         objsToDelete.clear();
     }

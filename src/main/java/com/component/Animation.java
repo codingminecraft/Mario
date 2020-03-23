@@ -12,25 +12,38 @@ import java.util.Map;
 
 public class Animation extends Component {
     private List<Sprite> sprites;
-    private float speed;
     float timeLeft;
     private int currentSprite;
     private float width, height;
     private boolean loops;
 
     private Map<String, String> stateTransfers;
+    private List<Float> waitTimes;
     private String animationName;
     public AnimationMachine machine;
 
     public Animation(String name, float speed, List<Sprite> sprites, boolean loops) {
+        List<Float> speeds = new ArrayList<>();
+        for (int i=0; i < sprites.size(); i++) {
+            speeds.add(speed);
+        }
+        init(name, speeds, sprites, loops);
+    }
+
+    public Animation(String name, List<Float> speed, List<Sprite> sprites, boolean loops) {
+        init(name, speed, sprites, loops);
+    }
+
+    public void init(String name, List<Float> speeds, List<Sprite> sprites, boolean loops) {
         this.animationName = name;
         this.sprites = new ArrayList<>();
+        this.waitTimes = new ArrayList<>();
+        this.waitTimes.addAll(speeds);
         for (Sprite sprite : sprites) {
             Sprite copy = (Sprite)sprite.copy();
             this.sprites.add(copy);
         }
-        this.speed = speed;
-        this.timeLeft = speed;
+        this.timeLeft = waitTimes.get(0);
         this.width = this.sprites.get(0).width;
         this.height = this.sprites.get(0).height;
         this.stateTransfers = new HashMap<>();
@@ -52,7 +65,7 @@ public class Animation extends Component {
                 this.currentSprite = Math.min(this.currentSprite + 1, this.sprites.size() - 1);
             }
 
-            this.timeLeft = this.speed;
+            this.timeLeft = this.waitTimes.get(this.currentSprite);
         }
     }
 
@@ -80,7 +93,7 @@ public class Animation extends Component {
         for (Sprite sprite : this.sprites) {
             spriteCopies.add((Sprite)sprite.copy());
         }
-        Animation animation = new Animation(this.animationName, this.speed, spriteCopies, this.loops);
+        Animation animation = new Animation(this.animationName, this.waitTimes, spriteCopies, this.loops);
         for (String key : stateTransfers.keySet()) {
             animation.addStateTransfer(key, stateTransfers.get(key));
         }
@@ -101,7 +114,11 @@ public class Animation extends Component {
             builder.append(sprite.serialize(tabSize + 1));
             builder.append(addEnding(true, true));
         }
-        builder.append(addFloatProperty("Speed", this.speed, tabSize + 1, true, true));
+        builder.append(addIntProperty("WaitTimesSize", this.waitTimes.size(), tabSize + 1, true, true));
+        for (int i=0; i < waitTimes.size(); i++) {
+            builder.append(addFloatProperty("WaitTime", waitTimes.get(i), tabSize + 1, true, true));
+        }
+
         builder.append(addIntProperty("NumberOfStates", this.stateTransfers.size(), tabSize + 1,true, true));
         for (String state : stateTransfers.keySet()) {
             builder.append(addStringProperty("Trigger", state, tabSize + 1, true, true));
@@ -127,9 +144,14 @@ public class Animation extends Component {
             sprites.add(sprite);
         }
 
-        float speed = Parser.consumeFloatProperty("Speed");
+        int numWaitTimes = Parser.consumeIntProperty("WaitTimesSize");
         Parser.consume(',');
-        Animation anim = new Animation(name, speed, sprites, loops);
+        List<Float> waitTimes = new ArrayList<>();
+        for (int i=0; i < numWaitTimes; i++) {
+            waitTimes.add(Parser.consumeFloatProperty("WaitTime"));
+            Parser.consume(',');
+        }
+        Animation anim = new Animation(name, waitTimes, sprites, loops);
 
         int numOfStates = Parser.consumeIntProperty("NumberOfStates");
         Parser.consume(',');
