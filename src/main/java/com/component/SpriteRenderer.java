@@ -22,6 +22,9 @@ public class SpriteRenderer extends Component {
     private Vector4f lastColor;
     private Quad quad;
 
+    private boolean isFlippedX = false;
+    private boolean isFlippedY = false;
+
     public SpriteRenderer(Sprite sprite) {
         this.sprite = sprite;
 

@@ -11,6 +11,7 @@ public class PlayerController extends Component {
 
     private AnimationMachine machine = null;
     private Rigidbody rb = null;
+    private SpriteRenderer sprite = null;
     private boolean onGround = true;
 
     @Override
@@ -22,18 +23,27 @@ public class PlayerController extends Component {
     public void start() {
         this.machine = gameObject.getComponent(AnimationMachine.class);
         this.rb = gameObject.getComponent(Rigidbody.class);
+        this.sprite = gameObject.getComponent(SpriteRenderer.class);
     }
 
     @Override
     public void update(double dt) {
         if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) {
             rb.acceleration.x = 1800;
-            if (onGround)
+            if (gameObject.transform.scale.x < 0) {
+                gameObject.transform.scale.x *= -1;
+            }
+            if (onGround) {
                 machine.trigger("StartRunning");
+            }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT) || KeyListener.isKeyPressed(GLFW_KEY_A)) {
             rb.acceleration.x = -1800;
-            if (onGround)
+            if (gameObject.transform.scale.x > 0) {
+                gameObject.transform.scale.x *= -1;
+            }
+            if (onGround) {
                 machine.trigger("StartRunning");
+            }
         } else if (onGround) {
             rb.acceleration.x = 0;
             machine.trigger("StartIdle");

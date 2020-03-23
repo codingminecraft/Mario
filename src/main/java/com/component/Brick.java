@@ -49,8 +49,8 @@ public class Brick extends Component {
     @Override
     public void collision(Collision coll) {
         if (coll.side == CollisionSide.BOTTOM &&
-                coll.contactPoint.x > this.gameObject.transform.position.x + 2 &&
-                coll.contactPoint.x < this.gameObject.transform.position.x + coll.bounds.getWidth() - 2) {
+                coll.contactPoint.x > this.gameObject.transform.position.x + 1 &&
+                coll.contactPoint.x < this.gameObject.transform.position.x + coll.bounds.getWidth() - 1) {
             doAnimation = true;
         }
     }

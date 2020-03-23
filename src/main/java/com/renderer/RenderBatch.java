@@ -259,8 +259,11 @@ public class RenderBatch implements Comparable<RenderBatch> {
             }
 
             // Load position
+            // Make sure to shift the vertices over 1 scale in case the scale is negative so that the object flips about the center
             vertices[offset] = sprite.gameObject.transform.position.x + (xAdd * sprite.gameObject.transform.scale.x);
+            if (sprite.gameObject.transform.scale.x < 0) vertices[offset] += sprite.gameObject.transform.scale.x * -1;
             vertices[offset + 1] = sprite.gameObject.transform.position.y + (yAdd * sprite.gameObject.transform.scale.y);
+            if (sprite.gameObject.transform.scale.y < 0) vertices[offset + 1] += sprite.gameObject.transform.scale.y * -1;
             vertices[offset + 2] = sprite.gameObject.zIndex;
 
             // Load color
