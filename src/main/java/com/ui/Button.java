@@ -48,7 +48,7 @@ public class Button extends JComponent {
                 LevelEditorScene scene = (LevelEditorScene) Window.getScene();
                 LevelEditorControls levelEditorControls = scene.mouseCursor.getComponent(LevelEditorControls.class);
 
-                levelEditorControls.gameObjectAdded((Sprite)this.sprite.copy(), objToCopy);
+                levelEditorControls.gameObjectAdded(objToCopy);
             }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
             active = false;

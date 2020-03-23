@@ -41,6 +41,7 @@ public class Quad extends RenderComponent {
         float topLeftY = ((float)(sprite.row * sprite.height) + (float)(spritesheet.spacing * sprite.row)) / overallHeight;
         float width = sprite.width / overallWidth;
         float height = sprite.height / overallHeight;
+        this.texture = AssetPool.getTexture(sprite.pictureFile);
 
         // Set normalized texture coordinates
         texCoords[0].x = topLeftX + width;

@@ -345,6 +345,7 @@ public class JWindow extends Serialize {
         window.tabs.remove(0);
         window.tabs.add(firstTab);
         window.currentTab = firstTab;
+        window.positionElements();
 
         while (Parser.peek() == ',') {
             Parser.consume(',');

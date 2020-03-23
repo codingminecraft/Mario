@@ -25,10 +25,14 @@ public class LevelScene extends Scene {
 
 
     public void initAssetPool() {
-        AssetPool.addSpritesheet("assets/marioTilesheet.png", 16, 16, 0, 33, 10 * 33);
-        AssetPool.addSpritesheet("assets/defaultAssets.png", 24, 21, 0, 2, 2);
-        AssetPool.addSpritesheet("assets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
-        AssetPool.addSpritesheet("assets/icons.png", 32, 32, 0, 5, 5);
+        // Game Assets
+        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
+        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
+        AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
+        AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
+
+        // Engine Assets
+        AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);
     }
 
     @Override

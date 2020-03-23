@@ -40,7 +40,7 @@ public class LevelEditorScene extends Scene {
         cameraControls.start();
 
         mouseCursor.addComponent(new LevelEditorControls(32, 32));
-        mouseCursor.addComponent(new SpriteRenderer((Sprite)AssetPool.getSpritesheet("assets/marioTilesheet.png").sprites.get(0).copy()));
+        mouseCursor.addComponent(new SpriteRenderer((Sprite)AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png").sprites.get(0).copy()));
         mouseCursor.transform.scale.x = 32;
         mouseCursor.transform.scale.y = 32;
         mouseCursor.getComponent(SpriteRenderer.class).color = Constants.COLOR_CLEAR;
@@ -59,20 +59,18 @@ public class LevelEditorScene extends Scene {
         }
 
         JWindow blockSelector = new JWindow("Blocks", new Vector2f(0, 100), new Vector2f(33 * 16 + (33 * Constants.PADDING.x), 400));
-        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/marioTilesheet.png");
-        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/defaultAssets.png");
-        Spritesheet icons = AssetPool.getSpritesheet("assets/icons.png");
+        Spritesheet decorationsAndBlocks = AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png");
+        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/spritesheets/defaultAssets.png");
+        Spritesheet icons = AssetPool.getSpritesheet("assets/spritesheets/icons.png");
 
-        int totalSprites = 10 * 33;
         int current = 0;
-        while (current < totalSprites) {
+        while (current < decorationsAndBlocks.sprites.size()) {
             GameObject tile = new GameObject("Tile", new Transform(new Vector2f(0, 0)), 0);
             tile.transform.scale.x = 32;
             tile.transform.scale.y = 32;
-            tile.addComponent(new SpriteRenderer((Sprite)spritesheet.sprites.get(current).copy()));
-            tile.addComponent(new BoxBounds(32, 32, true));
-            tile.addComponent(new Brick());
-            Button button = new Button(spritesheet.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
+            tile.addComponent(new SpriteRenderer((Sprite)decorationsAndBlocks.sprites.get(current).copy()));
+            tile.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+            Button button = new Button(decorationsAndBlocks.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;
         }
@@ -82,6 +80,8 @@ public class LevelEditorScene extends Scene {
         for (int i=0; i < 4; i++) {
             blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.GOOMBA_PREFAB(i)));
         }
+        blockSelector.addUIElement(new Button(icons.sprites.get(9), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.QUESTION_BLOCK()));
+        blockSelector.addUIElement(new Button(icons.sprites.get(10), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.BRICK_BLOCK()));
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
@@ -106,10 +106,14 @@ public class LevelEditorScene extends Scene {
     }
 
     public void initAssetPool() {
-        AssetPool.addSpritesheet("assets/marioTilesheet.png", 16, 16, 0, 33, 10 * 33);
-        AssetPool.addSpritesheet("assets/defaultAssets.png", 24, 21, 0, 2, 2);
-        AssetPool.addSpritesheet("assets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
-        AssetPool.addSpritesheet("assets/icons.png", 32, 32, 0, 5, 5);
+        // Game Assets
+        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
+        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
+        AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
+        AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
+
+        // Engine Assets
+        AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);
     }
 
     @Override

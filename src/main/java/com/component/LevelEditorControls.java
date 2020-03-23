@@ -34,11 +34,11 @@ public class LevelEditorControls extends Component {
         this.selected = new ArrayList<>();
     }
 
-    public void gameObjectAdded(Sprite sprite, GameObject objToCopy) {
+    public void gameObjectAdded(GameObject objToCopy) {
         placingBlocks = true;
         machine = gameObject.getComponent(AnimationMachine.class);
         SpriteRenderer renderer = gameObject.getComponent(SpriteRenderer.class);
-        renderer.sprite = sprite;
+        renderer.sprite = objToCopy.getComponent(SpriteRenderer.class).sprite;
         renderer.color = Constants.COLOR_HALF_ALPHA;
         this.objToCopy = objToCopy.copy();
     }

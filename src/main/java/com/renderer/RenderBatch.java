@@ -238,12 +238,21 @@ public class RenderBatch implements Comparable<RenderBatch> {
         Texture tex = sprite.getQuad().getTexture();
         int texSlot = 0;
         if (tex != null) {
+            if (!textures.contains(tex)) {
+                if (!hasTextureRoom()) {
+                    assert true : "Texture cannot be added, and is required for this batch.";
+                }
+                textures.add(tex);
+            }
+
             for (int i=0; i < textures.size(); i++) {
                 if (textures.get(i) == tex) {
                     texSlot = i + 1;
                     break;
                 }
             }
+
+            assert texSlot != 0 : "Texture should be assigned to this batch.";
         }
 
         // Add 4 vertices with the appropriate properties to vertex array

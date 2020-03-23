@@ -4,13 +4,14 @@ import com.component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.GameObject;
+import com.util.Constants;
 import org.joml.Vector2f;
 
 public class Prefabs {
     public static GameObject MARIO_PREFAB() {
         GameObject player = new GameObject("Mario_Prefab", new Transform(new Vector2f()), 0);
 
-        Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
+        Spritesheet characterSprites = AssetPool.getSpritesheet("assets/spritesheets/character_and_enemies_32.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
         Animation idle = new Animation("Idle", 0.1f, characterSprites.sprites.subList(0, 1), false);
@@ -63,7 +64,7 @@ public class Prefabs {
     public static GameObject GOOMBA_PREFAB(int type) {
         GameObject goomba = new GameObject("Goomba_Prefab", new Transform(new Vector2f()), 0);
 
-        Spritesheet characterSprites = AssetPool.getSpritesheet("assets/character_and_enemies_32.png");
+        Spritesheet characterSprites = AssetPool.getSpritesheet("assets/spritesheets/character_and_enemies_32.png");
 
         AnimationMachine goombaMachine = new AnimationMachine();
         Animation walk = null;
@@ -110,5 +111,33 @@ public class Prefabs {
         goomba.addComponent(new GoombaAI());
 
         return goomba;
+    }
+
+    public static GameObject QUESTION_BLOCK() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        GameObject questionBlock = new GameObject("Question_Block_Prefab", new Transform(new Vector2f()), 0);
+        questionBlock.addComponent(new Brick());
+        questionBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+        questionBlock.addComponent(new SpriteRenderer(items.sprites.get(0)));
+
+        questionBlock.transform.scale.x = 32;
+        questionBlock.transform.scale.y = 32;
+
+        return questionBlock;
+    }
+
+    public static GameObject BRICK_BLOCK() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        GameObject brickBlock = new GameObject("Brick_Block_Prefab", new Transform(new Vector2f()), 0);
+        brickBlock.addComponent(new Brick());
+        brickBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+        brickBlock.addComponent(new SpriteRenderer(items.sprites.get(5)));
+
+        brickBlock.transform.scale.x = 32;
+        brickBlock.transform.scale.y = 32;
+
+        return brickBlock;
     }
 }

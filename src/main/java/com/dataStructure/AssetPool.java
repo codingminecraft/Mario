@@ -76,8 +76,7 @@ public class AssetPool {
         if (AssetPool.hasSpritesheet(file.getAbsolutePath())) {
             return AssetPool.spritesheets.get(file.getAbsolutePath());
         } else {
-            System.out.println("Spritesheet '" + pictureFile + "' does not exist.");
-            System.exit(-1);
+            assert false : "Spritesheet '" + file.getAbsolutePath() + "' does not exist.";
         }
         return null;
     }
@@ -87,8 +86,7 @@ public class AssetPool {
         if (!AssetPool.hasSprite(file.getAbsolutePath())) {
             AssetPool.sprites.put(file.getAbsolutePath(), sprite);
         } else {
-            System.out.println("Asset pool already has asset: " + file.getAbsolutePath());
-            System.exit(-1);
+            assert false : "Asset pool already has asset: " + file.getAbsolutePath();
         }
     }
 
