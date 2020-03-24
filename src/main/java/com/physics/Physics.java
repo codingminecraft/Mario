@@ -54,7 +54,7 @@ public class Physics {
 
         Tuple<Integer> gridCoords = go.getGridCoords();
         for (int i=-1; i < 2; i++) {
-            for (int j=-1; j < 2; j++) {
+            for (int j=-1; j < 3; j++) {
                 this.tuple.x = gridCoords.x + (Constants.TILE_WIDTH * i);
                 this.tuple.y = gridCoords.y + (Constants.TILE_HEIGHT * j);
                 this.tuple.z = go.zIndex;

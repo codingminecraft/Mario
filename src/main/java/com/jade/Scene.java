@@ -25,6 +25,7 @@ public abstract class Scene {
     List<GameObject> gameObjects;
     Map<Tuple<Integer>, GameObject> worldPartition;
     List<GameObject> objsToDelete;
+    List<GameObject> objsToAdd;
     List<JWindow> jWindows;
     Renderer renderer;
 
@@ -36,6 +37,7 @@ public abstract class Scene {
         this.worldPartition = new HashMap<>();
         this.jWindows = new ArrayList<>();
         this.objsToDelete = new ArrayList<>();
+        this.objsToAdd = new ArrayList<>();
         this.physics = new Physics();
     }
 
@@ -71,15 +73,25 @@ public abstract class Scene {
         }
     }
 
+    public <T extends Component> GameObject findObjectWithComponent(Class<T> c) {
+        for (GameObject g : gameObjects) {
+            if (g.getComponent(c) != null) {
+                return g;
+            }
+        }
+        return null;
+    }
+
     public void addGameObject(GameObject g) {
-        gameObjects.add(g);
-        renderer.add(g);
-        physics.addGameObject(g);
+        if (this instanceof LevelEditorScene) {
+            gameObjects.add(g);
+            renderer.add(g);
+            physics.addGameObject(g);
 
-        Tuple<Integer> gridPos = g.getGridCoords();
-        worldPartition.put(gridPos, g);
-
-        if (Window.getWindow().isRunning) {
+            Tuple<Integer> gridPos = g.getGridCoords();
+            worldPartition.put(gridPos, g);
+        } else {
+            objsToAdd.add(g);
             g.start();
         }
     }

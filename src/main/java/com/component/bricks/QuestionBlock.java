@@ -18,6 +18,7 @@ public class QuestionBlock extends Brick {
         machine = gameObject.getComponent(AnimationMachine.class);
         this.originalY = this.gameObject.transform.position.y;
         this.maxY = this.originalY + yDistance;
+        this.type = 1;
     }
 
     @Override

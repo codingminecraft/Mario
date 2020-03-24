@@ -19,44 +19,81 @@ public class Prefabs {
         GameObject player = new GameObject("Mario_Prefab", new Transform(new Vector2f()), 0);
 
         Spritesheet characterSprites = AssetPool.getSpritesheet("assets/spritesheets/character_and_enemies_32.png");
+        Spritesheet bigSprites = AssetPool.getSpritesheet("assets/spritesheets/character_and_enemies_64.png");
 
         AnimationMachine playerMachine = new AnimationMachine();
+        // Small mario animations
         Animation idle = new Animation("Idle", 0.1f, characterSprites.sprites.subList(0, 1), false);
         Animation run = new Animation("Run", 0.1f, characterSprites.sprites.subList(0, 4), true);
         Animation jump = new Animation("Jump", 0.1f, characterSprites.sprites.subList(4, 6), false);
         Animation swim = new Animation("Swim", 0.1f, characterSprites.sprites.subList(9, 14), true);
+
+        // Big mario animations
+        Animation bigIdle = new Animation("BigIdle", 0.1f, bigSprites.sprites.subList(0, 1), false);
+        Animation bigRun = new Animation("BigRun", 0.1f, bigSprites.sprites.subList(0, 4), true);
+        Animation bigJump = new Animation("BigJump", 0.1f, bigSprites.sprites.subList(4, 6), false);
+        Animation bigSwim = new Animation("BigSwim", 0.1f, bigSprites.sprites.subList(9, 14), true);
         playerMachine.setStartAnimation("Idle");
 
         // IDLE
         idle.addStateTransfer("StartRunning", "Run");
         idle.addStateTransfer("StartJumping", "Jump");
         idle.addStateTransfer("StartSwim", "Swim");
+        idle.addStateTransfer("StartBig", "BigIdle");
+
+        bigIdle.addStateTransfer("StartRunning", "BigRun");
+        bigIdle.addStateTransfer("StartJumping", "BigJump");
+        bigIdle.addStateTransfer("StartSwim", "BigSwim");
+        bigIdle.addStateTransfer("StartSmall", "Idle");
 
         // RUN
         run.addStateTransfer("StartJumping", "Jump");
         run.addStateTransfer("StartIdle", "Idle");
         run.addStateTransfer("StartSwim", "Swim");
+        run.addStateTransfer("StartBig", "BigRun");
+
+        bigRun.addStateTransfer("StartJumping", "BigJump");
+        bigRun.addStateTransfer("StartIdle", "BigIdle");
+        bigRun.addStateTransfer("StartSwim", "BigSwim");
+        bigRun.addStateTransfer("StartSmall", "Run");
 
         // JUMP
         jump.addStateTransfer("StartRunning", "Run");
         jump.addStateTransfer("StartIdle", "Idle");
         jump.addStateTransfer("StartSwim", "Swim");
+        jump.addStateTransfer("StartBig", "BigJump");
+
+        bigJump.addStateTransfer("StartRunning", "BigRun");
+        bigJump.addStateTransfer("StartIdle", "BigIdle");
+        bigJump.addStateTransfer("StartSwim", "BigSwim");
+        bigJump.addStateTransfer("StartSmall", "Jump");
 
         // SWIM
         swim.addStateTransfer("StartRunning", "Run");
         swim.addStateTransfer("StartJumping", "Jump");
         swim.addStateTransfer("StartIdle", "Idle");
+        swim.addStateTransfer("StartBig", "BigSwim");
+
+        bigSwim.addStateTransfer("StartRunning", "BigRun");
+        bigSwim.addStateTransfer("StartJumping", "BigJump");
+        bigSwim.addStateTransfer("StartIdle", "BigIdle");
+        bigSwim.addStateTransfer("StartSmall", "SmallSwim");
 
         playerMachine.addAnimation(idle);
         playerMachine.addAnimation(run);
         playerMachine.addAnimation(jump);
         playerMachine.addAnimation(swim);
 
+        playerMachine.addAnimation(bigIdle);
+        playerMachine.addAnimation(bigRun);
+        playerMachine.addAnimation(bigJump);
+        playerMachine.addAnimation(bigSwim);
+
         player.addComponent(playerMachine);
         player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
 
-        BoxBounds playerBoxBounds = new BoxBounds(30, 32, false);
-        playerBoxBounds.xBuffer = 1;
+        BoxBounds playerBoxBounds = new BoxBounds(30, 31, false);
+        playerBoxBounds.setXBuffer(1);
         player.addComponent(playerBoxBounds);
 
         player.addComponent(new Rigidbody());
@@ -193,5 +230,25 @@ public class Prefabs {
         coin.transform.scale.y = 32;
 
         return coin;
+    }
+
+    public static GameObject MUSHROOM_ITEM() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Add components
+        GameObject mushroom = new GameObject("Mushroom_Item_Prefab", new Transform(new Vector2f()), 0);
+        mushroom.addComponent(new Mushroom());
+        mushroom.addComponent(new BoxBounds(32, 32, false));
+        mushroom.addComponent(new SpriteRenderer(items.sprites.get(10)));
+        mushroom.addComponent(new Rigidbody());
+
+        mushroom.transform.scale.x = 32;
+        mushroom.transform.scale.y = 32;
+
+        return mushroom;
+    }
+
+    public static GameObject FLOWER_ITEM() {
+        return null;
     }
 }

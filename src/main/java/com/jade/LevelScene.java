@@ -1,11 +1,12 @@
 package com.jade;
 
-import com.component.Bounds;
-import com.component.BoxBounds;
+import com.component.*;
 import com.dataStructure.AssetPool;
+import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.util.Constants;
+import org.joml.Vector2f;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -55,6 +56,18 @@ public class LevelScene extends Scene {
                 this.physics.deleteGameObject(obj);
             }
             objsToDelete.clear();
+        }
+
+        if (objsToAdd.size() > 0) {
+            for (GameObject g : objsToAdd) {
+                gameObjects.add(g);
+                renderer.add(g);
+                physics.addGameObject(g);
+
+                Tuple<Integer> gridPos = g.getGridCoords();
+                worldPartition.put(gridPos, g);
+            }
+            objsToAdd.clear();
         }
     }
 }

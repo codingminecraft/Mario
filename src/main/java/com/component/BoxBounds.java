@@ -1,22 +1,25 @@
 package com.component;
 
+import com.component.enums.PlayerType;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.jade.KeyListener;
 import com.jade.Window;
 import com.physics.Collision;
 import com.util.Constants;
 import org.joml.Vector2f;
+import org.lwjgl.system.CallbackI;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 
 public class BoxBounds extends Bounds {
-    public float width, height;
-    public float halfWidth, halfHeight;
-    public Vector2f center = new Vector2f();
-    public float xBuffer = 0.0f;
-    public float yBuffer = 0.0f;
-
-    public float enclosingRadius;
+    private float width, height;
+    private float halfWidth, halfHeight;
+    private Vector2f center = new Vector2f();
+    private float xBuffer = 0.0f;
+    private float yBuffer = 0.0f;
 
     private boolean shouldCheckTop = true;
     private boolean shouldCheckBottom = true;
@@ -32,10 +35,30 @@ public class BoxBounds extends Bounds {
         this.height = height;
         this.halfWidth = this.width / 2.0f;
         this.halfHeight = this.height / 2.0f;
-        this.enclosingRadius = (float)Math.sqrt((this.halfWidth * this.halfWidth) +
-                (this.halfHeight * this.halfHeight));
         this.type = BoundsType.Box;
         this.isStatic = isStatic;
+    }
+
+    public void setHeight(float newHeight) {
+        this.height = newHeight;
+        this.halfHeight = newHeight / 2.0f;
+        this.calculateCenter();
+    }
+
+    public float getCenterX() {
+        return this.center.x;
+    }
+
+    public float getCenterY() {
+        return this.center.y;
+    }
+
+    public void setXBuffer(float val) {
+        this.xBuffer = val;
+    }
+
+    public void setYBuffer(float val) {
+        this.yBuffer = val;
     }
 
     @Override
@@ -93,9 +116,6 @@ public class BoxBounds extends Bounds {
     }
 
     public Collision resolveCollision(BoxBounds otherBounds) {
-        otherBounds.calculateCenter();
-        this.calculateCenter();
-
         float dx = this.center.x - otherBounds.center.x;
         float dy = this.center.y - otherBounds.center.y;
 
@@ -106,11 +126,11 @@ public class BoxBounds extends Bounds {
         float overlapY = combinedHalfHeights - Math.abs(dy);
 
         if (overlapX >= overlapY) {
-            if (dy > 0) {
+            if (dy >= 0) {
                 if (otherBounds.isStatic && !otherBounds.shouldCheckTop) return null;
 
                 // Collision on the bottom of this
-                this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
+                this.gameObject.transform.position.y += overlapY;
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
 
@@ -121,7 +141,7 @@ public class BoxBounds extends Bounds {
                 if (otherBounds.isStatic && !otherBounds.shouldCheckBottom) return null;
 
                 // Collision on the top of this
-                this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
+                this.gameObject.transform.position.y -= overlapY;
                 if (this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
 
@@ -134,7 +154,7 @@ public class BoxBounds extends Bounds {
                 if (otherBounds.isStatic && !otherBounds.shouldCheckLeft) return null;
 
                 // Collision on the right of this
-                this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x - this.getWidth();
+                this.gameObject.transform.position.x -= overlapX;
 
                 // Left of other bounds
                 Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x, otherBounds.center.y);
@@ -143,7 +163,7 @@ public class BoxBounds extends Bounds {
                 if (otherBounds.isStatic && !otherBounds.shouldCheckRight) return null;
 
                 // Collision on the left of this
-                this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x + otherBounds.getWidth();
+                this.gameObject.transform.position.x += overlapX;
 
                 // Right of other bounds
                 Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x + otherBounds.getWidth(), otherBounds.center.y);

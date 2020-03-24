@@ -34,7 +34,7 @@ public class Collision {
     }
 
     private void flipHorizontal(GameObject otherGo) {
-        this.contactPoint.y = otherGo.getComponent(BoxBounds.class).center.y;
+        this.contactPoint.y = otherGo.getComponent(BoxBounds.class).getCenterY();
 
         if (side == CollisionSide.RIGHT) {
             side = CollisionSide.LEFT;
@@ -44,7 +44,7 @@ public class Collision {
     }
 
     private void flipVertical(GameObject otherGo) {
-        this.contactPoint.x = otherGo.getComponent(BoxBounds.class).center.x;
+        this.contactPoint.x = otherGo.getComponent(BoxBounds.class).getCenterX();
 
         if (side == CollisionSide.TOP) {
             side = CollisionSide.BOTTOM;

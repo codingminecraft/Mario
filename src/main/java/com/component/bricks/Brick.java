@@ -33,16 +33,23 @@ public abstract class Brick extends Component {
         GameObject coin = Prefabs.COIN();
         coin.transform.position.x = this.gameObject.transform.position.x;
         coin.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
-        Coin coinComp = new Coin();
-        coin.addComponent(coinComp);
+        Coin coinComp = coin.getComponent(Coin.class);
         Window.getScene().addGameObject(coin);
         coinComp.collect();
     }
 
     protected void spawnPowerup(PlayerType type) {
-        GameObject powerup = new GameObject("Powerup", new Transform(new Vector2f()), this.gameObject.zIndex);
-
-
+        GameObject powerup = null;
+        if (type == PlayerType.SMALL) {
+            powerup = Prefabs.MUSHROOM_ITEM();
+        } else if (type == PlayerType.BIG) {
+            powerup = Prefabs.FLOWER_ITEM();
+        } else if (type == PlayerType.FIRE) {
+            powerup = Prefabs.COIN();
+        }
+        powerup.transform.position.x = this.gameObject.transform.position.x;
+        powerup.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
+        Window.getScene().addGameObject(powerup);
     }
 
     protected void spawnStar() {
@@ -82,7 +89,7 @@ public abstract class Brick extends Component {
         if (coll.side == CollisionSide.BOTTOM &&
                 coll.contactPoint.x > this.gameObject.transform.position.x + 1 &&
                 coll.contactPoint.x < this.gameObject.transform.position.x + coll.bounds.getWidth() - 1 &&
-                coll.gameObject.getComponent(PlayerController.class) != null) {
+                coll.gameObject.getComponent(PlayerController.class) != null && canDoAnimation) {
             doAnimation = true;
             brickHit(coll.gameObject);
         }

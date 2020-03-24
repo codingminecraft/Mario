@@ -14,8 +14,18 @@ public class PlayerController extends Component {
     private Rigidbody rb = null;
     private SpriteRenderer sprite = null;
     private boolean onGround = true;
+    private BoxBounds bounds = null;
 
     public PlayerType type = PlayerType.SMALL;
+
+    public void setState(PlayerType type) {
+        if (type == PlayerType.BIG && this.type == PlayerType.SMALL) {
+            this.type = PlayerType.BIG;
+            this.machine.trigger("StartBig");
+            this.gameObject.transform.scale.y = 64;
+            bounds.setHeight(63);
+        }
+    }
 
     @Override
     public Component copy() {
@@ -27,6 +37,7 @@ public class PlayerController extends Component {
         this.machine = gameObject.getComponent(AnimationMachine.class);
         this.rb = gameObject.getComponent(Rigidbody.class);
         this.sprite = gameObject.getComponent(SpriteRenderer.class);
+        this.bounds = gameObject.getComponent(BoxBounds.class);
     }
 
     @Override
