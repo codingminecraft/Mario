@@ -35,6 +35,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        Window.getWindow().setColor(Constants.COLOR_WHITE);
         initAssetPool();
         grid.start();
         cameraControls.start();
@@ -69,7 +70,7 @@ public class LevelEditorScene extends Scene {
             tile.transform.scale.x = 32;
             tile.transform.scale.y = 32;
             tile.addComponent(new SpriteRenderer((Sprite)decorationsAndBlocks.sprites.get(current).copy()));
-            tile.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+            tile.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true, false));
             Button button = new Button(decorationsAndBlocks.sprites.get(current), new Vector2f(0, 0), new Vector2f(16, 16), tile);
             blockSelector.addUIElement(button);
             current++;
@@ -110,7 +111,7 @@ public class LevelEditorScene extends Scene {
         AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
         AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
-        AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21);
+        AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);
         AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
 
         // Engine Assets

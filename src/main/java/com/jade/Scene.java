@@ -1,5 +1,6 @@
 package com.jade;
 
+import com.component.BoxBounds;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.physics.Physics;
@@ -88,8 +89,10 @@ public abstract class Scene {
             renderer.add(g);
             physics.addGameObject(g);
 
-            Tuple<Integer> gridPos = g.getGridCoords();
-            worldPartition.put(gridPos, g);
+            if (g.getComponent(BoxBounds.class) != null && g.getComponent(BoxBounds.class).isStatic) {
+                Tuple<Integer> gridPos = g.getGridCoords();
+                worldPartition.put(gridPos, g);
+            }
         } else {
             objsToAdd.add(g);
             g.start();

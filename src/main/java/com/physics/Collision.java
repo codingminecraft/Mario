@@ -7,7 +7,7 @@ import org.joml.Vector2f;
 
 public class Collision {
     public enum CollisionSide {
-        TOP, LEFT, RIGHT, BOTTOM;
+        TOP, LEFT, RIGHT, BOTTOM, TRIGGER
     }
 
     public GameObject gameObject;

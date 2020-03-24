@@ -27,14 +27,21 @@ public class Prefabs {
         Animation run = new Animation("Run", 0.1f, characterSprites.sprites.subList(0, 4), true);
         Animation jump = new Animation("Jump", 0.1f, characterSprites.sprites.subList(4, 6), false);
         Animation swim = new Animation("Swim", 0.1f, characterSprites.sprites.subList(9, 14), true);
+        playerMachine.setStartAnimation("Idle");
 
         // Big mario animations
         Animation bigIdle = new Animation("BigIdle", 0.1f, bigSprites.sprites.subList(0, 1), false);
         Animation bigRun = new Animation("BigRun", 0.1f, bigSprites.sprites.subList(0, 4), true);
         Animation bigJump = new Animation("BigJump", 0.1f, bigSprites.sprites.subList(4, 6), false);
         Animation bigSwim = new Animation("BigSwim", 0.1f, bigSprites.sprites.subList(9, 14), true);
-        playerMachine.setStartAnimation("Idle");
 
+        // Fire mario animations
+        Animation fireIdle = new Animation("FireIdle", 0.1f, bigSprites.sprites.subList(21, 22), false);
+        Animation fireRun = new Animation("FireRun", 0.1f, bigSprites.sprites.subList(21, 25), true);
+        Animation fireJump = new Animation("FireJump", 0.1f, bigSprites.sprites.subList(25, 27), false);
+        Animation fireSwim = new Animation("FireSwim", 0.1f, bigSprites.sprites.subList(30, 35), true);
+
+        // Set up animation state transfers
         // IDLE
         idle.addStateTransfer("StartRunning", "Run");
         idle.addStateTransfer("StartJumping", "Jump");
@@ -45,6 +52,12 @@ public class Prefabs {
         bigIdle.addStateTransfer("StartJumping", "BigJump");
         bigIdle.addStateTransfer("StartSwim", "BigSwim");
         bigIdle.addStateTransfer("StartSmall", "Idle");
+        bigIdle.addStateTransfer("StartFire", "FireIdle");
+
+        fireIdle.addStateTransfer("StartRunning", "FireRun");
+        fireIdle.addStateTransfer("StartJumping", "FireJump");
+        fireIdle.addStateTransfer("StartSwim", "FireSwim");
+        fireIdle.addStateTransfer("StartBig", "BigIdle");
 
         // RUN
         run.addStateTransfer("StartJumping", "Jump");
@@ -56,6 +69,12 @@ public class Prefabs {
         bigRun.addStateTransfer("StartIdle", "BigIdle");
         bigRun.addStateTransfer("StartSwim", "BigSwim");
         bigRun.addStateTransfer("StartSmall", "Run");
+        bigRun.addStateTransfer("StartFire", "FireRun");
+
+        fireRun.addStateTransfer("StartJumping", "FireJump");
+        fireRun.addStateTransfer("StartIdle", "FireIdle");
+        fireRun.addStateTransfer("StartSwim", "FireSwim");
+        fireRun.addStateTransfer("StartBig", "BigRun");
 
         // JUMP
         jump.addStateTransfer("StartRunning", "Run");
@@ -67,6 +86,12 @@ public class Prefabs {
         bigJump.addStateTransfer("StartIdle", "BigIdle");
         bigJump.addStateTransfer("StartSwim", "BigSwim");
         bigJump.addStateTransfer("StartSmall", "Jump");
+        bigJump.addStateTransfer("StartFire", "FireJump");
+
+        fireJump.addStateTransfer("StartRunning", "FireRun");
+        fireJump.addStateTransfer("StartIdle", "FireIdle");
+        fireJump.addStateTransfer("StartSwim", "FireSwim");
+        fireJump.addStateTransfer("StartBig", "BigJump");
 
         // SWIM
         swim.addStateTransfer("StartRunning", "Run");
@@ -77,8 +102,15 @@ public class Prefabs {
         bigSwim.addStateTransfer("StartRunning", "BigRun");
         bigSwim.addStateTransfer("StartJumping", "BigJump");
         bigSwim.addStateTransfer("StartIdle", "BigIdle");
-        bigSwim.addStateTransfer("StartSmall", "SmallSwim");
+        bigSwim.addStateTransfer("StartSmall", "Swim");
+        bigSwim.addStateTransfer("StartFire", "FireSwim");
 
+        fireSwim.addStateTransfer("StartRunning", "FireRun");
+        fireSwim.addStateTransfer("StartJumping", "FireJump");
+        fireSwim.addStateTransfer("StartIdle", "FireIdle");
+        fireSwim.addStateTransfer("StartBig", "BigSwim");
+
+        // Add animations to the machine
         playerMachine.addAnimation(idle);
         playerMachine.addAnimation(run);
         playerMachine.addAnimation(jump);
@@ -89,10 +121,16 @@ public class Prefabs {
         playerMachine.addAnimation(bigJump);
         playerMachine.addAnimation(bigSwim);
 
+        playerMachine.addAnimation(fireIdle);
+        playerMachine.addAnimation(fireRun);
+        playerMachine.addAnimation(fireJump);
+        playerMachine.addAnimation(fireSwim);
+
+        // Add the components to the GameObject
         player.addComponent(playerMachine);
         player.addComponent(new SpriteRenderer(playerMachine.getPreviewSprite()));
 
-        BoxBounds playerBoxBounds = new BoxBounds(30, 31, false);
+        BoxBounds playerBoxBounds = new BoxBounds(30, 31, false, false);
         playerBoxBounds.setXBuffer(1);
         player.addComponent(playerBoxBounds);
 
@@ -150,7 +188,7 @@ public class Prefabs {
         goomba.transform.scale.x = 32;
         goomba.transform.scale.y = 32;
 
-        goomba.addComponent(new BoxBounds(32, 32, false));
+        goomba.addComponent(new BoxBounds(32, 32, false, false));
         goomba.addComponent(new Rigidbody());
         goomba.addComponent(new GoombaAI());
 
@@ -180,7 +218,7 @@ public class Prefabs {
         questionBlock.addComponent(new SpriteRenderer(questionBlockMachine.getPreviewSprite()));
 
         questionBlock.addComponent(new QuestionBlock());
-        questionBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+        questionBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true, false));
 
         questionBlock.transform.scale.x = 32;
         questionBlock.transform.scale.y = 32;
@@ -193,7 +231,7 @@ public class Prefabs {
 
         GameObject brickBlock = new GameObject("Brick_Block_Prefab", new Transform(new Vector2f()), 0);
         brickBlock.addComponent(new BreakableBrick());
-        brickBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true));
+        brickBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true, false));
         brickBlock.addComponent(new SpriteRenderer(items.sprites.get(5)));
 
         brickBlock.transform.scale.x = 32;
@@ -223,7 +261,7 @@ public class Prefabs {
         coin.addComponent(machine);
 
         coin.addComponent(new Coin());
-        coin.addComponent(new BoxBounds(32, 32, true));
+        coin.addComponent(new BoxBounds(32, 32, true, true));
         coin.addComponent(new SpriteRenderer(machine.getPreviewSprite()));
 
         coin.transform.scale.x = 32;
@@ -238,7 +276,7 @@ public class Prefabs {
         // Add components
         GameObject mushroom = new GameObject("Mushroom_Item_Prefab", new Transform(new Vector2f()), 0);
         mushroom.addComponent(new Mushroom());
-        mushroom.addComponent(new BoxBounds(32, 32, false));
+        mushroom.addComponent(new BoxBounds(32, 32, false, true));
         mushroom.addComponent(new SpriteRenderer(items.sprites.get(10)));
         mushroom.addComponent(new Rigidbody());
 
@@ -249,6 +287,18 @@ public class Prefabs {
     }
 
     public static GameObject FLOWER_ITEM() {
-        return null;
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Add components
+        GameObject flower = new GameObject("Flower_Item_Prefab", new Transform(new Vector2f()), 0);
+        flower.addComponent(new Flower());
+        flower.addComponent(new BoxBounds(32, 32, false, true));
+        flower.addComponent(new SpriteRenderer(items.sprites.get(20)));
+        flower.addComponent(new Rigidbody());
+
+        flower.transform.scale.x = 32;
+        flower.transform.scale.y = 32;
+
+        return flower;
     }
 }

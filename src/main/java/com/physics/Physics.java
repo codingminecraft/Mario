@@ -1,6 +1,7 @@
 package com.physics;
 
 import com.component.Bounds;
+import com.component.BoxBounds;
 import com.dataStructure.Tuple;
 import com.jade.GameObject;
 import com.jade.Window;
@@ -78,20 +79,25 @@ public class Physics {
             }
         }
 
-        // Check for collisions among dynamic objects
+        // Check for collisions/triggers among dynamic objects
         for (GameObject obj : dynamicObjects) {
             if (obj == go) continue;
 
             Bounds otherBounds = obj.getComponent(Bounds.class);
             if (Bounds.checkCollision(bounds, otherBounds)) {
-                Collision collision = Bounds.resolveCollision(bounds, otherBounds);
-                if (collision == null) continue;
-                go.collision(collision);
+                if (bounds.isTrigger() || otherBounds.isTrigger()) {
+                    go.trigger(new Trigger(otherBounds.gameObject));
+                    otherBounds.gameObject.trigger(new Trigger(go));
+                } else {
+                    Collision collision = Bounds.resolveCollision(bounds, otherBounds);
+                    if (collision == null) continue;
+                    go.collision(collision);
 
-                // Flip the collision side for the other game object
-                collision.flip(go);
+                    // Flip the collision side for the other game object
+                    collision.flip(go);
 
-                obj.collision(collision);
+                    obj.collision(collision);
+                }
             }
         }
     }

@@ -23,6 +23,7 @@ public class Constants {
     public static FontMetrics FONT_METRICS;
     public static String CURRENT_LEVEL = "Default";
     public static int Z_INDEX = 0;
+    public static final int CAMERA_OFFSET_X = 32 * 12;
 
     // =========================================================================
     // GUI Colors
@@ -38,6 +39,7 @@ public class Constants {
     public static final Vector4f COLOR_BLACK = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
     public static final Vector4f COLOR_GREEN = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
     public static final Vector4f COLOR_BLUE = new Vector4f(0.0f,  0.0f, 1.0f, 1.0f);
+    public static final Vector4f SKY_COLOR = new Vector4f(93f / 255f, 148f / 255f, 251f / 255f, 1.0f);
 
     // =========================================================================
     // GUI constraints

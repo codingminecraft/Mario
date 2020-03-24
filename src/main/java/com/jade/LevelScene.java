@@ -23,6 +23,7 @@ public class LevelScene extends Scene {
     public void init() {
         initAssetPool();
         importLevel(Constants.CURRENT_LEVEL);
+        Window.getWindow().setColor(Constants.SKY_COLOR);
     }
 
 
@@ -31,6 +32,7 @@ public class LevelScene extends Scene {
         AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
         AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
+        AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);
         AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
 
         // Engine Assets
@@ -64,8 +66,10 @@ public class LevelScene extends Scene {
                 renderer.add(g);
                 physics.addGameObject(g);
 
-                Tuple<Integer> gridPos = g.getGridCoords();
-                worldPartition.put(gridPos, g);
+                if (g.getComponent(BoxBounds.class) != null && g.getComponent(BoxBounds.class).isStatic) {
+                    Tuple<Integer> gridPos = g.getGridCoords();
+                    worldPartition.put(gridPos, g);
+                }
             }
             objsToAdd.clear();
         }

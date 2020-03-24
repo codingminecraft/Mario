@@ -1,18 +1,23 @@
 package com.component;
 
 import com.jade.Component;
-import com.jade.GameObject;
 import com.physics.Collision;
 import org.joml.Vector2f;
 
 enum BoundsType {
     Box,
-    Triangle
 }
 
 public abstract class Bounds extends Component {
     public BoundsType type;
     public boolean isStatic;
+
+    /*
+     * If true, then collisions with all dynamic objects are ignored, and sent as a 'trigger' instead
+     *           Collisions with static objects will still occur though
+     * If false, collisions will occur with all dynamic and static objects
+     */
+    protected boolean isTrigger;
 
     abstract public float getWidth();
     abstract public float getHeight();
@@ -34,5 +39,9 @@ public abstract class Bounds extends Component {
         }
 
         return null;
+    }
+
+    public boolean isTrigger() {
+        return this.isTrigger;
     }
 }

@@ -5,10 +5,12 @@ import com.file.Parser;
 import com.jade.Component;
 import com.jade.Window;
 import com.physics.Collision;
+import com.physics.Trigger;
 
 public class Mushroom extends Component {
     private boolean goingRight = true;
     private float speed = 40f;
+    private boolean collected = false;
 
     @Override
     public void update(double dt) {
@@ -20,12 +22,18 @@ public class Mushroom extends Component {
     }
 
     @Override
-    public void collision(Collision coll) {
-        PlayerController player = coll.gameObject.getComponent(PlayerController.class);
-        if (player != null) {
+    public void trigger(Trigger trigger) {
+        PlayerController player = trigger.gameObject.getComponent(PlayerController.class);
+        if (player != null && !collected) {
             player.setState(PlayerType.BIG);
             Window.getScene().deleteGameObject(this.gameObject);
-        } else if (coll.side == Collision.CollisionSide.RIGHT) {
+            this.collected = true;
+        }
+    }
+
+    @Override
+    public void collision(Collision coll) {
+        if (coll.side == Collision.CollisionSide.RIGHT) {
             goingRight = false;
         } else if (coll.side == Collision.CollisionSide.LEFT) {
             goingRight = true;

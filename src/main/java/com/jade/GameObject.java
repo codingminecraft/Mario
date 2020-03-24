@@ -4,6 +4,7 @@ import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.physics.Collision;
+import com.physics.Trigger;
 import com.renderer.RenderComponent;
 import com.util.Constants;
 
@@ -39,6 +40,12 @@ public class GameObject extends Object {
     public void collision(Collision coll) {
         for (Component c : components) {
             c.collision(coll);
+        }
+    }
+
+    public void trigger(Trigger trigger) {
+        for (Component c : components) {
+            c.trigger(trigger);
         }
     }
 

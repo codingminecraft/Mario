@@ -3,6 +3,7 @@ package com.jade;
 import com.renderer.fonts.FontTexture;
 import com.util.Constants;
 import com.util.Time;
+import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -24,6 +25,7 @@ public class Window {
     private int width, height;
     private String title;
     private float aspect;
+    private Vector4f clearColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     public boolean isRunning = false;
 
@@ -132,7 +134,7 @@ public class Window {
             this.update(deltaTime);
 
             // Set the clear color
-            glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+            glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
             glEnable(GL_DEPTH);
 
@@ -173,6 +175,13 @@ public class Window {
                 currentScene = null;
                 break;
         }
+    }
+
+    public void setColor(Vector4f color) {
+        this.clearColor.x = color.x;
+        this.clearColor.y = color.y;
+        this.clearColor.z = color.z;
+        this.clearColor.w = color.w;
     }
 
     public static Window getWindow() {
