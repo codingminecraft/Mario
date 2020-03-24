@@ -3,6 +3,7 @@ package com.jade;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class Camera {
     private boolean isPerspective = false;
@@ -45,6 +46,12 @@ public class Camera {
 
     public Matrix4f getInverseProjection() {
         return this.inverseProjection;
+    }
+
+    public Vector2f worldToScreen(Vector2f worldCoords) {
+        worldCoords.x -= position.x;
+        worldCoords.y -= position.y;
+        return worldCoords;
     }
 
     public Vector3f getVec3Position() {

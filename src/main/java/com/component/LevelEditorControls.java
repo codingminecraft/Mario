@@ -1,5 +1,6 @@
 package com.component;
 
+import com.component.bricks.QuestionBlock;
 import com.dataStructure.Tuple;
 import com.jade.*;
 import com.renderer.RenderComponent;
@@ -27,6 +28,8 @@ public class LevelEditorControls extends Component {
     private float screenX, screenY;
     private List<GameObject> selected;
     private GameObject objToCopy = null;
+
+    private boolean questionBlockSelected = false;
 
     public LevelEditorControls(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -75,7 +78,7 @@ public class LevelEditorControls extends Component {
 
     private boolean leftMouseButtonClicked() {
         return MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_1) &&
-                debounceLeft < 0;
+                debounceLeft < 0 && !Window.getScene().inJWindow(MouseListener.positionScreenCoords());
     }
 
     private boolean leftMouseButtonClickedNoDebounce() {
@@ -100,12 +103,24 @@ public class LevelEditorControls extends Component {
     }
 
     private void selectGameObject() {
+        if (questionBlockSelected) {
+            deselectAll();
+            questionBlockSelected = false;
+        }
+
         Tuple<Integer> gridPos = new Tuple<>((int)(screenX * gridWidth), (int)(screenY * gridHeight), Constants.Z_INDEX);
         GameObject obj = Window.getScene().getWorldPartition().get(gridPos);
         if (obj != null) {
-            if (!selected.contains(obj)) {
+            QuestionBlock questionBlock = obj.getComponent(QuestionBlock.class);
+            if (questionBlock == null && !selected.contains(obj)) {
                 obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_GREEN;
                 selected.add(obj);
+            } else if (questionBlock != null) {
+                deselectAll();
+                obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_GREEN;
+                selected.add(obj);
+                questionBlock.blockSelected();
+                questionBlockSelected = true;
             } else {
                 obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
                 selected.remove(obj);
@@ -116,6 +131,9 @@ public class LevelEditorControls extends Component {
     private void deselectAll() {
         for (GameObject go : selected) {
             go.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
+            if (go.getComponent(QuestionBlock.class) != null) {
+                go.getComponent(QuestionBlock.class).deselectBlock();
+            }
         }
         selected.clear();
     }

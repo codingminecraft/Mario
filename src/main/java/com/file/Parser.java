@@ -244,6 +244,8 @@ public class Parser {
                 return NewLevelButton.deserialize();
             case "TestLevelButton":
                 return TestLevelButton.deserialize();
+            case "ButtonQuestionBlock":
+                return ButtonQuestionBlock.deserialize();
             default:
                 assert false : "Could not find component '" + componentTitle + "' at line: " + Parser.line;
         }

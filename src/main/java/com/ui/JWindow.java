@@ -69,6 +69,22 @@ public class JWindow extends Serialize {
         this.renderComponents.add(this.scrollbar);
     }
 
+    public void setPosition(Vector2f position) {
+        this.mainBackground.setPosX(position.x);
+        this.mainBackground.setPosY(position.y);
+        this.titleBar.setPosX(position.x);
+        this.titleBar.setPosY(position.y + this.mainBackground.getHeight() - this.titleBar.getHeight());
+        positionElements();
+    }
+
+    public List<JComponent> getAllComponents() {
+        return this.currentTab.getUIElements();
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
     public List<UIRenderComponent> getAllRenderComponents() {
         return this.renderComponents;
     }
@@ -168,6 +184,7 @@ public class JWindow extends Serialize {
             }
         }
     }
+
     private void updateComponents(double dt) {
         if (!beingResized && !beingDragged) {
             for (JComponent comp : this.currentTab.getUIElements()) {
@@ -199,6 +216,14 @@ public class JWindow extends Serialize {
     }
 
     private void positionElements() {
+        for (Tab tab : tabs) {
+            if (!tab.isActive()) {
+                for (JComponent c : tab.getUIElements()) {
+                    c.setPosX(-1000);
+                }
+            }
+        }
+
         // First position all tabs
         int currentX = (int)Constants.MARGIN.x;
         for (int i=0; i < tabs.size(); i++) {

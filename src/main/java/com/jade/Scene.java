@@ -88,15 +88,21 @@ public abstract class Scene {
             gameObjects.add(g);
             renderer.add(g);
             physics.addGameObject(g);
-
-            if (g.getComponent(BoxBounds.class) != null && g.getComponent(BoxBounds.class).isStatic) {
-                Tuple<Integer> gridPos = g.getGridCoords();
-                worldPartition.put(gridPos, g);
-            }
+            Tuple<Integer> gridPos = g.getGridCoords();
+            worldPartition.put(gridPos, g);
         } else {
             objsToAdd.add(g);
             g.start();
         }
+    }
+
+    public JWindow getJWindow(String title) {
+        for (JWindow win : jWindows) {
+            if (win.getTitle().equals(title)) {
+                return win;
+            }
+        }
+        return null;
     }
 
     public void addLowUI(UIRenderComponent comp) {

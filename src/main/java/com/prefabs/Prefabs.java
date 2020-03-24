@@ -7,6 +7,7 @@ import com.component.bricks.QuestionBlock;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.GameObject;
+import com.ui.JWindow;
 import com.util.Constants;
 import org.joml.Vector2f;
 
@@ -15,6 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Prefabs {
+    private static JWindow questionBlockWindow = null;
+
+    public static void setQuestionBlockWindow(JWindow window) {
+        questionBlockWindow = window;
+    }
+
     public static GameObject MARIO_PREFAB() {
         GameObject player = new GameObject("Mario_Prefab", new Transform(new Vector2f()), 0);
 
@@ -217,7 +224,7 @@ public class Prefabs {
         questionBlock.addComponent(questionBlockMachine);
         questionBlock.addComponent(new SpriteRenderer(questionBlockMachine.getPreviewSprite()));
 
-        questionBlock.addComponent(new QuestionBlock());
+        questionBlock.addComponent(new QuestionBlock(questionBlockWindow.getTitle()));
         questionBlock.addComponent(new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT, true, false));
 
         questionBlock.transform.scale.x = 32;

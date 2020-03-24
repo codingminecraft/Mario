@@ -56,10 +56,18 @@ public class LevelEditorScene extends Scene {
         importLevelEditorData();
         if (this.jWindows.size() != 0) {
             System.out.println("JWindows already initialized!");
+            getJWindow("Question Block Type").setPosition(new Vector2f(-1000, 0));
             return;
         }
 
-        JWindow blockSelector = new JWindow("Blocks", new Vector2f(0, 100), new Vector2f(33 * 16 + (33 * Constants.PADDING.x), 400));
+        JWindow questionBlockSelector = new JWindow("Question Block Type", new Vector2f(-1000, 0), new Vector2f(140, 100));
+        questionBlockSelector.addUIElement(new ButtonQuestionBlock(0));
+        questionBlockSelector.addUIElement(new ButtonQuestionBlock(1));
+        questionBlockSelector.addUIElement(new ButtonQuestionBlock(2));
+        this.addJWindow(questionBlockSelector);
+        Prefabs.setQuestionBlockWindow(questionBlockSelector);
+
+        JWindow blockSelector = new JWindow("Blocks", new Vector2f(20, 460), new Vector2f(287, 203));
         Spritesheet decorationsAndBlocks = AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png");
         Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/spritesheets/defaultAssets.png");
         Spritesheet icons = AssetPool.getSpritesheet("assets/spritesheets/icons.png");
@@ -86,7 +94,7 @@ public class LevelEditorScene extends Scene {
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
-        JWindow fileSaver = new JWindow("Level File", new Vector2f(33 * 16 + (33 * Constants.PADDING.x) + 10, 30), new Vector2f(400, 100));
+        JWindow fileSaver = new JWindow("Level File", new Vector2f(320, 545), new Vector2f(235, 120));
         Constants.CURRENT_LEVEL = "Default";
         fileSaver.addUIElement(new FileExplorerButton(new Vector2f(86, 20), Constants.CURRENT_LEVEL));
         fileSaver.addUIElement(new SaveLevelButton());

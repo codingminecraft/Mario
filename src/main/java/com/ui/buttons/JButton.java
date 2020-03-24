@@ -14,7 +14,7 @@ public abstract class JButton extends JComponent {
 
     private float debounce = 0.1f;
     private float debounceLeft = 0.0f;
-    abstract void clicked();
+    public abstract void clicked();
 
     @Override
     public void update(double dt) {
