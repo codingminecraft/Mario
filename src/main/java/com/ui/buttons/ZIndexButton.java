@@ -1,73 +1,75 @@
 package com.ui.buttons;
 
-import com.component.Sprite;
 import com.file.Parser;
+import com.jade.KeyListener;
+import com.renderer.quads.Label;
+import com.renderer.quads.Rectangle;
+import com.ui.JComponent;
+import com.util.Constants;
 import org.joml.Vector2f;
 
-import java.awt.Graphics2D;
+import java.util.List;
 
-public class ZIndexButton extends JButton {
-    int labelId;
-    int direction;
-//    Label label;
-    Sprite sprite;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_PAGE_DOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_PAGE_UP;
 
-    public ZIndexButton(int direction, int labelId, Sprite sprite) {
+public class ZIndexButton extends JComponent {
+    Label label;
+    private float debounceTime = 0.2f;
+    private float debounceLeft = 0.0f;
+
+    public ZIndexButton() {
         super();
-        this.mainComp.setSize(new Vector2f(25, 22));
-        this.direction = direction;
-        this.labelId = labelId;
-        this.sprite = sprite;
-        this.isCentered = true;
+        this.mainComp = new Rectangle(Constants.COLOR_CLEAR);
         this.renderComponents.add(mainComp);
+
+        this.label = new Label(Constants.LARGE_FONT_TEXTURE, "" + Constants.Z_INDEX, new Vector2f(this.mainComp.getPosX(), this.mainComp.getPosY()));
+        this.label.setZIndex(3);
+        this.renderComponents.addAll(this.label.getRenderComponents());
     }
 
     @Override
-    public void start() {
-//        this.label = (Label)parent.getJComponent(labelId);
+    public void setPosX(float val) {
+        this.label.setPosX(val + 13);
+        this.mainComp.setPosX(val + 13);
     }
 
     @Override
-    public void clicked() {
-//        Constants.Z_INDEX += direction;
-//        this.label.setText("" + Constants.Z_INDEX);
+    public void setPosY(float val) {
+        this.label.setPosY(val + 10);
+        this.mainComp.setPosY(val + 10);
     }
 
     @Override
-    public void draw(Graphics2D g2) {
-//        g2.setColor(Color.WHITE);
-//        if (active) g2.setColor(Color.GRAY);
-//        g2.drawImage(sprite.image, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
+    public void update(double dt) {
+        debounceLeft -= dt;
+
+        if (KeyListener.isKeyPressed(GLFW_KEY_PAGE_UP) && debounceLeft <= 0.0f) {
+            if (Constants.Z_INDEX > -2) {
+                Constants.Z_INDEX--;
+                this.label.setText("" + (Constants.Z_INDEX * -1));
+            }
+            debounceLeft = debounceTime;
+        } else if (KeyListener.isKeyPressed(GLFW_KEY_PAGE_DOWN) && debounceLeft <= 0.0f) {
+            if (Constants.Z_INDEX < 2) {
+                Constants.Z_INDEX++;
+                this.label.setText("" + (Constants.Z_INDEX * -1));
+            }
+            debounceLeft = debounceTime;
+        }
     }
 
     @Override
     public String serialize(int tabSize) {
         StringBuilder builder = new StringBuilder();
         builder.append(beginObjectProperty("ZIndexButton", tabSize));
-        builder.append(addIntProperty("Direction", this.direction, tabSize + 1, true, true));
-        builder.append(addIntProperty("LabelID", this.labelId, tabSize + 1, true, true));
-        builder.append(sprite.serialize(tabSize + 2));
-        builder.append(addEnding(true, true));
-
-        // ID
-        builder.append(addIntProperty("ID", id, tabSize + 1, true, false));
         builder.append(closeObjectProperty(tabSize));
         return builder.toString();
     }
 
     public static ZIndexButton deserialize() {
-        int direction = Parser.consumeIntProperty("Direction");
-        Parser.consume(',');
-        int labelId = Parser.consumeIntProperty("LabelID");
-        Parser.consume(',');
-        Sprite sprite = (Sprite)Parser.parseComponent().copy();
-        Parser.consume(',');
-
-        int id = Parser.consumeIntProperty("ID");
         Parser.consumeEndObjectProperty();
 
-        ZIndexButton button = new ZIndexButton(direction, labelId, sprite);
-        button.id = id;
-        return button;
+        return new ZIndexButton();
     }
 }

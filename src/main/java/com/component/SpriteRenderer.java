@@ -4,6 +4,8 @@ import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.file.Parser;
 import com.jade.Component;
+import com.jade.LevelEditorScene;
+import com.jade.Window;
 import com.renderer.Shader;
 import com.renderer.quads.Quad;
 import com.util.Constants;
@@ -22,8 +24,7 @@ public class SpriteRenderer extends Component {
     private Vector4f lastColor;
     private Quad quad;
 
-    private boolean isFlippedX = false;
-    private boolean isFlippedY = false;
+    private boolean isMouse, isLevelEditor;
 
     public SpriteRenderer(Sprite sprite) {
         this.sprite = sprite;
@@ -33,6 +34,7 @@ public class SpriteRenderer extends Component {
         this.lastColor = JMath.copy(this.color);
         this.quad = new Quad(this.sprite, this.color);
         this.dirty = true;
+        this.isLevelEditor = Window.getScene() instanceof LevelEditorScene;
     }
 
     public boolean isDirty() {
@@ -55,6 +57,7 @@ public class SpriteRenderer extends Component {
     public void start() {
         this.lastTransform = gameObject.transform.copy();
         this.dirty = true;
+        this.isMouse = this.gameObject.getComponent(LevelEditorControls.class) != null;
     }
 
     @Override
@@ -80,6 +83,16 @@ public class SpriteRenderer extends Component {
             this.dirty = true;
             JMath.copyValues(this.color, this.lastColor);
             this.quad.setColor(this.color);
+        }
+
+        if (isLevelEditor) {
+            if (this.gameObject.zIndex != Constants.Z_INDEX && this.color.w != 0.5f && !this.isMouse) {
+                this.quad.setColor(Constants.COLOR_HALF_ALPHA);
+                this.color = Constants.COLOR_HALF_ALPHA;
+            } else if (this.gameObject.zIndex == Constants.Z_INDEX && this.color.w != 1.0f && !this.isMouse) {
+                this.quad.setColor(Constants.COLOR_WHITE);
+                this.color = Constants.COLOR_WHITE;
+            }
         }
     }
 

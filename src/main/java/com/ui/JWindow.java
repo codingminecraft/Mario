@@ -100,7 +100,6 @@ public class JWindow extends Serialize {
     }
 
     public void addUIElement(JComponent uiElement) {
-        uiElement.setPosX(-1000);
         this.currentTab.addUIElement(uiElement);
     }
 

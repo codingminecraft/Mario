@@ -6,11 +6,9 @@ import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.prefabs.Prefabs;
+import com.renderer.quads.Label;
 import com.ui.*;
-import com.ui.buttons.FileExplorerButton;
-import com.ui.buttons.NewLevelButton;
-import com.ui.buttons.SaveLevelButton;
-import com.ui.buttons.TestLevelButton;
+import com.ui.buttons.*;
 import com.util.Constants;
 import org.joml.Vector2f;
 
@@ -102,16 +100,10 @@ public class LevelEditorScene extends Scene {
         fileSaver.addUIElement(new NewLevelButton());
         fileSaver.addUIElement(new TestLevelButton());
         this.addJWindow(fileSaver);
-//
-//        JWindow layerIndicator = new JWindow("Layer", new Vector2(Constants.SCREEN_WIDTH - 110, 30), new Vector2(100, 100));
-//        Label layerLabel = new Label("" + Constants.Z_INDEX);
-//        layerLabel.isCentered = true;
-//        layerIndicator.addUIElement(new ZIndexButton(1, layerLabel.id, defaultAssets.sprites.get(0)));
-//        layerIndicator.addUIElement(new LineBreak());
-//        layerIndicator.addUIElement(layerLabel);
-//        layerIndicator.addUIElement(new LineBreak());
-//        layerIndicator.addUIElement(new ZIndexButton(-1, layerLabel.id, defaultAssets.sprites.get(1)));
-//        this.addJWindow(layerIndicator);
+
+        JWindow layerIndicator = new JWindow("Layer", new Vector2f(1205, 592), new Vector2f(61, 72));
+        layerIndicator.addUIElement(new ZIndexButton());
+        this.addJWindow(layerIndicator);
     }
 
     public void initAssetPool() {

@@ -36,6 +36,7 @@ public class Parser {
             InputStream stream = zipFile.getInputStream(jsonFile);
 
             Parser.bytes = stream.readAllBytes();
+            stream.close();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);
@@ -57,6 +58,7 @@ public class Parser {
             InputStream stream = zipFile.getInputStream(jsonFile);
 
             Parser.bytes = stream.readAllBytes();
+            stream.close();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);

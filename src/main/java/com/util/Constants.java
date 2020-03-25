@@ -49,4 +49,5 @@ public class Constants {
     public static final Vector2f MARGIN = new Vector2f(4, 0);
 
     public static final FontTexture DEFAULT_FONT_TEXTURE = new FontTexture(new Font("Arial", Font.PLAIN, 12), "US-ASCII");
+    public static final FontTexture LARGE_FONT_TEXTURE = new FontTexture(new Font("Arial", Font.PLAIN, 36), "US-ASCII");
 }

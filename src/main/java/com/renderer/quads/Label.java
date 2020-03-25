@@ -50,6 +50,13 @@ public class Label {
                 Window.getScene().addRenderComponent(rect);
             }
         }
+
+        if (text.length() < this.rects.size()) {
+            for (int i=text.length(); i < this.rects.size(); i++) {
+                Rectangle rect = rects.get(i);
+                rect.setPosX(-1000);
+            }
+        }
         this.text = text;
         this.width = Constants.DEFAULT_FONT_TEXTURE.getWidthOf(this.text);
         this.setPosX(this.position.x);
