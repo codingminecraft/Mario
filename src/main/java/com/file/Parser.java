@@ -217,6 +217,8 @@ public class Parser {
                 return BreakableBrick.deserialize();
             case "GoombaAI":
                 return GoombaAI.deserialize();
+            case "Pipe":
+                return Pipe.deserialize();
             default:
                 assert false : ("Could not find component '" + componentTitle + "' at line: " + Parser.line);
         }

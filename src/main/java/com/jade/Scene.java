@@ -83,6 +83,16 @@ public abstract class Scene {
         return null;
     }
 
+    public <T extends Component> List<GameObject> getGameObjectsWithComponent(Class<T> c) {
+        List<GameObject> result = new ArrayList<>();
+        for (GameObject g : gameObjects) {
+            if (g.getComponent(c) != null) {
+                result.add(g);
+            }
+        }
+        return result;
+    }
+
     public void addGameObject(GameObject g) {
         if (this instanceof LevelEditorScene) {
             gameObjects.add(g);

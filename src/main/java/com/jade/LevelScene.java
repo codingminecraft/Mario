@@ -29,7 +29,7 @@ public class LevelScene extends Scene {
 
     public void initAssetPool() {
         // Game Assets
-        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
+        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 81);
         AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);

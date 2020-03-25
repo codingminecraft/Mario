@@ -30,6 +30,7 @@ public class LevelEditorControls extends Component {
     private GameObject objToCopy = null;
 
     private boolean questionBlockSelected = false;
+    private boolean pipeSelected = false;
 
     public LevelEditorControls(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -43,7 +44,22 @@ public class LevelEditorControls extends Component {
         SpriteRenderer renderer = gameObject.getComponent(SpriteRenderer.class);
         renderer.sprite = objToCopy.getComponent(SpriteRenderer.class).sprite;
         renderer.color = Constants.COLOR_HALF_ALPHA;
-        this.objToCopy = objToCopy.copy();
+
+        // Fancy footwork if its a pipe...
+        // I need to make sure it calls the constructor and not the copy method
+        // so that it has a unique id
+        if (objToCopy.getComponent(Pipe.class) != null) {
+            this.objToCopy = objToCopy.copy();
+            Pipe pipe = this.objToCopy.getComponent(Pipe.class);
+            this.objToCopy.removeComponent(Pipe.class);
+            this.objToCopy.addComponent(new Pipe(pipe.isEntrance(), pipe.getType()));
+            this.gameObject.transform.scale.x = 64;
+            this.gameObject.transform.scale.y = 64;
+        } else {
+            this.objToCopy = objToCopy.copy();
+            this.gameObject.transform.scale.x = 32;
+            this.gameObject.transform.scale.y = 32;
+        }
     }
 
     public void gameObjectRemoved() {
@@ -106,13 +122,17 @@ public class LevelEditorControls extends Component {
         if (questionBlockSelected) {
             deselectAll();
             questionBlockSelected = false;
+        } else if (pipeSelected) {
+            deselectAll();
+            pipeSelected = false;
         }
 
         Tuple<Integer> gridPos = new Tuple<>((int)(screenX * gridWidth), (int)(screenY * gridHeight), Constants.Z_INDEX);
         GameObject obj = Window.getScene().getWorldPartition().get(gridPos);
         if (obj != null) {
             QuestionBlock questionBlock = obj.getComponent(QuestionBlock.class);
-            if (questionBlock == null && !selected.contains(obj)) {
+            Pipe pipe = obj.getComponent(Pipe.class);
+            if (questionBlock == null && !selected.contains(obj) && pipe == null) {
                 obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_GREEN;
                 selected.add(obj);
             } else if (questionBlock != null) {
@@ -121,6 +141,12 @@ public class LevelEditorControls extends Component {
                 selected.add(obj);
                 questionBlock.blockSelected();
                 questionBlockSelected = true;
+            } else if (pipe != null) {
+                deselectAll();
+                obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_RED;
+                selected.add(obj);
+                pipe.blockSelected();
+                pipeSelected = true;
             } else {
                 obj.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
                 selected.remove(obj);
@@ -133,6 +159,8 @@ public class LevelEditorControls extends Component {
             go.getComponent(SpriteRenderer.class).color = Constants.COLOR_WHITE;
             if (go.getComponent(QuestionBlock.class) != null) {
                 go.getComponent(QuestionBlock.class).deselectBlock();
+            } else if (go.getComponent(Pipe.class) != null) {
+                go.getComponent(Pipe.class).blockDeselected();
             }
         }
         selected.clear();
@@ -170,6 +198,9 @@ public class LevelEditorControls extends Component {
         calculateGameObjectPosition();
 
         if (placingBlocks) {
+            if (selected.size() > 0) {
+                deselectAll();
+            }
             if (leftMouseButtonClickedNoDebounce()) {
                 placeGameObject();
             }

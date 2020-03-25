@@ -23,7 +23,7 @@ public class ZIndexButton extends JComponent {
         this.mainComp = new Rectangle(Constants.COLOR_CLEAR);
         this.renderComponents.add(mainComp);
 
-        this.label = new Label(Constants.LARGE_FONT_TEXTURE, "" + Constants.Z_INDEX, new Vector2f(this.mainComp.getPosX(), this.mainComp.getPosY()));
+        this.label = new Label(Constants.LARGE_FONT_TEXTURE, "" + (Constants.Z_INDEX * -1), new Vector2f(this.mainComp.getPosX(), this.mainComp.getPosY()));
         this.label.setZIndex(3);
         this.renderComponents.addAll(this.label.getRenderComponents());
     }

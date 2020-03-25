@@ -2,7 +2,6 @@ package com.prefabs;
 
 import com.component.*;
 import com.component.bricks.BreakableBrick;
-import com.component.bricks.Brick;
 import com.component.bricks.QuestionBlock;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
@@ -307,5 +306,35 @@ public class Prefabs {
         flower.transform.scale.y = 32;
 
         return flower;
+    }
+
+    public static GameObject PIPE_ENTRANCE(int sprite) {
+        Spritesheet pipes = AssetPool.getSpritesheet("assets/spritesheets/pipes.png");
+
+        // Create gameobject and add components
+        GameObject pipe = new GameObject("Pipe_Prefab", new Transform(new Vector2f()), 0);
+        pipe.addComponent(new BoxBounds(64, 64, true, false));
+        pipe.addComponent(new SpriteRenderer(pipes.sprites.get(sprite)));
+        pipe.addComponent(new Pipe(true, sprite));
+
+        pipe.transform.scale.x = 64;
+        pipe.transform.scale.y = 64;
+
+        return pipe;
+    }
+
+    public static GameObject PIPE_EXIT(int sprite) {
+        Spritesheet pipes = AssetPool.getSpritesheet("assets/spritesheets/pipes.png");
+
+        // Create gameObject and add components
+        GameObject pipe = new GameObject("Pipe_Prefab", new Transform(new Vector2f()), 0);
+        pipe.addComponent(new BoxBounds(64, 64, true, false));
+        pipe.addComponent(new SpriteRenderer(pipes.sprites.get(sprite)));
+        pipe.addComponent(new Pipe(false, sprite));
+
+        pipe.transform.scale.x = 64;
+        pipe.transform.scale.y = 64;
+
+        return pipe;
     }
 }

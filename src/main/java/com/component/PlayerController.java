@@ -2,10 +2,7 @@ package com.component;
 
 import com.component.enums.PlayerType;
 import com.file.Parser;
-import com.jade.Camera;
-import com.jade.Component;
-import com.jade.KeyListener;
-import com.jade.Window;
+import com.jade.*;
 import com.physics.Collision;
 import com.util.Constants;
 
@@ -58,8 +55,17 @@ public class PlayerController extends Component {
 
     @Override
     public void update(double dt) {
-        if (this.camera.position().x < this.gameObject.transform.position.x - Constants.CAMERA_OFFSET_X)
+        if (Window.getScene() instanceof LevelEditorScene) return;
+
+        if (this.camera.position().x < this.gameObject.transform.position.x - Constants.CAMERA_OFFSET_X) {
             this.camera.position().x = this.gameObject.transform.position.x - Constants.CAMERA_OFFSET_X;
+        }
+
+        if (this.gameObject.transform.position.y < Constants.CAMERA_OFFSET_Y_1 && camera.position().y != Constants.CAMERA_OFFSET_Y_2) {
+            this.camera.position().y = Constants.CAMERA_OFFSET_Y_2;
+        } else if (this.gameObject.transform.position.y > Constants.CAMERA_OFFSET_Y_1 && camera.position().y != Constants.CAMERA_OFFSET_Y_1) {
+            this.camera.position().y = Constants.CAMERA_OFFSET_Y_1;
+        }
 
         if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) {
             rb.acceleration.x = 1800;

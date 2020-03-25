@@ -58,6 +58,16 @@ public class LevelEditorScene extends Scene {
             return;
         }
 
+        Spritesheet decorationsAndBlocks = AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png");
+        Spritesheet icons = AssetPool.getSpritesheet("assets/spritesheets/icons.png");
+
+        JWindow pipeSelection = new JWindow("Exit Pipe Selection", new Vector2f(-1000, 0), new Vector2f(140, 115));
+        // Add pipes
+        for (int i=0; i < 4; i++) {
+            pipeSelection.addUIElement(new Button(icons.sprites.get(i + 5), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.PIPE_EXIT(i)));
+        }
+        this.addJWindow(pipeSelection);
+
         JWindow questionBlockSelector = new JWindow("Question Block Type", new Vector2f(-1000, 0), new Vector2f(140, 100));
         questionBlockSelector.addUIElement(new ButtonQuestionBlock(0));
         questionBlockSelector.addUIElement(new ButtonQuestionBlock(1));
@@ -66,10 +76,6 @@ public class LevelEditorScene extends Scene {
         Prefabs.setQuestionBlockWindow(questionBlockSelector);
 
         JWindow blockSelector = new JWindow("Blocks", new Vector2f(20, 460), new Vector2f(287, 203));
-        Spritesheet decorationsAndBlocks = AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png");
-        Spritesheet defaultAssets = AssetPool.getSpritesheet("assets/spritesheets/defaultAssets.png");
-        Spritesheet icons = AssetPool.getSpritesheet("assets/spritesheets/icons.png");
-
         int current = 0;
         while (current < decorationsAndBlocks.sprites.size()) {
             GameObject tile = new GameObject("Tile", new Transform(new Vector2f(0, 0)), 0);
@@ -84,11 +90,16 @@ public class LevelEditorScene extends Scene {
 
         blockSelector.beginTab("Prefabs");
         blockSelector.addUIElement(new Button(icons.sprites.get(0), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.MARIO_PREFAB()));
+        // Add goombas
         for (int i=0; i < 4; i++) {
             blockSelector.addUIElement(new Button(icons.sprites.get(i + 1), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.GOOMBA_PREFAB(i)));
         }
         blockSelector.addUIElement(new Button(icons.sprites.get(9), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.QUESTION_BLOCK()));
         blockSelector.addUIElement(new Button(icons.sprites.get(10), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.BRICK_BLOCK()));
+        // Add pipes
+        for (int i=0; i < 4; i++) {
+            blockSelector.addUIElement(new Button(icons.sprites.get(i + 5), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.PIPE_ENTRANCE(i)));
+        }
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
@@ -108,11 +119,12 @@ public class LevelEditorScene extends Scene {
 
     public void initAssetPool() {
         // Game Assets
-        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 49);
+        AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 81);
         AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);
         AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
+        AssetPool.addSpritesheet("assets/spritesheets/pipes.png", 32, 32, 0, 4, 6);
 
         // Engine Assets
         AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);
