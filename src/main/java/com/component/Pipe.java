@@ -7,6 +7,8 @@ import com.ui.JWindow;
 import com.util.Constants;
 import org.joml.Vector2f;
 
+import java.util.logging.Level;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Pipe extends Component {
@@ -129,6 +131,10 @@ public class Pipe extends Component {
         this.isSelected = false;
         updateColor();
         this.pipeSelectionWindow.setPosition(new Vector2f(-1000, 0));
+        if (Window.getScene() instanceof LevelEditorScene) {
+            LevelEditorScene scene = (LevelEditorScene) Window.getScene();
+            scene.mouseCursor.getComponent(LevelEditorControls.class).gameObjectRemoved();
+        }
     }
 
     public int getID() {

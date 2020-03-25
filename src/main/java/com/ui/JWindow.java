@@ -59,11 +59,11 @@ public class JWindow extends Serialize {
         this.titleBar.setHeight(titleBarHeight);
         this.renderComponents.add(this.titleBar);
 
-        this.scrollbar = new Rectangle(Constants.HOT_TAB);
+        this.scrollbar = new Rectangle(Constants.COLOR_CLEAR);
         this.scrollbar.setZIndex(1);
         this.scrollbar.setBorderRadius(4.0f);
         this.scrollbar.setBorderWidth(0.1f);
-        this.scrollbar.setBorderColor(Constants.HOT_TAB);
+        this.scrollbar.setBorderColor(Constants.COLOR_CLEAR);
         this.scrollbar.setPosX(-1000);
         this.scrollbar.setWidth(10);
         this.renderComponents.add(this.scrollbar);
