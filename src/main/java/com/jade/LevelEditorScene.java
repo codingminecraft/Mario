@@ -100,6 +100,8 @@ public class LevelEditorScene extends Scene {
         for (int i=0; i < 4; i++) {
             blockSelector.addUIElement(new Button(icons.sprites.get(i + 5), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.PIPE_ENTRANCE(i)));
         }
+        blockSelector.addUIElement(new Button(icons.sprites.get(14), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.COIN()));
+        blockSelector.addUIElement(new Button(icons.sprites.get(15), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.TURTLE()));
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 
@@ -120,11 +122,12 @@ public class LevelEditorScene extends Scene {
     public void initAssetPool() {
         // Game Assets
         AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 81);
-        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
+        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 34);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);
-        AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
+        AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 16);
         AssetPool.addSpritesheet("assets/spritesheets/pipes.png", 32, 32, 0, 4, 6);
+        AssetPool.addSpritesheet("assets/spritesheets/turtle.png", 16, 24, 0, 4, 4);
 
         // Engine Assets
         AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);

@@ -1,6 +1,7 @@
 package com.component.bricks;
 
 import com.component.Coin;
+import com.component.GoombaAI;
 import com.component.PlayerController;
 import com.component.enums.PlayerType;
 import com.dataStructure.Transform;
@@ -92,6 +93,10 @@ public abstract class Brick extends Component {
                 coll.gameObject.getComponent(PlayerController.class) != null && canDoAnimation) {
             doAnimation = true;
             brickHit(coll.gameObject);
+        }
+
+        if (coll.side == CollisionSide.TOP && doAnimation && movingUp &&coll.gameObject.getComponent(GoombaAI.class) != null) {
+            coll.gameObject.getComponent(GoombaAI.class).die(false);
         }
     }
 }

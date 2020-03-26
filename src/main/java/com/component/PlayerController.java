@@ -16,6 +16,15 @@ public class PlayerController extends Component {
     private boolean onGround = true;
     private BoxBounds bounds = null;
     private Camera camera;
+    private boolean isDead = false;
+    private float maxDeathY = 0;
+    private float deathYJumpHeight = 20;
+    private boolean movingUp = true;
+
+    private float immunityTime = 1f;
+    private float immunityLeft = 0.0f;
+    private float flashLeft = 0.1f;
+    private float flashTime = 0.1f;
 
     public PlayerType type = PlayerType.SMALL;
 
@@ -36,6 +45,12 @@ public class PlayerController extends Component {
             } else if (this.type == PlayerType.FIRE) {
                 System.out.println("Collect 100 points!");
             }
+        } else if (type == PlayerType.SMALL) {
+            this.type = PlayerType.SMALL;
+            this.machine.trigger("StartSmall");
+            this.gameObject.transform.scale.y = 32;
+            bounds.setHeight(31);
+            immunityLeft = immunityTime;
         }
     }
 
@@ -57,13 +72,36 @@ public class PlayerController extends Component {
     public void update(double dt) {
         if (Window.getScene() instanceof LevelEditorScene) return;
 
+        if (immunityLeft > 0 && flashLeft < 0) {
+            if (sprite.color.w < 1) {
+                sprite.color.w = 1;
+            } else {
+                sprite.color.w = 0.5f;
+            }
+            flashLeft = flashTime;
+        } else if (sprite.color.w < 1) {
+            sprite.color.w = 1;
+        }
+
+        if (isDead) {
+            if (movingUp && gameObject.transform.position.y < maxDeathY) {
+                rb.acceleration.y = 3000;
+            } else {
+                rb.acceleration.y = -100;
+                movingUp = false;
+            }
+            return;
+        }
+
         if (this.camera.position().x < this.gameObject.transform.position.x - Constants.CAMERA_OFFSET_X) {
             this.camera.position().x = this.gameObject.transform.position.x - Constants.CAMERA_OFFSET_X;
         }
 
         if (this.gameObject.transform.position.y < Constants.CAMERA_OFFSET_Y_1 && camera.position().y != Constants.CAMERA_OFFSET_Y_2) {
+            Window.getWindow().setColor(Constants.COLOR_BLACK);
             this.camera.position().y = Constants.CAMERA_OFFSET_Y_2;
         } else if (this.gameObject.transform.position.y > Constants.CAMERA_OFFSET_Y_1 && camera.position().y != Constants.CAMERA_OFFSET_Y_1) {
+            Window.getWindow().setColor(Constants.SKY_COLOR);
             this.camera.position().y = Constants.CAMERA_OFFSET_Y_1;
         }
 
@@ -95,6 +133,9 @@ public class PlayerController extends Component {
         } else {
             rb.acceleration.y = 0;
         }
+
+        immunityLeft -= dt;
+        flashLeft -= dt;
     }
 
     @Override
@@ -112,6 +153,26 @@ public class PlayerController extends Component {
         builder.append(closeObjectProperty(tabSize));
 
         return builder.toString();
+    }
+
+    public void damage() {
+        if (immunityLeft > 0) return;
+
+        if (type == PlayerType.SMALL) {
+            die();
+        } else if (type == PlayerType.BIG || type == PlayerType.FIRE) {
+            setState(PlayerType.SMALL);
+        }
+    }
+
+    public void die() {
+        machine.trigger("Die");
+        isDead = true;
+        maxDeathY = gameObject.transform.position.y + deathYJumpHeight;
+        rb.acceleration.x = 0;
+        rb.velocity.x = 0;
+        gameObject.getComponent(BoxBounds.class).isTrigger = true;
+        gameObject.zIndex = 10;
     }
 
     public static PlayerController deserialize() {

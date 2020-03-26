@@ -91,22 +91,37 @@ public class Pipe extends Component {
 
     @Override
     public void collision(Collision coll) {
+        if (!isEntrance) return;
+
         PlayerController playerController = coll.gameObject.getComponent(PlayerController.class);
         if (playerController != null) {
             if (otherPipe == null) findOtherPipe();
+            Pipe other = otherPipe.getComponent(Pipe.class);
             if (coll.side == Collision.CollisionSide.TOP && this.type == 1 && (KeyListener.isKeyPressed(GLFW_KEY_DOWN) || KeyListener.isKeyPressed(GLFW_KEY_S))) {
-                playerController.gameObject.transform.position.x = otherPipe.transform.position.x;
-                playerController.gameObject.transform.position.y = otherPipe.transform.position.y;
+                teleport(playerController, other);
             } else if (coll.side == Collision.CollisionSide.BOTTOM && this.type == 0 && (KeyListener.isKeyPressed(GLFW_KEY_UP) || KeyListener.isKeyPressed(GLFW_KEY_W))) {
-                playerController.gameObject.transform.position.x = otherPipe.transform.position.x;
-                playerController.gameObject.transform.position.y = otherPipe.transform.position.y + otherPipe.transform.scale.y;
+                teleport(playerController, other);
             } else if (coll.side == Collision.CollisionSide.RIGHT && this.type == 2 && (KeyListener.isKeyPressed(GLFW_KEY_LEFT) || KeyListener.isKeyPressed(GLFW_KEY_A))) {
-                playerController.gameObject.transform.position.x = otherPipe.transform.position.x;
-                playerController.gameObject.transform.position.y = otherPipe.transform.position.y;
+                teleport(playerController, other);
             } else if (coll.side == Collision.CollisionSide.LEFT && this.type == 3 && (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D))) {
-                playerController.gameObject.transform.position.x = otherPipe.transform.position.x;
-                playerController.gameObject.transform.position.y = otherPipe.transform.position.y;
+                teleport(playerController, other);
             }
+        }
+    }
+
+    private void teleport(PlayerController player, Pipe pipe) {
+        if (pipe.type == 0) {
+            player.gameObject.transform.position.x = pipe.gameObject.transform.position.x;
+            player.gameObject.transform.position.y = pipe.gameObject.transform.position.y - player.gameObject.transform.scale.y;
+        } else if (pipe.type == 1) {
+            player.gameObject.transform.position.x = pipe.gameObject.transform.position.x;
+            player.gameObject.transform.position.y = pipe.gameObject.transform.position.y + pipe.gameObject.transform.scale.y;
+        } else if (pipe.type == 3) {
+            player.gameObject.transform.position.x = pipe.gameObject.transform.position.x - player.gameObject.transform.scale.x;
+            player.gameObject.transform.position.y = pipe.gameObject.transform.position.y;
+        } else if (pipe.type == 2) {
+            player.gameObject.transform.position.x = pipe.gameObject.transform.position.x + pipe.gameObject.transform.scale.x;
+            player.gameObject.transform.position.y = pipe.gameObject.transform.position.y;
         }
     }
 

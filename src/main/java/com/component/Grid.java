@@ -41,7 +41,7 @@ public class Grid extends Component {
                 int x = (int)(i * this.gridWidth + this.offset.x);
                 int y = (int)(j * this.gridHeight + this.offset.y);
 
-                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.7f, 0.7f, 0.7f, 1.0f), 0.5f);
+                Rectangle rect = new Rectangle(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(0.0f, 0.0f, 0.0f, 0.0f), new Vector4f(Constants.SKY_COLOR.x, Constants.SKY_COLOR.y, Constants.SKY_COLOR.z, 0.5f), 0.5f);
                 rect.setPosX(x);
                 rect.setPosY(y);
                 rect.setWidth(this.gridWidth);
@@ -73,6 +73,12 @@ public class Grid extends Component {
                 comp.setPosX(i * this.gridWidth + this.offset.x);
                 comp.setPosY( j * this.gridHeight + this.offset.y);
                 comp.isDirty = true;
+
+                if (j * this.gridHeight + this.offset.y + camera.position().y < Constants.CAMERA_OFFSET_Y_1) {
+                    comp.setBorderColor(Constants.COLOR_BLACK.x, Constants.COLOR_BLACK.y, Constants.COLOR_BLACK.z, 0.5f);
+                } else if (j * this.gridHeight + this.offset.y + camera.position().y > Constants.CAMERA_OFFSET_Y_2) {
+                    comp.setBorderColor(Constants.SKY_COLOR.x, Constants.SKY_COLOR.y, Constants.SKY_COLOR.z, 0.5f);
+                }
 
                 j++;
             }

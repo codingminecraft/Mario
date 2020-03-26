@@ -3,6 +3,7 @@ package com.component;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.Window;
+import com.physics.Trigger;
 
 public class Coin extends Component {
     private boolean doCollectAnimation = false;
@@ -26,6 +27,13 @@ public class Coin extends Component {
         this.doCollectAnimation = true;
         this.machine.trigger("CollectCoin");
         System.out.println("Collect coin!");
+    }
+
+    @Override
+    public void trigger(Trigger trigger) {
+        if (trigger.gameObject.getComponent(PlayerController.class) != null) {
+            collect();
+        }
     }
 
     @Override

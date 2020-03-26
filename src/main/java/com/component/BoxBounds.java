@@ -132,7 +132,7 @@ public class BoxBounds extends Bounds {
 
                 // Collision on the bottom of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
-                if (this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
+                if (this.gameObject.getComponent(Rigidbody.class) != null && this.gameObject.getComponent(Rigidbody.class).velocity.y < 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
 
                 // Top of other bounds
@@ -143,7 +143,7 @@ public class BoxBounds extends Bounds {
 
                 // Collision on the top of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
-                if (this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
+                if (this.gameObject.getComponent(Rigidbody.class) != null && this.gameObject.getComponent(Rigidbody.class).velocity.y > 0)
                     this.gameObject.getComponent(Rigidbody.class).velocity.y = 0;
 
                 // Bottom of other bounds

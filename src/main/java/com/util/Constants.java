@@ -46,6 +46,7 @@ public class Constants {
     public static final Vector4f COLOR_PURPLE = new Vector4f(0.671f, 0f, 1f, 1f);
     public static final Vector4f COLOR_ORANGE = new Vector4f(1f, 0.647f, 0f, 1f);
     public static final Vector4f SKY_COLOR = new Vector4f(93f / 255f, 148f / 255f, 251f / 255f, 1.0f);
+    public static final Vector4f COLOR_GRAY = new Vector4f(0.7f, 0.7f, 0.7f, 1.0f);
 
     // =========================================================================
     // GUI constraints

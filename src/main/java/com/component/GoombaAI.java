@@ -38,12 +38,27 @@ public class GoombaAI extends Component {
     @Override
     public void collision(Collision coll) {
         if (coll.side == Collision.CollisionSide.LEFT) {
+            if (coll.gameObject.getComponent(PlayerController.class) != null) coll.gameObject.getComponent(PlayerController.class).damage();
+
             goingLeft = false;
         } else if (coll.side == Collision.CollisionSide.TOP && coll.gameObject.getComponent(PlayerController.class) != null) {
+            coll.gameObject.getComponent(Rigidbody.class).acceleration.y = 7000;
+            die(true);
+        } else if (coll.side == Collision.CollisionSide.RIGHT) {
+            if (coll.gameObject.getComponent(PlayerController.class) != null) coll.gameObject.getComponent(PlayerController.class).damage();
+
+            goingLeft = true;
+        }
+    }
+
+    public void die(boolean spriteAnimation) {
+        if (isDead) return;
+        if (spriteAnimation) {
             isDead = true;
             gameObject.getComponent(AnimationMachine.class).trigger("StartSquash");
-        } else if (coll.side == Collision.CollisionSide.RIGHT) {
-            goingLeft = true;
+        } else {
+            isDead = true;
+            gameObject.transform.scale.y *= -1;
         }
     }
 

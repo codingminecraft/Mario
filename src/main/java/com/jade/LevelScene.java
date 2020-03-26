@@ -30,10 +30,11 @@ public class LevelScene extends Scene {
     public void initAssetPool() {
         // Game Assets
         AssetPool.addSpritesheet("assets/spritesheets/decorationsAndBlocks.png", 16, 16, 0, 7, 81);
-        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 33);
+        AssetPool.addSpritesheet("assets/spritesheets/items.png", 16, 16, 0, 7, 34);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_32.png", 16, 16, 0, 14, 26);
         AssetPool.addSpritesheet("assets/spritesheets/character_and_enemies_64.png", 16, 32, 0, 21, 21 * 2);
         AssetPool.addSpritesheet("assets/spritesheets/icons.png", 32, 32, 0, 7, 15);
+        AssetPool.addSpritesheet("assets/spritesheets/turtle.png", 16, 24, 0, 4, 4);
 
         // Engine Assets
         AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);
@@ -42,7 +43,11 @@ public class LevelScene extends Scene {
     @Override
     public void update(double dt) {
         for (GameObject go : gameObjects) {
-            go.update(dt);
+            if (go.transform.position.x > this.camera.position().x && go.transform.position.x + go.transform.scale.x < this.camera.position().x + 32.0f * 40f + 128) {
+                go.update(dt);
+            } else if (go.transform.position.x + go.transform.scale.x < this.camera.position().x || go.transform.position.y + go.transform.scale.y < Constants.CAMERA_OFFSET_Y_2) {
+                deleteGameObject(go);
+            }
         }
 
         if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {

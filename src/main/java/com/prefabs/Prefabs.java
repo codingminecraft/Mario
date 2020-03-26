@@ -47,12 +47,15 @@ public class Prefabs {
         Animation fireJump = new Animation("FireJump", 0.1f, bigSprites.sprites.subList(25, 27), false);
         Animation fireSwim = new Animation("FireSwim", 0.1f, bigSprites.sprites.subList(30, 35), true);
 
+        Animation death = new Animation("Death", 0.1f, characterSprites.sprites.subList(6, 7), false);
+
         // Set up animation state transfers
         // IDLE
         idle.addStateTransfer("StartRunning", "Run");
         idle.addStateTransfer("StartJumping", "Jump");
         idle.addStateTransfer("StartSwim", "Swim");
         idle.addStateTransfer("StartBig", "BigIdle");
+        idle.addStateTransfer("Die", "Death");
 
         bigIdle.addStateTransfer("StartRunning", "BigRun");
         bigIdle.addStateTransfer("StartJumping", "BigJump");
@@ -70,6 +73,7 @@ public class Prefabs {
         run.addStateTransfer("StartIdle", "Idle");
         run.addStateTransfer("StartSwim", "Swim");
         run.addStateTransfer("StartBig", "BigRun");
+        run.addStateTransfer("Die", "Death");
 
         bigRun.addStateTransfer("StartJumping", "BigJump");
         bigRun.addStateTransfer("StartIdle", "BigIdle");
@@ -87,6 +91,7 @@ public class Prefabs {
         jump.addStateTransfer("StartIdle", "Idle");
         jump.addStateTransfer("StartSwim", "Swim");
         jump.addStateTransfer("StartBig", "BigJump");
+        jump.addStateTransfer("Die", "Death");
 
         bigJump.addStateTransfer("StartRunning", "BigRun");
         bigJump.addStateTransfer("StartIdle", "BigIdle");
@@ -104,6 +109,7 @@ public class Prefabs {
         swim.addStateTransfer("StartJumping", "Jump");
         swim.addStateTransfer("StartIdle", "Idle");
         swim.addStateTransfer("StartBig", "BigSwim");
+        swim.addStateTransfer("Die", "Death");
 
         bigSwim.addStateTransfer("StartRunning", "BigRun");
         bigSwim.addStateTransfer("StartJumping", "BigJump");
@@ -121,6 +127,7 @@ public class Prefabs {
         playerMachine.addAnimation(run);
         playerMachine.addAnimation(jump);
         playerMachine.addAnimation(swim);
+        playerMachine.addAnimation(death);
 
         playerMachine.addAnimation(bigIdle);
         playerMachine.addAnimation(bigRun);
@@ -201,6 +208,35 @@ public class Prefabs {
         return goomba;
     }
 
+    public static GameObject TURTLE() {
+        GameObject turtle = new GameObject("Goomba_Prefab", new Transform(new Vector2f()), 0);
+
+        Spritesheet turtleSprites = AssetPool.getSpritesheet("assets/spritesheets/turtle.png");
+
+        AnimationMachine turtleMachine = new AnimationMachine();
+        Animation walk = new Animation("Walk", 0.2f, turtleSprites.sprites.subList(0, 2), true);
+        Animation spin = new Animation("Spin", 0.1f, turtleSprites.sprites.subList(2, 4), true);
+        turtleMachine.setStartAnimation("Walk");
+
+        // Switch to spin
+        walk.addStateTransfer("StartSpin", "Spin");
+
+        turtleMachine.addAnimation(walk);
+        turtleMachine.addAnimation(spin);
+
+        turtle.addComponent(turtleMachine);
+
+        turtle.addComponent(new SpriteRenderer(turtleMachine.getPreviewSprite()));
+        turtle.transform.scale.x = 32;
+        turtle.transform.scale.y = 48;
+
+        turtle.addComponent(new BoxBounds(32, 48, false, false));
+        turtle.addComponent(new Rigidbody());
+        turtle.addComponent(new TurtleAI());
+
+        return turtle;
+    }
+
     public static GameObject QUESTION_BLOCK() {
         Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
 
@@ -267,7 +303,7 @@ public class Prefabs {
         coin.addComponent(machine);
 
         coin.addComponent(new Coin());
-        coin.addComponent(new BoxBounds(32, 32, true, true));
+        coin.addComponent(new BoxBounds(32, 32, false, true));
         coin.addComponent(new SpriteRenderer(machine.getPreviewSprite()));
 
         coin.transform.scale.x = 32;
