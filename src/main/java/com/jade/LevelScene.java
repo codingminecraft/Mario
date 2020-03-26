@@ -2,14 +2,9 @@ package com.jade;
 
 import com.component.*;
 import com.dataStructure.AssetPool;
-import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
-import com.file.Parser;
+import com.physics.BoxBounds;
 import com.util.Constants;
-import org.joml.Vector2f;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
@@ -24,6 +19,7 @@ public class LevelScene extends Scene {
         initAssetPool();
         importLevel(Constants.CURRENT_LEVEL);
         Window.getWindow().setColor(Constants.SKY_COLOR);
+        AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").play();
     }
 
 
@@ -38,6 +34,22 @@ public class LevelScene extends Scene {
 
         // Engine Assets
         AssetPool.addSpritesheet("assets/spritesheets/defaultAssets.png", 24, 21, 0, 2, 2);
+
+        // Sounds
+        AssetPool.addSound("assets/sounds/main-theme-overworld.ogg", true);
+        AssetPool.addSound("assets/sounds/flagpole.ogg", false);
+        AssetPool.addSound("assets/sounds/break_block.ogg", false);
+        AssetPool.addSound("assets/sounds/bump.ogg", false);
+        AssetPool.addSound("assets/sounds/coin.ogg", false);
+        AssetPool.addSound("assets/sounds/gameover.ogg", false);
+        AssetPool.addSound("assets/sounds/jump-small.ogg", false);
+        AssetPool.addSound("assets/sounds/mario_die.ogg", false);
+        AssetPool.addSound("assets/sounds/pipe.ogg", false);
+        AssetPool.addSound("assets/sounds/powerup.ogg", false);
+        AssetPool.addSound("assets/sounds/powerup_appears.ogg", false);
+        AssetPool.addSound("assets/sounds/stage_clear.ogg", false);
+        AssetPool.addSound("assets/sounds/stomp.ogg", false);
+        AssetPool.addSound("assets/sounds/kick.ogg", false);
     }
 
     @Override

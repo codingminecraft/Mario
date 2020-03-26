@@ -1,8 +1,10 @@
 package com.component;
 
 import com.component.enums.PlayerType;
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.*;
+import com.physics.BoxBounds;
 import com.physics.Collision;
 import com.util.Constants;
 
@@ -38,6 +40,7 @@ public class PlayerController extends Component {
 
     public void setState(PlayerType type) {
         if (type == PlayerType.BIG) {
+            AssetPool.getSound("assets/sounds/pipe.ogg").play();
             if (this.type == PlayerType.SMALL) {
                 this.type = PlayerType.BIG;
                 this.machine.trigger("StartBig");
@@ -47,6 +50,7 @@ public class PlayerController extends Component {
                 System.out.println("Collect 100 points!");
             }
         } else if (type == PlayerType.FIRE) {
+            AssetPool.getSound("assets/sounds/pipe.ogg").play();
             if (this.type == PlayerType.BIG) {
                 this.type = PlayerType.FIRE;
                 this.machine.trigger("StartFire");
@@ -54,6 +58,7 @@ public class PlayerController extends Component {
                 System.out.println("Collect 100 points!");
             }
         } else if (type == PlayerType.SMALL) {
+            AssetPool.getSound("assets/sounds/pipe.ogg").play();
             this.type = PlayerType.SMALL;
             this.machine.trigger("StartBig");
             this.machine.trigger("StartSmall");
@@ -93,6 +98,7 @@ public class PlayerController extends Component {
                 rb.velocity.y = -150;
             } else {
                 if (triggerRunAnim) {
+                    AssetPool.getSound("assets/sounds/stage_clear.ogg").play();
                     machine.trigger("StartRunning");
                     triggerRunAnim = false;
                 }
@@ -165,6 +171,7 @@ public class PlayerController extends Component {
         }
 
         if (KeyListener.isKeyPressed(GLFW_KEY_SPACE) && onGround) {
+            AssetPool.getSound("assets/sounds/jump-small.ogg").play();
             onGround = false;
             rb.acceleration.y = 12200;
             machine.trigger("StartJumping");
@@ -179,6 +186,8 @@ public class PlayerController extends Component {
     public void win(boolean extraLife) {
         if (doWinAnimation) return;
 
+        AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").stop();
+        AssetPool.getSound("assets/sounds/flagpole.ogg").play();
         if (extraLife) {
             lives++;
             System.out.println("Extra life!");
@@ -219,12 +228,14 @@ public class PlayerController extends Component {
     }
 
     public void die() {
+        AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").stop();
+        AssetPool.getSound("assets/sounds/mario_die.ogg").play();
         machine.trigger("Die");
         isDead = true;
         maxDeathY = gameObject.transform.position.y + deathYJumpHeight;
         rb.acceleration.x = 0;
         rb.velocity.x = 0;
-        gameObject.getComponent(BoxBounds.class).isTrigger = true;
+        gameObject.getComponent(BoxBounds.class).setTrigger(true);
         gameObject.zIndex = 10;
     }
 

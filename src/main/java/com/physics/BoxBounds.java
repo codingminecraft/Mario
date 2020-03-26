@@ -1,18 +1,13 @@
-package com.component;
+package com.physics;
 
-import com.component.enums.PlayerType;
+import com.component.Rigidbody;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
-import com.jade.KeyListener;
 import com.jade.Window;
-import com.physics.Collision;
 import com.util.Constants;
 import org.joml.Vector2f;
-import org.lwjgl.system.CallbackI;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 
 public class BoxBounds extends Bounds {
     private float width, height;
@@ -44,6 +39,10 @@ public class BoxBounds extends Bounds {
         this.height = newHeight;
         this.halfHeight = newHeight / 2.0f;
         this.calculateCenter();
+    }
+
+    public void setTrigger(boolean val) {
+        this.isTrigger = val;
     }
 
     public float getCenterX() {

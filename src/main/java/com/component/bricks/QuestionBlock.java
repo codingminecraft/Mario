@@ -2,6 +2,7 @@ package com.component.bricks;
 
 import com.component.AnimationMachine;
 import com.component.PlayerController;
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
@@ -68,9 +69,11 @@ public class QuestionBlock extends Brick {
                 spawnCoin();
                 break;
             case 1:
+                AssetPool.getSound("assets/sounds/powerup_appears.ogg").play();
                 spawnPowerup(controller.type);
                 break;
             case 2:
+                AssetPool.getSound("assets/sounds/powerup_appears.ogg").play();
                 spawnStar();
                 break;
             default:

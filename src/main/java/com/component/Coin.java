@@ -1,5 +1,6 @@
 package com.component;
 
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.Window;
@@ -24,6 +25,7 @@ public class Coin extends Component {
     }
 
     public void collect() {
+        AssetPool.getSound("assets/sounds/coin.ogg").play();
         this.doCollectAnimation = true;
         this.machine.trigger("CollectCoin");
         System.out.println("Collect coin!");

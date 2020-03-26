@@ -2,6 +2,7 @@ package com.component.bricks;
 
 import com.component.PlayerController;
 import com.component.enums.PlayerType;
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
@@ -12,7 +13,10 @@ public class BreakableBrick extends Brick {
     public void brickHit(GameObject player) {
         PlayerController playerController = player.getComponent(PlayerController.class);
         if (playerController.type == PlayerType.BIG || playerController.type == PlayerType.FIRE) {
+            AssetPool.getSound("assets/sounds/break_block.ogg").play();
             Window.getScene().deleteGameObject(this.gameObject);
+        } else {
+            AssetPool.getSound("assets/sounds/bump.ogg").play();
         }
     }
 

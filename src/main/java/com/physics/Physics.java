@@ -1,7 +1,5 @@
 package com.physics;
 
-import com.component.Bounds;
-import com.component.BoxBounds;
 import com.dataStructure.Tuple;
 import com.jade.GameObject;
 import com.jade.Window;

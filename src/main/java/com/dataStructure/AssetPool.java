@@ -2,6 +2,7 @@ package com.dataStructure;
 
 import com.component.Sprite;
 import com.component.Spritesheet;
+import com.jade.Sound;
 import com.renderer.Shader;
 import com.renderer.Texture;
 
@@ -16,6 +17,7 @@ public class AssetPool {
     static Map<String, Spritesheet> spritesheets = new HashMap<>();
     static Map<String, Shader> shaders = new HashMap<>();
     static Map<String, Texture> textures = new HashMap<>();
+    static Map<String, Sound> sounds = new HashMap<>();
 
     public static boolean hasSprite(String pictureFile) {
         File tmp = new File(pictureFile);
@@ -37,6 +39,11 @@ public class AssetPool {
         return AssetPool.textures.containsKey(tmp.getAbsolutePath());
     }
 
+    public static boolean hasSound(String soundFile) {
+        File tmp = new File(soundFile);
+        return AssetPool.sounds.containsKey(tmp.getAbsolutePath());
+    }
+
     public static Texture getTexture(String pictureFile) {
         File file = new File(pictureFile);
         if (hasTexture(pictureFile)) {
@@ -45,6 +52,27 @@ public class AssetPool {
             Texture texture = new Texture(file.getAbsolutePath());
             AssetPool.textures.put(file.getAbsolutePath(), texture);
             return AssetPool.textures.get(file.getAbsolutePath());
+        }
+    }
+
+    public static Sound getSound(String soundFile) {
+        File file = new File(soundFile);
+        if (hasSound(soundFile)) {
+            return sounds.get(file.getAbsolutePath());
+        } else {
+            assert false : "Sound file not added '" + soundFile + "'.";
+        }
+        return null;
+    }
+
+    public static Sound addSound(String soundFile, boolean loops) {
+        File file = new File(soundFile);
+        if (hasSound(soundFile)) {
+            return sounds.get(file.getAbsolutePath());
+        } else {
+            Sound sound = new Sound(file.getAbsolutePath(), loops);
+            AssetPool.sounds.put(file.getAbsolutePath(), sound);
+            return AssetPool.sounds.get(file.getAbsolutePath());
         }
     }
 

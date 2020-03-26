@@ -1,6 +1,5 @@
 package com.jade;
 
-import com.component.BoxBounds;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.physics.Physics;

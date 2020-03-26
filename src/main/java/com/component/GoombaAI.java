@@ -1,5 +1,6 @@
 package com.component;
 
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.LevelEditorScene;
@@ -54,9 +55,11 @@ public class GoombaAI extends Component {
     public void die(boolean spriteAnimation) {
         if (isDead) return;
         if (spriteAnimation) {
+            AssetPool.getSound("assets/sounds/stomp.ogg").play();
             isDead = true;
             gameObject.getComponent(AnimationMachine.class).trigger("StartSquash");
         } else {
+            AssetPool.getSound("assets/sounds/kick.ogg").play();
             isDead = true;
             gameObject.transform.scale.y *= -1;
         }

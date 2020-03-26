@@ -1,5 +1,6 @@
 package com.component;
 
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.physics.Trigger;

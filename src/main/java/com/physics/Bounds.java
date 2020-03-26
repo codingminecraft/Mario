@@ -1,7 +1,6 @@
-package com.component;
+package com.physics;
 
 import com.jade.Component;
-import com.physics.Collision;
 import org.joml.Vector2f;
 
 enum BoundsType {

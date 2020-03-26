@@ -1,13 +1,13 @@
 package com.component;
 
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.LevelEditorScene;
 import com.jade.Window;
+import com.physics.BoxBounds;
 import com.physics.Collision;
 import com.physics.Trigger;
-
-import javax.swing.Box;
 
 public class TurtleAI extends Component {
     private boolean goingLeft = true;
@@ -65,7 +65,7 @@ public class TurtleAI extends Component {
             BoxBounds player = trigger.gameObject.getComponent(BoxBounds.class);
             BoxBounds me = this.gameObject.getComponent(BoxBounds.class);
             if (player.gameObject.transform.position.y < me.getCenterY()) {
-                trigger.gameObject.getComponent(PlayerController.class).die();
+                trigger.gameObject.getComponent(PlayerController.class).damage();
             } else {
                 isShellMoving = true;
                 goingLeft = !goingLeft;
@@ -74,8 +74,9 @@ public class TurtleAI extends Component {
     }
 
     public void turnIntoShell() {
+        AssetPool.getSound("assets/sounds/stomp.ogg").play();
         this.gameObject.getComponent(AnimationMachine.class).trigger("StartSpin");
-        this.gameObject.getComponent(BoxBounds.class).isTrigger = true;
+        this.gameObject.getComponent(BoxBounds.class).setTrigger(true);
         this.isShell = true;
     }
 
