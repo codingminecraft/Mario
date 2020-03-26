@@ -43,7 +43,7 @@ public class LevelScene extends Scene {
     @Override
     public void update(double dt) {
         for (GameObject go : gameObjects) {
-            if (go.transform.position.x > this.camera.position().x && go.transform.position.x + go.transform.scale.x < this.camera.position().x + 32.0f * 40f + 128) {
+            if (go.getComponent(PlayerController.class) != null || go.transform.position.x > this.camera.position().x && go.transform.position.x + go.transform.scale.x < this.camera.position().x + 32.0f * 40f + 128) {
                 go.update(dt);
             } else if (go.transform.position.x + go.transform.scale.x < this.camera.position().x || go.transform.position.y + go.transform.scale.y < Constants.CAMERA_OFFSET_Y_2) {
                 deleteGameObject(go);

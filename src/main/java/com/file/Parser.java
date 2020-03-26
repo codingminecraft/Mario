@@ -223,6 +223,10 @@ public class Parser {
                 return Coin.deserialize();
             case "TurtleAI":
                 return TurtleAI.deserialize();
+            case "FlagTop":
+                return FlagTop.deserialize();
+            case "FlagPole":
+                return FlagPole.deserialize();
             default:
                 assert false : ("Could not find component '" + componentTitle + "' at line: " + Parser.line);
         }

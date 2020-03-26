@@ -26,6 +26,14 @@ public class PlayerController extends Component {
     private float flashLeft = 0.1f;
     private float flashTime = 0.1f;
 
+    private int lives = 3;
+    private boolean doWinAnimation = false;
+    private boolean slidingDown = true;
+    private float runTime = 5f;
+    private float deadAnimTime = 2f;
+    private boolean triggerRunAnim = true;
+    private boolean triggerSlideAnim = true;
+
     public PlayerType type = PlayerType.SMALL;
 
     public void setState(PlayerType type) {
@@ -47,6 +55,7 @@ public class PlayerController extends Component {
             }
         } else if (type == PlayerType.SMALL) {
             this.type = PlayerType.SMALL;
+            this.machine.trigger("StartBig");
             this.machine.trigger("StartSmall");
             this.gameObject.transform.scale.y = 32;
             bounds.setHeight(31);
@@ -72,6 +81,31 @@ public class PlayerController extends Component {
     public void update(double dt) {
         if (Window.getScene() instanceof LevelEditorScene) return;
 
+        if (doWinAnimation) {
+            if (slidingDown) {
+                if (triggerSlideAnim) {
+                    machine.trigger("StartSlide");
+                    gameObject.transform.scale.x = -32;
+                    gameObject.transform.position.x += 32;
+                    triggerSlideAnim = false;
+                }
+                rb.velocity.x = 0;
+                rb.velocity.y = -150;
+            } else {
+                if (triggerRunAnim) {
+                    machine.trigger("StartRunning");
+                    triggerRunAnim = false;
+                }
+                gameObject.transform.scale.x = 32;
+                rb.acceleration.x = 1000;
+                runTime -= dt;
+                if (runTime < 0) {
+                    Window.getWindow().changeScene(0);
+                }
+            }
+            return;
+        }
+
         if (immunityLeft > 0 && flashLeft < 0) {
             if (sprite.color.w < 1) {
                 sprite.color.w = 1;
@@ -89,6 +123,10 @@ public class PlayerController extends Component {
             } else {
                 rb.acceleration.y = -100;
                 movingUp = false;
+                if (deadAnimTime < 0) {
+                    Window.getWindow().changeScene(0);
+                }
+                deadAnimTime -= dt;
             }
             return;
         }
@@ -138,8 +176,23 @@ public class PlayerController extends Component {
         flashLeft -= dt;
     }
 
+    public void win(boolean extraLife) {
+        if (doWinAnimation) return;
+
+        if (extraLife) {
+            lives++;
+            System.out.println("Extra life!");
+        }
+        doWinAnimation = true;
+    }
+
     @Override
     public void collision(Collision collision) {
+        if (doWinAnimation && collision.side == Collision.CollisionSide.BOTTOM) {
+            slidingDown = false;
+            return;
+        }
+
         if (collision.side == Collision.CollisionSide.BOTTOM) {
             onGround = true;
         }

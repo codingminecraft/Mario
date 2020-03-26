@@ -59,6 +59,7 @@ public class LevelEditorScene extends Scene {
         }
 
         Spritesheet decorationsAndBlocks = AssetPool.getSpritesheet("assets/spritesheets/decorationsAndBlocks.png");
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
         Spritesheet icons = AssetPool.getSpritesheet("assets/spritesheets/icons.png");
 
         JWindow pipeSelection = new JWindow("Exit Pipe Selection", new Vector2f(-1000, 0), new Vector2f(140, 115));
@@ -102,6 +103,8 @@ public class LevelEditorScene extends Scene {
         }
         blockSelector.addUIElement(new Button(icons.sprites.get(14), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.COIN()));
         blockSelector.addUIElement(new Button(icons.sprites.get(15), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.TURTLE()));
+        blockSelector.addUIElement(new Button(items.sprites.get(6), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.FLAG_TOP()));
+        blockSelector.addUIElement(new Button(items.sprites.get(33), new Vector2f(0, 0), new Vector2f(32, 32), Prefabs.FLAG_POLE()));
         blockSelector.endTab();
         this.addJWindow(blockSelector);
 

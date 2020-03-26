@@ -373,4 +373,34 @@ public class Prefabs {
 
         return pipe;
     }
+
+    public static GameObject FLAG_TOP() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Create gameObject add components
+        GameObject flagTop = new GameObject("Flag_Top_Prefab", new Transform(new Vector2f()), 0);
+        flagTop.addComponent(new BoxBounds(32, 32, false, true));
+        flagTop.addComponent(new SpriteRenderer(items.sprites.get(6)));
+        flagTop.addComponent(new FlagTop());
+
+        flagTop.transform.scale.x = 32;
+        flagTop.transform.scale.y = 32;
+
+        return flagTop;
+    }
+
+    public static GameObject FLAG_POLE() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Create gameObject add components
+        GameObject flagTop = new GameObject("Flag_Top_Prefab", new Transform(new Vector2f()), 0);
+        flagTop.addComponent(new BoxBounds(32, 32, false, true));
+        flagTop.addComponent(new SpriteRenderer(items.sprites.get(33)));
+        flagTop.addComponent(new FlagPole());
+
+        flagTop.transform.scale.x = 32;
+        flagTop.transform.scale.y = 32;
+
+        return flagTop;
+    }
 }
