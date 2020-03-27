@@ -47,6 +47,11 @@ public class PlayerController extends Component {
     private float fireballCooldownTime = 0.0f;
     private float fireballCooldown = 1f;
 
+
+    private float jumpSpeed = 17000;
+    private float runSpeed = 1800;
+    private float fireballSpeed = 4200;
+
     public void setState(PlayerType type) {
         if (type == PlayerType.BIG) {
             AssetPool.getSound("assets/sounds/pipe.ogg").play();
@@ -206,7 +211,7 @@ public class PlayerController extends Component {
                     fireball.transform.position.x = this.gameObject.transform.position.x - fireball.transform.scale.x;
                 }
                 fireball.transform.position.y = this.gameObject.transform.position.y + (this.gameObject.transform.scale.y / 2.0f);
-                fireball.getComponent(Rigidbody.class).acceleration.x = this.gameObject.transform.scale.x > 0 ? 4200f : -4200f;
+                fireball.getComponent(Rigidbody.class).acceleration.x = this.gameObject.transform.scale.x > 0 ? fireballSpeed : -fireballSpeed;
                 fireball.getComponent(Rigidbody.class).acceleration.y = -30f;
                 Window.getScene().safeAddGameObject(fireball);
                 fireballCooldownTime = fireballCooldown;
@@ -214,7 +219,7 @@ public class PlayerController extends Component {
         }
 
         if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) {
-            rb.acceleration.x = 1800;
+            rb.acceleration.x = runSpeed;
             if (gameObject.transform.scale.x < 0) {
                 gameObject.transform.scale.x *= -1;
             }
@@ -222,7 +227,7 @@ public class PlayerController extends Component {
                 machine.trigger("StartRunning");
             }
         } else if (KeyListener.isKeyPressed(GLFW_KEY_LEFT) || KeyListener.isKeyPressed(GLFW_KEY_A)) {
-            rb.acceleration.x = -1800;
+            rb.acceleration.x = -runSpeed;
             if (gameObject.transform.scale.x > 0) {
                 gameObject.transform.scale.x *= -1;
             }
@@ -237,7 +242,7 @@ public class PlayerController extends Component {
         if (KeyListener.isKeyPressed(GLFW_KEY_SPACE) && onGround) {
             AssetPool.getSound("assets/sounds/jump-small.ogg").play();
             onGround = false;
-            rb.acceleration.y = 12200;
+            rb.acceleration.y = jumpSpeed;
             machine.trigger("StartJumping");
         } else {
             rb.acceleration.y = 0;

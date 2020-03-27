@@ -2,9 +2,6 @@ package com.component;
 
 import com.file.Parser;
 import com.jade.Component;
-import org.w3c.dom.html.HTMLImageElement;
-
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

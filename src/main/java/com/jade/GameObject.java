@@ -1,5 +1,6 @@
 package com.jade;
 
+import com.component.Rigidbody;
 import com.dataStructure.Transform;
 import com.dataStructure.Tuple;
 import com.file.Parser;
@@ -114,7 +115,9 @@ public class GameObject extends Object {
         }
 
         for (Component c : components) {
-            c.update(dt);
+            if (!(c instanceof Rigidbody)) {
+                c.update(dt);
+            }
         }
 
         lastZIndex = this.zIndex;

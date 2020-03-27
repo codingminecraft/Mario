@@ -2,6 +2,7 @@ package com.physics;
 
 import com.component.FlagPole;
 import com.component.FlagTop;
+import com.component.Rigidbody;
 import com.dataStructure.Tuple;
 import com.jade.GameObject;
 import com.jade.Window;
@@ -13,6 +14,9 @@ import java.util.List;
 public class Physics {
     List<GameObject> staticObjects;
     List<GameObject> dynamicObjects;
+
+    private float tickSpeed = 1 / 60f;
+    private float tickSpeedLeft = 0f;
 
     private Tuple<Integer> tuple;
 
@@ -39,9 +43,17 @@ public class Physics {
     }
 
     public void update(double dt) {
-        for (GameObject go : dynamicObjects) {
-            resolveCollisions(go);
+        for (; tickSpeedLeft < dt; tickSpeedLeft += tickSpeed) {
+            for (GameObject go : dynamicObjects) {
+                Rigidbody rb = go.getComponent(Rigidbody.class);
+                if (rb != null) {
+                    rb.update(tickSpeed);
+                }
+
+                resolveCollisions(go);
+            }
         }
+        tickSpeedLeft -= dt;
     }
 
     public void deleteGameObject(GameObject go) {
