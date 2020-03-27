@@ -36,6 +36,7 @@ public abstract class Brick extends Component {
         coin.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
         Coin coinComp = coin.getComponent(Coin.class);
         Window.getScene().addGameObject(coin);
+        coin.start();
         coinComp.collect();
     }
 

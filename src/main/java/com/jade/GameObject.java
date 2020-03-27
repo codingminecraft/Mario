@@ -14,7 +14,6 @@ import java.util.List;
 
 public class GameObject extends Object {
     private List<Component> components;
-    private Transform lastTransform;
     private float lastZIndex;
 
     private String name;
@@ -22,12 +21,13 @@ public class GameObject extends Object {
 
     public boolean isUi = false;
 
+    private boolean isStarted = false;
+
     private Tuple<Integer> gridCoords = new Tuple<>(0, 0, 0);
 
     public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
         this.transform = transform;
-        this.lastTransform = this.transform.copy();
         this.components = new ArrayList<>();
         this.zIndex = zIndex;
         this.lastZIndex = this.zIndex;
@@ -108,12 +108,16 @@ public class GameObject extends Object {
 
 
     public void update(double dt) {
+        // Not really sure how game objects are getting added that haven't been started...
+        if (!isStarted) {
+            start();
+        }
+
         for (Component c : components) {
             c.update(dt);
         }
 
         lastZIndex = this.zIndex;
-        Transform.copyValues(this.transform, this.lastTransform);
     }
 
     public void setNonserializable() {
@@ -121,6 +125,7 @@ public class GameObject extends Object {
     }
 
     public void start() {
+        this.isStarted = true;
         for (Component c : components) {
             c.start();
         }

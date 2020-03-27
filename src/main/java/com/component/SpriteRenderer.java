@@ -55,7 +55,7 @@ public class SpriteRenderer extends Component {
 
     @Override
     public void start() {
-        this.lastTransform = gameObject.transform.copy();
+        this.lastTransform = this.gameObject.transform.copy();
         this.dirty = true;
         this.isMouse = this.gameObject.getComponent(LevelEditorControls.class) != null;
     }

@@ -93,7 +93,7 @@ public abstract class Scene {
     }
 
     public void addGameObject(GameObject g) {
-        if (this instanceof LevelEditorScene) {
+        if (!Window.getWindow().isRunning) {
             gameObjects.add(g);
             renderer.add(g);
             physics.addGameObject(g);
@@ -101,7 +101,6 @@ public abstract class Scene {
             worldPartition.put(gridPos, g);
         } else {
             objsToAdd.add(g);
-            g.start();
         }
     }
 
@@ -152,6 +151,7 @@ public abstract class Scene {
     public void importLevel(String filename) {
         if (gameObjects.size() > 0) {
             gameObjects.clear();
+            physics.reset();
             renderer.resetLevel();
             worldPartition.clear();
 
@@ -168,12 +168,6 @@ public abstract class Scene {
         while (go != null) {
             addGameObject(go);
             go = Parser.parseGameObject();
-        }
-
-        for (GameObject g : gameObjects) {
-            for (Component c : g.getAllComponents()) {
-                c.start();
-            }
         }
     }
 

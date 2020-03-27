@@ -88,6 +88,10 @@ public class LevelScene extends Scene {
                     worldPartition.put(gridPos, g);
                 }
             }
+
+            for (GameObject g : objsToAdd) {
+                g.start();
+            }
             objsToAdd.clear();
         }
     }

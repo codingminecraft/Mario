@@ -1,10 +1,12 @@
 package com.physics;
 
 import com.component.Rigidbody;
+import com.component.SpriteRenderer;
 import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.jade.LevelScene;
 import com.jade.Window;
 import com.util.Constants;
 import org.joml.Vector2f;
@@ -72,23 +74,23 @@ public class BoxBounds extends Bounds {
             gridCoords.y += Constants.TILE_HEIGHT;
             GameObject go = Window.getScene().getWorldPartition().get(gridCoords);
             if (go != null && go.getComponent(BoxBounds.class).isStatic) {
-                shouldCheckTop = false;
+                this.shouldCheckTop = false;
             }
             gridCoords.y -= Constants.TILE_HEIGHT * 2;
             go = Window.getScene().getWorldPartition().get(gridCoords);
             if (go != null && go.getComponent(BoxBounds.class).isStatic) {
-                shouldCheckBottom = false;
+                this.shouldCheckBottom = false;
             }
             gridCoords.y += Constants.TILE_HEIGHT;
             gridCoords.x += Constants.TILE_WIDTH;
             go = Window.getScene().getWorldPartition().get(gridCoords);
             if (go != null && go.getComponent(BoxBounds.class).isStatic) {
-                shouldCheckRight = false;
+                this.shouldCheckRight = false;
             }
             gridCoords.x -= Constants.TILE_WIDTH * 2;
             go = Window.getScene().getWorldPartition().get(gridCoords);
             if (go != null && go.getComponent(BoxBounds.class).isStatic) {
-                shouldCheckLeft = false;
+                this.shouldCheckLeft = false;
             }
         }
     }
@@ -127,7 +129,9 @@ public class BoxBounds extends Bounds {
 
         if (overlapX >= overlapY) {
             if (dy >= 0) {
-                if (otherBounds.isStatic && !otherBounds.shouldCheckTop) return null;
+                if (!otherBounds.shouldCheckTop || !this.shouldCheckBottom) {
+                    return null;
+                }
 
                 // Collision on the bottom of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y + otherBounds.getHeight();
@@ -138,7 +142,9 @@ public class BoxBounds extends Bounds {
                 Vector2f contactPoint = new Vector2f(otherBounds.center.x, otherBounds.gameObject.transform.position.y + otherBounds.getHeight());
                 return new Collision(otherBounds.gameObject, Collision.CollisionSide.BOTTOM, contactPoint, this);
             } else {
-                if (otherBounds.isStatic && !otherBounds.shouldCheckBottom) return null;
+                if (!otherBounds.shouldCheckBottom || !this.shouldCheckTop){
+                    return null;
+                }
 
                 // Collision on the top of this
                 this.gameObject.transform.position.y = otherBounds.gameObject.transform.position.y - this.getHeight();
@@ -151,7 +157,9 @@ public class BoxBounds extends Bounds {
             }
         } else {
             if (dx < 0) {
-                if (otherBounds.isStatic && !otherBounds.shouldCheckLeft) return null;
+                if (!otherBounds.shouldCheckLeft || !this.shouldCheckRight) {
+                    return null;
+                }
 
                 // Collision on the right of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x - this.getWidth();
@@ -160,7 +168,9 @@ public class BoxBounds extends Bounds {
                 Vector2f contactPoint = new Vector2f(otherBounds.gameObject.transform.position.x, otherBounds.center.y);
                 return new Collision(otherBounds.gameObject, Collision.CollisionSide.RIGHT, contactPoint, this);
             } else {
-                if (otherBounds.isStatic && !otherBounds.shouldCheckRight) return null;
+                if (!otherBounds.shouldCheckRight || !this.shouldCheckRight) {
+                    return null;
+                }
 
                 // Collision on the left of this
                 this.gameObject.transform.position.x = otherBounds.gameObject.transform.position.x + otherBounds.getWidth();

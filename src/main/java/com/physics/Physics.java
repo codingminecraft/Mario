@@ -20,6 +20,11 @@ public class Physics {
         this.tuple = new Tuple<>(0, 0, 0);
     }
 
+    public void reset() {
+        this.dynamicObjects.clear();
+        this.staticObjects.clear();
+    }
+
     public void addGameObject(GameObject go) {
         Bounds bounds = go.getComponent(Bounds.class);
         if (bounds != null) {
@@ -48,8 +53,6 @@ public class Physics {
         // 0 x 0
         // 0 0 0
         Bounds bounds = go.getComponent(Bounds.class);
-        if (bounds == null) return;
-        if (bounds.isStatic) return;
 
         Tuple<Integer> gridCoords = go.getGridCoords();
         for (int i=-1; i < 2; i++) {
