@@ -37,6 +37,12 @@ public class PlayerController extends Component {
     private boolean triggerRunAnim = true;
     private boolean triggerSlideAnim = true;
 
+    private float invinciblityTime = 16f;
+    private float invincibilityLeft = 0f;
+    private float changeColorTime = 0.3f;
+    private float changeColorTimeLeft = 0f;
+    private int currentColor = 0;
+
     public PlayerType type = PlayerType.SMALL;
     private float fireballCooldownTime = 0.0f;
     private float fireballCooldown = 1f;
@@ -44,7 +50,7 @@ public class PlayerController extends Component {
     public void setState(PlayerType type) {
         if (type == PlayerType.BIG) {
             AssetPool.getSound("assets/sounds/pipe.ogg").play();
-            if (this.type == PlayerType.SMALL) {
+            if (this.type == PlayerType.SMALL || this.type == PlayerType.STAR) {
                 this.type = PlayerType.BIG;
                 this.machine.trigger("StartBig");
                 this.gameObject.transform.scale.y = 64;
@@ -68,6 +74,11 @@ public class PlayerController extends Component {
             this.gameObject.transform.scale.y = 32;
             bounds.setHeight(31);
             immunityLeft = immunityTime;
+        } else if (type == PlayerType.STAR) {
+            AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").stop();
+            AssetPool.getSound("assets/sounds/invincible.ogg").play();
+            this.type = PlayerType.STAR;
+            invincibilityLeft = invinciblityTime;
         }
     }
 
@@ -89,12 +100,17 @@ public class PlayerController extends Component {
     public void update(double dt) {
         if (Window.getScene() instanceof LevelEditorScene) return;
 
+        if (gameObject.transform.position.y < Constants.CAMERA_OFFSET_Y_1 + Constants.TILE_HEIGHT && gameObject.transform.position.y > Constants.CAMERA_OFFSET_Y_1) {
+            die();
+        }
+
         if (doWinAnimation) {
             if (slidingDown) {
                 if (triggerSlideAnim) {
                     machine.trigger("StartSlide");
                     gameObject.transform.scale.x = -32;
                     gameObject.transform.position.x += 32;
+                    rb.acceleration.x = 0;
                     triggerSlideAnim = false;
                 }
                 rb.velocity.x = 0;
@@ -113,6 +129,35 @@ public class PlayerController extends Component {
                 }
             }
             return;
+        }
+
+        if (invincibilityLeft > 0) {
+            if (changeColorTimeLeft < 0) {
+                currentColor = (currentColor + 1) % 3;
+                if (currentColor == 0) {
+                    sprite.color.x = 1;
+                    sprite.color.y = 0.4f;
+                    sprite.color.z = 0.8f;
+                } else if (currentColor == 1) {
+                    sprite.color.x = 0.8f;
+                    sprite.color.y = 0.4f;
+                    sprite.color.z = 1;
+                } else if (currentColor == 2) {
+                    sprite.color.x = 0.7f;
+                    sprite.color.y = 0.4f;
+                    sprite.color.z = 1;
+                }
+                changeColorTimeLeft = changeColorTime;
+            } else {
+                changeColorTimeLeft -= dt;
+            }
+        } else if (this.type == PlayerType.STAR) {
+            this.setState(PlayerType.BIG);
+            sprite.color.x = 1;
+            sprite.color.y = 1;
+            sprite.color.z = 1;
+            AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").play();
+            AssetPool.getSound("assets/sounds/invincible.ogg").stop();
         }
 
         if (immunityLeft > 0 && flashLeft < 0) {
@@ -161,11 +206,10 @@ public class PlayerController extends Component {
                     fireball.transform.position.x = this.gameObject.transform.position.x - fireball.transform.scale.x;
                 }
                 fireball.transform.position.y = this.gameObject.transform.position.y + (this.gameObject.transform.scale.y / 2.0f);
-                fireball.getComponent(Rigidbody.class).acceleration.x = this.gameObject.transform.scale.x > 0 ? 2200f : -2200f;
+                fireball.getComponent(Rigidbody.class).acceleration.x = this.gameObject.transform.scale.x > 0 ? 4200f : -4200f;
                 fireball.getComponent(Rigidbody.class).acceleration.y = -30f;
-                Window.getScene().addGameObject(fireball);
+                Window.getScene().safeAddGameObject(fireball);
                 fireballCooldownTime = fireballCooldown;
-                System.out.println("FIREBALL");
             }
         }
 
@@ -202,6 +246,7 @@ public class PlayerController extends Component {
         immunityLeft -= dt;
         flashLeft -= dt;
         fireballCooldownTime -= dt;
+        invincibilityLeft -= dt;
     }
 
     public void win(boolean extraLife) {
@@ -239,7 +284,7 @@ public class PlayerController extends Component {
     }
 
     public void damage() {
-        if (immunityLeft > 0) return;
+        if (immunityLeft > 0 || invincibilityLeft > 0) return;
 
         if (type == PlayerType.SMALL) {
             die();
@@ -251,6 +296,7 @@ public class PlayerController extends Component {
     public void die() {
         AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").stop();
         AssetPool.getSound("assets/sounds/mario_die.ogg").play();
+        setState(PlayerType.SMALL);
         machine.trigger("Die");
         isDead = true;
         maxDeathY = gameObject.transform.position.y + deathYJumpHeight;

@@ -3,6 +3,7 @@ package com.jade;
 import com.component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.dataStructure.Tuple;
 import com.file.Parser;
 import com.physics.BoxBounds;
 import com.prefabs.Prefabs;
@@ -158,12 +159,29 @@ public class LevelEditorScene extends Scene {
             export(Constants.CURRENT_LEVEL);
         }
 
-        for (GameObject go : objsToDelete) {
-            gameObjects.remove(go);
-            renderer.deleteGameObject(go);
-            worldPartition.remove(go.getGridCoords());
+        if (objsToDelete.size() > 0) {
+            for (GameObject go : objsToDelete) {
+                gameObjects.remove(go);
+                renderer.deleteGameObject(go);
+                worldPartition.remove(go.getGridCoords());
+            }
+            objsToDelete.clear();
         }
-        objsToDelete.clear();
+
+        if (objsToAdd.size() > 0) {
+            for (GameObject g : objsToAdd) {
+                gameObjects.add(g);
+                renderer.add(g);
+                physics.addGameObject(g);
+                Tuple<Integer> gridPos = g.getGridCoords();
+                worldPartition.put(gridPos, g);
+            }
+
+            for (GameObject g : objsToAdd) {
+                g.start();
+            }
+            objsToAdd.clear();
+        }
     }
 
     public void exportLevelEditorData() {

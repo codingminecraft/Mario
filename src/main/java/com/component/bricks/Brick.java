@@ -35,7 +35,7 @@ public abstract class Brick extends Component {
         coin.transform.position.x = this.gameObject.transform.position.x;
         coin.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
         Coin coinComp = coin.getComponent(Coin.class);
-        Window.getScene().addGameObject(coin);
+        Window.getScene().safeAddGameObject(coin);
         coin.start();
         coinComp.collect();
     }
@@ -48,14 +48,24 @@ public abstract class Brick extends Component {
             powerup = Prefabs.FLOWER_ITEM();
         } else if (type == PlayerType.FIRE) {
             powerup = Prefabs.COIN();
+        } else if (type == PlayerType.STAR) {
+            powerup = Prefabs.COIN();
         }
         powerup.transform.position.x = this.gameObject.transform.position.x;
         powerup.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
-        Window.getScene().addGameObject(powerup);
+        if (powerup.getComponent(Coin.class) != null) {
+            powerup.start();
+            powerup.getComponent(Coin.class).collect();
+        }
+        Window.getScene().safeAddGameObject(powerup);
     }
 
     protected void spawnStar() {
+        GameObject star = Prefabs.STAR();
 
+        star.transform.position.x = this.gameObject.transform.position.x;
+        star.transform.position.y = this.gameObject.transform.position.y + this.gameObject.transform.scale.y;
+        Window.getScene().safeAddGameObject(star);
     }
 
     @Override

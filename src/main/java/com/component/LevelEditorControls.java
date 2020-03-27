@@ -88,7 +88,7 @@ public class LevelEditorControls extends Component {
             object.transform.position = new Vector2f(screenX * gridWidth, screenY * gridHeight);
             object.zIndex = Constants.Z_INDEX;
             object.start();
-            Window.getScene().addGameObject(object);
+            Window.getScene().safeAddGameObject(object);
         }
     }
 

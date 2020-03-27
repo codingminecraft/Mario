@@ -1,5 +1,7 @@
 package com.physics;
 
+import com.component.FlagPole;
+import com.component.FlagTop;
 import com.dataStructure.Tuple;
 import com.jade.GameObject;
 import com.jade.Window;
@@ -64,8 +66,12 @@ public class Physics {
                 GameObject otherGo = Window.getScene().getWorldPartition().get(this.tuple);
                 if (otherGo != null && otherGo != go) {
                     Bounds otherBounds = otherGo.getComponent(Bounds.class);
-                    if (otherBounds != null) {
+                    if (otherBounds != null && otherBounds.isStatic) {
                         if (Bounds.checkCollision(bounds, otherBounds)) {
+                            if (bounds.gameObject.getComponent(FlagPole.class) != null || bounds.gameObject.getComponent(FlagTop.class) != null ||
+                                    otherBounds.gameObject.getComponent(FlagPole.class) != null || otherBounds.gameObject.getComponent(FlagTop.class) != null) {
+                                continue;
+                            }
                             Collision collision = Bounds.resolveCollision(bounds, otherBounds);
                             if (collision == null) continue;
                             go.collision(collision);

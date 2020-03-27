@@ -410,7 +410,7 @@ public class Prefabs {
 
         // Create gameObject add components
         GameObject fireball = new GameObject("Fireball_Prefab", new Transform(new Vector2f()), 0);
-        fireball.addComponent(new BoxBounds(16, 16, false, false));
+        fireball.addComponent(new BoxBounds(16, 16, false, true));
         fireball.addComponent(new SpriteRenderer(items.sprites.get(32)));
         fireball.addComponent(new Fireball());
         fireball.addComponent(new Rigidbody());
@@ -419,5 +419,21 @@ public class Prefabs {
         fireball.transform.scale.y = 16;
 
         return fireball;
+    }
+
+    public static GameObject STAR() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Create gameObject and add components
+        GameObject star = new GameObject("Star_Prefab", new Transform(new Vector2f()), 0);
+        star.addComponent(new BoxBounds(32, 32, false, true));
+        star.addComponent(new SpriteRenderer(items.sprites.get(24)));
+        star.addComponent(new Rigidbody());
+        star.addComponent(new Star());
+
+        star.transform.scale.x = 32;
+        star.transform.scale.y = 32;
+
+        return star;
     }
 }

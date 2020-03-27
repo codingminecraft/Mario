@@ -1,5 +1,6 @@
 package com.component;
 
+import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.*;
 import com.physics.Collision;
@@ -110,6 +111,7 @@ public class Pipe extends Component {
     }
 
     private void teleport(PlayerController player, Pipe pipe) {
+        AssetPool.getSound("assets/sounds/pipe.ogg").play();
         if (pipe.type == 0) {
             player.gameObject.transform.position.x = pipe.gameObject.transform.position.x;
             player.gameObject.transform.position.y = pipe.gameObject.transform.position.y - player.gameObject.transform.scale.y;

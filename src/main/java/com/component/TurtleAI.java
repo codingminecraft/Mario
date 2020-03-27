@@ -1,5 +1,6 @@
 package com.component;
 
+import com.component.enums.PlayerType;
 import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
@@ -8,6 +9,7 @@ import com.jade.Window;
 import com.physics.BoxBounds;
 import com.physics.Collision;
 import com.physics.Trigger;
+import com.util.Constants;
 
 public class TurtleAI extends Component {
     private boolean goingLeft = true;
@@ -23,6 +25,11 @@ public class TurtleAI extends Component {
     @Override
     public void update(double dt) {
         if (Window.getScene() instanceof LevelEditorScene) return;
+
+        if (gameObject.transform.position.y < Constants.CAMERA_OFFSET_Y_1 + Constants.TILE_HEIGHT && Window.getScene().camera.position().y != Constants.CAMERA_OFFSET_Y_2) {
+            Window.getScene().deleteGameObject(this.gameObject);
+            return;
+        }
 
         if (!isShell) {
             if (goingLeft) {
@@ -64,7 +71,11 @@ public class TurtleAI extends Component {
         } else if (trigger.gameObject.getComponent(PlayerController.class) != null) {
             BoxBounds player = trigger.gameObject.getComponent(BoxBounds.class);
             BoxBounds me = this.gameObject.getComponent(BoxBounds.class);
-            if (player.gameObject.transform.position.y < me.getCenterY()) {
+            if (player.gameObject.getComponent(PlayerController.class).type == PlayerType.STAR) {
+                turnIntoShell();
+            }
+
+            if (player.gameObject.transform.position.y < me.getCenterY() && isShellMoving) {
                 trigger.gameObject.getComponent(PlayerController.class).damage();
             } else {
                 isShellMoving = true;

@@ -50,6 +50,7 @@ public class LevelScene extends Scene {
         AssetPool.addSound("assets/sounds/stage_clear.ogg", false);
         AssetPool.addSound("assets/sounds/stomp.ogg", false);
         AssetPool.addSound("assets/sounds/kick.ogg", false);
+        AssetPool.addSound("assets/sounds/invincible.ogg", false);
     }
 
     @Override

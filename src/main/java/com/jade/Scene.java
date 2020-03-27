@@ -93,15 +93,15 @@ public abstract class Scene {
     }
 
     public void addGameObject(GameObject g) {
-        if (!Window.getWindow().isRunning) {
-            gameObjects.add(g);
-            renderer.add(g);
-            physics.addGameObject(g);
-            Tuple<Integer> gridPos = g.getGridCoords();
-            worldPartition.put(gridPos, g);
-        } else {
-            objsToAdd.add(g);
-        }
+        gameObjects.add(g);
+        renderer.add(g);
+        physics.addGameObject(g);
+        Tuple<Integer> gridPos = g.getGridCoords();
+        worldPartition.put(gridPos, g);
+    }
+
+    public void safeAddGameObject(GameObject g) {
+        objsToAdd.add(g);
     }
 
     public JWindow getJWindow(String title) {
@@ -150,6 +150,8 @@ public abstract class Scene {
 
     public void importLevel(String filename) {
         if (gameObjects.size() > 0) {
+            objsToAdd.clear();
+            objsToDelete.clear();
             gameObjects.clear();
             physics.reset();
             renderer.resetLevel();

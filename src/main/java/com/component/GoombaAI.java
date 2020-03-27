@@ -1,11 +1,13 @@
 package com.component;
 
+import com.component.enums.PlayerType;
 import com.dataStructure.AssetPool;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.LevelEditorScene;
 import com.jade.Window;
 import com.physics.Collision;
+import com.util.Constants;
 
 public class GoombaAI extends Component {
     private boolean goingLeft = true;
@@ -21,6 +23,11 @@ public class GoombaAI extends Component {
     @Override
     public void update(double dt) {
         if (Window.getScene() instanceof LevelEditorScene) return;
+
+        if (gameObject.transform.position.y < Constants.CAMERA_OFFSET_Y_1 + Constants.TILE_HEIGHT && Window.getScene().camera.position().y != Constants.CAMERA_OFFSET_Y_2) {
+            Window.getScene().deleteGameObject(this.gameObject);
+            return;
+        }
 
         if (!isDead) {
             if (goingLeft) {
@@ -40,6 +47,7 @@ public class GoombaAI extends Component {
     public void collision(Collision coll) {
         if (coll.side == Collision.CollisionSide.LEFT) {
             if (coll.gameObject.getComponent(PlayerController.class) != null) coll.gameObject.getComponent(PlayerController.class).damage();
+            if (coll.gameObject.getComponent(PlayerController.class) != null && coll.gameObject.getComponent(PlayerController.class).type == PlayerType.STAR) die(false);
 
             goingLeft = false;
         } else if (coll.side == Collision.CollisionSide.TOP && coll.gameObject.getComponent(PlayerController.class) != null) {
@@ -47,6 +55,7 @@ public class GoombaAI extends Component {
             die(true);
         } else if (coll.side == Collision.CollisionSide.RIGHT) {
             if (coll.gameObject.getComponent(PlayerController.class) != null) coll.gameObject.getComponent(PlayerController.class).damage();
+            if (coll.gameObject.getComponent(PlayerController.class) != null && coll.gameObject.getComponent(PlayerController.class).type == PlayerType.STAR) die(false);
 
             goingLeft = true;
         }
