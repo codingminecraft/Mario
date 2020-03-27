@@ -6,6 +6,7 @@ import com.file.Parser;
 import com.jade.*;
 import com.physics.BoxBounds;
 import com.physics.Collision;
+import com.prefabs.Prefabs;
 import com.util.Constants;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -25,8 +26,8 @@ public class PlayerController extends Component {
 
     private float immunityTime = 1f;
     private float immunityLeft = 0.0f;
-    private float flashLeft = 0.1f;
-    private float flashTime = 0.1f;
+    private float flashLeft = 0.2f;
+    private float flashTime = 0.2f;
 
     private int lives = 3;
     private boolean doWinAnimation = false;
@@ -37,6 +38,8 @@ public class PlayerController extends Component {
     private boolean triggerSlideAnim = true;
 
     public PlayerType type = PlayerType.SMALL;
+    private float fireballCooldownTime = 0.0f;
+    private float fireballCooldown = 1f;
 
     public void setState(PlayerType type) {
         if (type == PlayerType.BIG) {
@@ -149,6 +152,23 @@ public class PlayerController extends Component {
             this.camera.position().y = Constants.CAMERA_OFFSET_Y_1;
         }
 
+        if ((KeyListener.isKeyPressed(GLFW_KEY_S) || KeyListener.isKeyPressed(GLFW_KEY_DOWN) || MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_1)) && this.type == PlayerType.FIRE) {
+            if (fireballCooldownTime < 0) {
+                GameObject fireball = Prefabs.FIREBALL();
+                if (this.gameObject.transform.scale.x > 0) {
+                    fireball.transform.position.x = this.gameObject.transform.position.x + this.gameObject.transform.scale.x;
+                } else {
+                    fireball.transform.position.x = this.gameObject.transform.position.x - fireball.transform.scale.x;
+                }
+                fireball.transform.position.y = this.gameObject.transform.position.y + (this.gameObject.transform.scale.y / 2.0f);
+                fireball.getComponent(Rigidbody.class).acceleration.x = this.gameObject.transform.scale.x > 0 ? 2200f : -2200f;
+                fireball.getComponent(Rigidbody.class).acceleration.y = -30f;
+                Window.getScene().addGameObject(fireball);
+                fireballCooldownTime = fireballCooldown;
+                System.out.println("FIREBALL");
+            }
+        }
+
         if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) {
             rb.acceleration.x = 1800;
             if (gameObject.transform.scale.x < 0) {
@@ -181,6 +201,7 @@ public class PlayerController extends Component {
 
         immunityLeft -= dt;
         flashLeft -= dt;
+        fireballCooldownTime -= dt;
     }
 
     public void win(boolean extraLife) {

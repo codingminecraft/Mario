@@ -404,4 +404,20 @@ public class Prefabs {
 
         return flagTop;
     }
+
+    public static GameObject FIREBALL() {
+        Spritesheet items = AssetPool.getSpritesheet("assets/spritesheets/items.png");
+
+        // Create gameObject add components
+        GameObject fireball = new GameObject("Fireball_Prefab", new Transform(new Vector2f()), 0);
+        fireball.addComponent(new BoxBounds(16, 16, false, false));
+        fireball.addComponent(new SpriteRenderer(items.sprites.get(32)));
+        fireball.addComponent(new Fireball());
+        fireball.addComponent(new Rigidbody());
+
+        fireball.transform.scale.x = 16;
+        fireball.transform.scale.y = 16;
+
+        return fireball;
+    }
 }

@@ -32,6 +32,10 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        if (AssetPool.hasSound("assets/sounds/main-theme-overworld.ogg")) {
+            AssetPool.getSound("assets/sounds/main-theme-overworld.ogg").stop();
+        }
+
         Window.getWindow().setColor(Constants.COLOR_WHITE);
         initAssetPool();
         grid.start();
