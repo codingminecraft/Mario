@@ -71,7 +71,7 @@ public class FileExplorerButton extends JButton {
         PointerBuffer outPath = memAllocPointer(1);
         try {
             boolean fileClicked = checkResult(
-                    NFD_OpenDialog("zip", null, outPath),
+                    NFD_OpenDialog("level", null, outPath),
                     outPath
             );
 

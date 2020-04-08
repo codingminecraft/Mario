@@ -22,7 +22,7 @@ public class Parser {
     private static byte[] bytes;
 
     public static void openLevelFile(String filename) {
-        File tmp = new File("assets/levels/" + filename + ".zip");
+        File tmp = new File("assets/levels/" + filename + ".level");
         if (!tmp.exists()) {
             bytes = new byte[0];
             return;
@@ -31,7 +31,7 @@ public class Parser {
         line = 1;
 
         try {
-            ZipFile zipFile = new ZipFile("assets/levels/" + filename + ".zip");
+            ZipFile zipFile = new ZipFile("assets/levels/" + filename + ".level");
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
@@ -44,7 +44,7 @@ public class Parser {
     }
 
     public static void openFile(String filename) {
-        File tmp = new File(filename + ".zip");
+        File tmp = new File(filename + ".layout");
         if (!tmp.exists()) {
             bytes = new byte[0];
             return;
@@ -53,7 +53,7 @@ public class Parser {
         line = 1;
 
         try {
-            ZipFile zipFile = new ZipFile(filename + ".zip");
+            ZipFile zipFile = new ZipFile(filename + ".layout");
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 

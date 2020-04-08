@@ -186,7 +186,7 @@ public class LevelEditorScene extends Scene {
 
     public void exportLevelEditorData() {
         try {
-            FileOutputStream fos = new FileOutputStream("uiLayout.zip");
+            FileOutputStream fos = new FileOutputStream("uiLayout.layout");
             ZipOutputStream zos = new ZipOutputStream(fos);
 
             zos.putNextEntry(new ZipEntry("uiLayout.json"));

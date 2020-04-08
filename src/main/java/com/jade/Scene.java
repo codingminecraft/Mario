@@ -175,7 +175,7 @@ public abstract class Scene {
 
     public void export(String filename) {
         try {
-            FileOutputStream fos = new FileOutputStream("assets/levels/" + filename + ".zip");
+            FileOutputStream fos = new FileOutputStream("assets/levels/" + filename + ".level");
             ZipOutputStream zos = new ZipOutputStream(fos);
 
             zos.putNextEntry(new ZipEntry(filename + ".json"));
