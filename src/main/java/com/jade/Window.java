@@ -1,6 +1,5 @@
 package com.jade;
 
-import com.renderer.fonts.FontTexture;
 import com.util.Constants;
 import com.util.Time;
 import org.joml.Vector4f;
@@ -11,8 +10,6 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
-
-import java.awt.Font;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;

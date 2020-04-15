@@ -9,10 +9,13 @@ import com.jade.GameObject;
 import com.physics.BoxBounds;
 import com.ui.*;
 import com.ui.buttons.*;
+import com.util.Util;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -35,7 +38,15 @@ public class Parser {
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
-            Parser.bytes = stream.readAllBytes();
+            // Read input stream into a byte array
+            byte[] finalBytes = new byte[0];
+            while (stream.available() != 0) {
+                byte[] byteBuffer = new byte[stream.available()];
+                stream.read(byteBuffer);
+                finalBytes = Util.combine(finalBytes, byteBuffer);
+            }
+            Parser.bytes = finalBytes;
+
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,7 +68,15 @@ public class Parser {
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
-            Parser.bytes = stream.readAllBytes();
+            // Read input stream into a byte array
+            byte[] finalBytes = new byte[0];
+            while (stream.available() != 0) {
+                byte[] byteBuffer = new byte[stream.available()];
+                stream.read(byteBuffer);
+                finalBytes = Util.combine(finalBytes, byteBuffer);
+            }
+            Parser.bytes = finalBytes;
+
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,7 +105,7 @@ public class Parser {
     }
 
     public static void skipWhitespace() {
-        while (!atEnd() && (peek() == ' ' || peek() == '\n' || peek() == '\t' || peek() == '\r')) {
+        while (!atEnd() && (peek() == ' ' || peek() == '\n' || peek() == '\t' || peek() == '\r' || (byte)peek() == 0)) {
             if (peek() == '\n') Parser.line++;
             advance();
         }
@@ -137,6 +156,7 @@ public class Parser {
             builder.append(c);
         }
 
+        assert builder.toString().length() != 0 : "Tried to parse double of 0 length at line '" + Parser.line + "' index: '" + Parser.offset + "'";
         return Double.parseDouble(builder.toString());
     }
 

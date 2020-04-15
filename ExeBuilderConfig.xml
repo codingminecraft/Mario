@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\dev\JavaProjects\opengl.mario\out\artifacts\mario_maker_jar\opengl.mario.main.jar</jar>
+  <outfile>C:\dev\JavaProjects\opengl.mario\out\artifacts\mario_maker_jar\MarioMaker.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>true</stayAlive>
+  <restartOnCrash>true</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\dev\JavaProjects\opengl.mario\out\artifacts\mario_maker_jar\icons\output.ico</icon>
+  <jre>
+    <path>jre8</path>
+    <bundledJre64Bit>true</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+    <opt>-D&quot;java.library.path=libs/x64/org/lwjgl/;libs/x64/org/lwjgl/glfw;libs/x64/org/lwjgl/nfd;libs/x64/org/lwjgl/openal;libs/x64/org/lwjgl/stb;libs/x64/org/lwjgl/opengl&quot;</opt>
+  </jre>
+</launch4jConfig>
